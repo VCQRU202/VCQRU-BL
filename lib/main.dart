@@ -16,7 +16,7 @@ import 'package:vcqru_bl/ui_view/splash_screen/splash_screen.dart';
 void main() {
   runApp(const MyApp());
 }
-// 2dec sb branch 12
+// 2dec sb branch 123
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 // fisrt push
