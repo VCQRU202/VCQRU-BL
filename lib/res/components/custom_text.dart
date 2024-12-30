@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class CustomText extends StatelessWidget {
   final String text;
@@ -20,7 +21,7 @@ class CustomText extends StatelessWidget {
     return Text(
       text,
       textAlign: textAlign, // Set textAlign
-      style: TextStyle(
+      style: GoogleFonts.roboto(
         color: color,
         fontSize: fontSize,
         fontWeight: fontWeight,

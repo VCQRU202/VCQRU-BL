@@ -28,7 +28,7 @@ class LoginWithPassword extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final loginProvider = Provider.of<LoginProvider>(context);
+    final loginProvider = Provider.of<LoginProviderPassword>(context);
     var height1 = MediaQuery.of(context).size.height;
     var width1 = MediaQuery.of(context).size.width;
     return Scaffold(
@@ -36,7 +36,7 @@ class LoginWithPassword extends StatelessWidget {
       body: Container(
         margin: EdgeInsets.all(20),
         child: SingleChildScrollView(
-          child: Consumer<LoginProvider>(
+          child: Consumer<LoginProviderPassword>(
             builder: (context, value, child){
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.center,

@@ -17,7 +17,7 @@ class SplashScreenProvider with ChangeNotifier{
   String _newVersion = '';
   String _appURL = '';
   String _errorMessage = '';
-  String logoUrl = '';
+  String _logoUrl = '';
   String _productImage = '';
   String _companyName = '';
   String backgroundUrl = '';
@@ -38,7 +38,7 @@ class SplashScreenProvider with ChangeNotifier{
   String get newVersion => _newVersion;
   String get appURL => _appURL;
   String get errorMessage => _errorMessage;
-  String get logoUrlF => logoUrl;
+  String get logoUrlF => _logoUrl;
   Color _color = Colors.grey; // Default color
   List<Color> _gradientColors = []; // List to hold multiple colors for gradient
 
@@ -91,17 +91,13 @@ class SplashScreenProvider with ChangeNotifier{
   //   notifyListeners();
   // }
 // Fetch the logo and background image URLs from the API
+
   Future<dynamic> getBrandSettingData() async {
     _isloaing_brand = true;
     _hasError_brand=false;
     try {
-      String result = "VendorAppSetting^VCQRURD092022^"+AppUrl.Comp_ID;
-      print(result);
-      var re = await sha512Digestfinal(result);
-      print("-------" + re);
       Map data = {
         "Comp_ID": AppUrl.Comp_ID,
-        "EncData": re
       };
       print(data);
       var value = await _api.postRequest(data,AppUrl.BRAND_SETTING);
@@ -109,19 +105,20 @@ class SplashScreenProvider with ChangeNotifier{
       notifyListeners();
       log(value.toString());
       if (value != null) {
-        if (value['Status']) {
+        if (value['success']) {
           print("-----------true---");
 
-          logoUrl = value['Data']['CompData']['Logo'] ?? ''; // Set logo URL
-          _productImage = value['Data']['CompData']['ProductImage'] ?? ''; // Set logo URL
-          _companyName = value['Data']['CompData']['CompName'] ?? ''; // Set logo URL
-          print("---URL-------${logoUrl}");
+          _logoUrl = value['data']['logo'] ?? ''; // Set logo URL
+          _productImage = value['data']['productImage'] ?? ''; // Set logo URL
+          _companyName = value['data']['compName'] ?? ''; // Set logo URL
+          print("---URL-------${_logoUrl}");
 
-          backgroundUrl = value['Data']['CompData']['BackgroundColor'] ?? '#ffffff';
-          if(logoUrl.isNotEmpty&&backgroundUrl.isNotEmpty&&_companyName.isNotEmpty){
+          backgroundUrl = value['data']['backgroundColor'] ?? '#ffffff';
+          if(_logoUrl.isNotEmpty&&backgroundUrl.isNotEmpty&&_companyName.isNotEmpty){
+            //_companyName= value['data']['compName'].split(" ")[0];
             _isloaing_brand = true;
             _hasError_brand = false;
-            await SharedPrefHelper().save("CompanyName", _companyName);
+            await SharedPrefHelper().save("CompanyName", value['data']['compName']);
              updateColor(backgroundUrl);
             // updateColor("#FF5733");
             //  updateGradientColors("#FF5733");
@@ -193,5 +190,30 @@ class SplashScreenProvider with ChangeNotifier{
 
   Future<void> retryFetchBrandsetting() async {
     await getBrandSettingData();
+  }
+
+
+
+  List<Map<String, dynamic>> _socialItems = [
+    {'icon': Icons.facebook, 'label': 'Facebook'},
+    {'icon': Icons.facebook, 'label': 'Twitter'},
+    {'icon': Icons.facebook, 'label': 'Linkedin'},
+    {'icon': Icons.facebook, 'label': 'Instagram'},
+    {'icon': Icons.phone, 'label': 'Call'},
+    {'icon': Icons.email, 'label': 'Mail'},
+    {'icon': Icons.help_outline, 'label': 'Contact'},
+  ];
+
+  List<Map<String, dynamic>> get socialItems => _socialItems;
+
+  // Example of modifying the list dynamically
+  void addSocialItem(Map<String, dynamic> newItem) {
+    _socialItems.add(newItem);
+    notifyListeners(); // Notify the UI of changes
+  }
+
+  void removeSocialItem(int index) {
+    _socialItems.removeAt(index);
+    notifyListeners(); // Notify the UI of changes
   }
 }

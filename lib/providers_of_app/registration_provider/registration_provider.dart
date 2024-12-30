@@ -192,41 +192,38 @@ class RegistrationFormProvider extends ChangeNotifier {
 
     try {
       // API call
-      String result = "VendorAppSetting^VCQRURD092022^"+AppUrl.Comp_ID;
-      print(result);
-      var re = await sha512Digestfinal(result);
-      print("-------" + re);
+
       Map data1 = {
         "Comp_ID": AppUrl.Comp_ID,
-        "EncData": re
       };
       print(data1);
-      var value = await _api.postRequest(data1,AppUrl.BRAND_SETTING);
+      var value = await _api.postRequest(data1,AppUrl.GETFIELD_SETTING);
 
-      if (value['Status'] == true && value['Data']['RegistrationFields'] != null) {
+      if (value['success'] == true && value['data'] != null) {
         print("---details fetch");
         // Parse fields
-        _formFields = List<Map<String, dynamic>>.from(value['Data']['RegistrationFields'].map((field) {
+        _formFields = List<Map<String, dynamic>>.from(value['data'].map((field) {
           return {
-            "type": field['FieldType'] == "text"
+            "type": field['fieldType'] == "text"
                 ? "text"
-                : field['FieldType'] == "Radio"
+                : field['fieldType'] == "Radio"
                 ? "radio"
-                : field['FieldType'] == "Dropdown"
+                : field['fieldType'] == "Dropdown"
                 ? "dropdown"
-                : field['FieldType'],
-            "label": field['FieldName'],
-            "hint": field['Hint'] ?? '',
-            "optional": !(field['IsMandatory'] ?? true),
+                : field['fieldType'],
+            "label": field['fieldName'],
+            "label1": field['lableName'],
+            "hint": field['hint'] ?? '',
+            "optional": !(field['isMandatory'] ?? true),
             "regex": field['Regex'],
-            "options": field['FieldType'] == "Dropdown" || field['FieldType'] == "Radio"
-                ? field['Values'] ?? ["option1","Option2"] // Use actual options from the API
+            "options": field['fieldType'] == "Dropdown" || field['fieldType'] == "Radio"
+                ? field['values'] ?? ["option1","Option2"] // Use actual options from the API
                 : null,
           };
         }));
       } else {
         _hasErrorForm = true;
-        _errorMessageForm = value['Message'] ?? 'Invalid data received.';
+        _errorMessageForm = value['message'] ?? 'Invalid data received.';
       }
     } catch (e) {
       _hasErrorForm = true;
@@ -253,6 +250,10 @@ class RegistrationFormProvider extends ChangeNotifier {
     _formData[key] = value;
     notifyListeners();
   }
+  void updateFormData1(String key, dynamic value) {
+    _formData[key] = value;
+
+  }
 
   // Fetch location details based on pincode
   Future<void> fetchLocationDetails(String pincode) async {
@@ -272,7 +273,7 @@ class RegistrationFormProvider extends ChangeNotifier {
           // Update the provider with fetched location data
           _formData['City'] = city;
           _formData['State'] = state;
-          _formData['Dist'] = district;
+          _formData['District'] = district;
 
           notifyListeners(); // Notify listeners to update UI
         } else {
@@ -295,6 +296,7 @@ class RegistrationFormProvider extends ChangeNotifier {
       // Make API call
       Map data = {
         "Request": request,
+        "Comp_id": AppUrl.Comp_ID,
       };
       print(data);
       final value = await _api.postRequest(data,AppUrl.REGISTER);

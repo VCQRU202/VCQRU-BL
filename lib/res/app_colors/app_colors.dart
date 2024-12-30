@@ -15,6 +15,7 @@ class AppColor{
   static const kyc_color=Color(0xFFFFF7C5);
   static const gray_color=Color(0xFFD0D2D0);
   static const otp_color=Color(0xFF000000);
+  static const otp_color1=Color(0xFF5F5E62);
   static const bg_color=Color(0xFFF8F9FA);
   static const textfield_border_color=Color(0xFFE5E1E6);
   static const textfield_color=Color(0xFF5F5E62);

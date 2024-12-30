@@ -9,6 +9,8 @@ import '../../../res/app_colors/Checksun_encry.dart';
 import '../../../res/shared_preferences.dart';
 
 class AadharVerifyProvider extends ChangeNotifier {
+
+  final aadharController = TextEditingController();
   final _api = RepositoriesApp();
   bool _isLoading_otp = false;
   bool _hasError_otp = false;
@@ -17,6 +19,8 @@ class AadharVerifyProvider extends ChangeNotifier {
   bool _isLoading_verify = false;
   bool _hasError_verify = false;
   String _errorMessage_verify = '';
+  String _referenId="";
+  String get referenId => _referenId;
 
   // State getters
   bool get isLoading_otp => _isLoading_otp;
@@ -36,6 +40,18 @@ class AadharVerifyProvider extends ChangeNotifier {
   bool _completed = false;
 
   bool get otpCOmpleted => _completed;
+
+
+
+  @override
+  void dispose() {
+    aadharController.dispose();
+    super.dispose();
+  }
+  void setReferenceId(val){
+    _referenId=val;
+    notifyListeners();
+  }
   void startTimer() {
     _start = 30;
     _timer?.cancel();
@@ -66,21 +82,17 @@ class AadharVerifyProvider extends ChangeNotifier {
     _hasError_otp = false;
     _errorMessage_otp = '';
     notifyListeners();
-
+    startTimer();
     try {
-      // Make API call
-      String result = "SendOTPForKYC^VCQRURD092022^" + aadharNumber;
-      print(result);
-      var re = await sha512Digestfinal(result);
-      print("-------" + re);
+
       var mConsumerid = await SharedPrefHelper().get("M_Consumerid");
+      String mt=mConsumerid.toString();
       Map data = {
         "AadharNo": aadharNumber,
-        "M_Consumerid": mConsumerid,
-        "EncData": re
+        "M_Consumerid": mt,
       }; // Simulate network delay
       print(data);
-      final value = await _api.postRequest(data,AppUrl.SendOTPFOR_KYC);
+      final value = await _api.postRequest(data,AppUrl.SendADHAROTPFOR_KYC);
       _isLoading_otp = false;
       notifyListeners();
       log(value.toString());
@@ -110,20 +122,17 @@ class AadharVerifyProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      // Make API call
-      String result =
-          "ValidateOTPForKYC^VCQRURD092022^" + requestId + "^" + otp;
-      print(result);
-      var re = await sha512Digestfinal(result);
-      print("-------" + re);
-      String mConsumerid = await SharedPrefHelper().get("mConsumerid");
+
+      String mConsumerid = await SharedPrefHelper().get("M_Consumerid");
+      String mt=mConsumerid.toString();
       Map data = {
         "AadharNo": aadharNumber,
         "Request_Id": requestId,
-        "M_Consumerid": mConsumerid,
-        "Otp": otp,
-        "EncData": re
+        "Comp_id": AppUrl.Comp_ID,
+        "M_Consumerid": mt,
+        "Otp": otp
       };
+      print(data);
       final value = await _api.postRequest(data,AppUrl.AADHAR_VERIFY_OTP);
       _isLoading_verify = false;
       notifyListeners();

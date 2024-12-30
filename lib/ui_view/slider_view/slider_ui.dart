@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../../providers_of_app/sliders_provider/slider_provider.dart';
+import '../../providers_of_app/splash_screen_provider/splash_screen_provider.dart';
 import '../../res/animation/animination_slider.dart';
 import '../../res/app_colors/app_colors.dart';
 import '../../res/components/custom_elevated_button.dart';
@@ -32,6 +33,7 @@ class _SliderScreenState extends State<SliderScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final splashProvider = Provider.of<SplashScreenProvider>(context, listen: false);
     return Scaffold(
       backgroundColor: Colors.white,
       body: Consumer<SliderProvider>( // Using Consumer to listen to changes
@@ -39,7 +41,7 @@ class _SliderScreenState extends State<SliderScreen> {
           return Container(
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('assets/bg.jpg'), // Correct way to use AssetImage
+                image: NetworkImage(sliderProvider.image), // Correct way to use AssetImage
                 fit: BoxFit.cover, // Adjust fit to your need (e.g., cover, contain, fill)
               ),
             ),
@@ -131,7 +133,7 @@ class _SliderScreenState extends State<SliderScreen> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.start,
-                                children: List.generate(3, (index) {
+                                children: List.generate(sliderProvider.introData.length, (index) {
                                   return AnimatedBullet(
                                     isSelected: index == sliderProvider.index, // Highlight the current bullet
                                   );
@@ -150,14 +152,18 @@ class _SliderScreenState extends State<SliderScreen> {
                                         child: CustomElevatedButton(
                                           onPressed: () async {
                                             // Your button action here
-                                            Navigator.push(
+                                            Navigator.pushReplacement(
                                                 context,
                                                 MaterialPageRoute(
                                                     builder: (context) => MobileEnterScreen()));
-                                            // Navigator.push(context,
+
+                                            //Navigator.push(context, MaterialPageRoute(builder: (context)=>RegistrationFormPage(mobile: "9876554532",)));
+
+                                            // Navigator.pushReplacement(context,
                                             //     MaterialPageRoute(builder: (context)=>KycMainScreen()));
+
                                           },
-                                          buttonColor: AppColor.app_btn_color,
+                                          buttonColor: splashProvider.color_bg,
                                           textColor: AppColor.black_color,
                                           borderRadius: BorderRadius.circular(8.0),
                                           widget: CustomText(
@@ -169,33 +175,7 @@ class _SliderScreenState extends State<SliderScreen> {
                                         ),
                                       ),
                                     ),
-                                    // SizedBox(width: 15),
-                                    // Expanded(
-                                    //   child: Container(
-                                    //     width: double.infinity,
-                                    //     margin: EdgeInsets.only(top: 10),
-                                    //     child: DynamicElevatedButton(
-                                    //       onPressed: () async {
-                                    //         // Your button action here
-                                    //             Navigator.push(
-                                    //                 context,
-                                    //                 MaterialPageRoute(
-                                    //                     builder: (context) => MobileEnterScreen()));
-                                    //       },
-                                    //       buttonColor: AppColor.white_color,
-                                    //       textColor: AppColor.black_color,
-                                    //       borderRadius: BorderRadius.circular(8.0),
-                                    //       borderWidth: 1,
-                                    //       borderColor: AppColor.app_btn_color,
-                                    //       widget: CustomText(
-                                    //         text: LocalizationEN.login_btn1,
-                                    //         fontWeight: FontWeight.bold,
-                                    //         fontSize: 14,
-                                    //         color: AppColor.app_btn_color,
-                                    //       ),
-                                    //     ),
-                                    //   ),
-                                    // ),
+
                                   ],
                                 ),
                               ),

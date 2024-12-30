@@ -11,6 +11,7 @@ import 'package:intl/intl.dart';
 
 import 'package:provider/provider.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:vcqru_bl/ui_view/scanner_ui/scanner_api/scanner_code_api.dart';
 
 import '../../providers_of_app/scanner_provider/scanner_provider.dart';
 import '../../res/api_url/api_url.dart';
@@ -19,7 +20,10 @@ import '../../res/app_colors/app_colors.dart';
 import '../../res/custom_alert_msg/custom_alert_msg.dart';
 import '../../res/shared_preferences.dart';
 import '../../res/values/values.dart';
+import '../code_check_history_ui/code_check_history.dart';
 import 'drop_down_field_custom.dart';
+import 'enter_code_check/code_check_succes_msg.dart';
+import 'enter_code_check/enter_code_check_ui.dart';
 
 class QRViewExample extends StatefulWidget {
   const QRViewExample({Key? key}) : super(key: key);
@@ -111,6 +115,12 @@ class _QRViewExampleState extends State<QRViewExample> {
         _getCurrentPosition(appState);
       }
     }
+    if (permission == LocationPermission.whileInUse) {
+      //
+      if (appState.lat.isEmpty || appState.long.isEmpty) {
+        _getCurrentPosition(appState);
+      }
+    }
     return true;
   }
 
@@ -124,7 +134,6 @@ class _QRViewExampleState extends State<QRViewExample> {
     await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
         .then((Position position) {
       appState.updatePosition(position);
-
       _getAddressFromLatLng(appState);
     }).catchError((e) {});
   }
@@ -136,7 +145,6 @@ class _QRViewExampleState extends State<QRViewExample> {
       Placemark place = placemarks[0];
       // print(place.country);
       setState(() {
-
         print(appState.currentPosition!.longitude.toString());
         print(appState.currentPosition!.longitude.toString());
       });
@@ -225,8 +233,9 @@ class _QRViewExampleState extends State<QRViewExample> {
                               ),
                               GestureDetector(
                                 onTap: (){
-                                 // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>EnterCodeCheck()));
-                                },
+                                 // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>CodeCheckSuccessScreen()));
+                                  Navigator.push(context, MaterialPageRoute(builder: (context)=>EnterCodeCheck()));
+                                   },
                                 child: Stack(
                                   children: [
                                     Container(
@@ -358,21 +367,12 @@ class _QRViewExampleState extends State<QRViewExample> {
         scanner_provider.updateScanDetails(scanCode1);
         print("------" + qs.toString().replaceAll(RegExp('-'), ''));
         // ClickSubmitToVerify(scanCode1);
-        var value1 = await scanner_provider.appcodecheck(scanCode1);
-        if (value1 != null) {
-          var status = value1["Status"] ?? false;
-          var msg = value1["Message"] ?? AppUrl.warningMSG;
-          if (status) {
-
-          } else {
-            scanner_provider.startCemra();
-            CustomAlert.showMessage(
-                context, "Info", msg.toString(), AlertType.info);
-          }
-        } else {
-          scanner_provider.startCemra();
-         // toastRedC(AppUrl.warningMSG);
-        }
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context)=>QRLoadingScreen(
+              code: scanCode1,
+              lat: scanner_provider.lat,
+              long: scanner_provider.long,
+            )));
       } else {
         // errorDialog(
         //   context,
@@ -404,153 +404,6 @@ class _QRViewExampleState extends State<QRViewExample> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('no Permission')),
       );
-    }
-  }
-
-
-  void ClickSubmitToVerify(scanCode) async {
-    await EasyLoading.show(
-      status: 'loading...',
-      maskType: EasyLoadingMaskType.black,
-    );
-    print("Calling scan bar");
-    String mobile_number = await SharedPrefHelper().get("MobileNumber");
-
-
-    try {
-      String result = "appcode^VCQRURD092022" +"^"+scanCode+ "^" + mobile_number+"^Sagar^"+"Sagar Petro";
-      print(result);
-      var re = await sha512Digestfinal(result);
-      print("-------" + re);
-      Map data = {
-        "mobile": mobile_number,
-        "scan": scanCode,
-        "mode": "Sagar Petro",
-        "app": "Sagar",
-        "EncData": re
-      };
-      print(data);
-      Dio dio = Dio();
-      print(AppUrl.SCAN_CODE);
-      final response = await dio.post(AppUrl.SCAN_CODE, data: data);
-      print("response=============" + response.toString());
-      await EasyLoading.dismiss();
-      String jsonsDataString = response.toString();
-      final jsonData = jsonDecode(jsonsDataString);
-      print(jsonData);
-      var status1 = jsonData["Status"] ?? false;
-      String msg = jsonData["Message"] ?? "'Something Went Wrong' Please Try Again Later";
-      if (status1) {
-        String Logopath = jsonData["Data"]["Logopath"] ?? "";
-        String CompanyName = jsonData["Data"]["CompanyName"] ?? "";
-        String ServiceId = jsonData["Data"]["ServiceId"] ?? "";
-        String longitude = jsonData["Data"]["longitude"] ?? "";
-        String latitude = jsonData["Data"]["latitude"] ?? "null";
-        String mobile = jsonData["Data"]["mobile"] ?? "";
-        String code1 = jsonData["Data"]["code1"] ?? "";
-        String code2 = jsonData["Data"]["code2"] ?? "";
-        DateTime now = DateTime.now();
-        String dateSet = DateFormat('dd MMM yyyy HH:mm a').format(now);
-
-        UpdateScanGeniutiPass(CompanyName, Logopath, ServiceId, code1, code2,latitude,
-            longitude, mobile, "Valid", dateSet);
-      } else {
-        // _showDialog("Invalid Code, Please try Again", msg!);
-        //  errorDialog(
-        //    context,
-        //    msg,
-        //    icon: AlertDialogIcon.INFO_ICON,
-        //    title: "Invalid Code , Please try Again",
-        //  );
-        CustomAlert.showMessage(
-            context, "Invalid Code", msg, AlertType.info);
-      }
-    } on DioError catch (e) {
-      await EasyLoading.dismiss();
-      // errorDialog(
-      //   context,
-      //   "'Something Went Wrong' Please Try Again Later",
-      //   icon: AlertDialogIcon.INFO_ICON,
-      // );
-      // FirebaseCrashlytics.instance.recordError(e, s, context: 'as an example');
-    }
-  }
-
-  void UpdateScanGeniutiPass(
-      String? companyName,
-      String? logopath,
-      String? serviceId,
-      String? code1,
-      String? code2,
-      String? latitude,
-      String? longitude,
-      String? mobile1,
-      String? status,
-      String? date,
-      ) async {
-    DateTime now = DateTime.now();
-    String dateSet = DateFormat('dd MMM yyyy HH:mm a').format(now);
-
-    print("date_today" + dateSet.toString());
-    try {
-      String mobile = await SharedPrefHelper().get("MobileNumber");
-      String result = "appcheckgenuenity^VCQRURD092022^" +
-          code1.toString() +
-          "^" +
-          code2.toString() +
-          "^" +
-          mobile;
-      print(result);
-      var re = await sha512Digestfinal(result);
-      print("-------" + re);
-      Map data = {
-        "ScanInfo": {
-          "CompanyName": companyName,
-          "Logopath": logopath,
-          "ServiceId": serviceId,
-          "code1": code1,
-          "code2": code2,
-          "fields": "",
-          "Reg_fields":"",
-          "Mode":"Scanner",
-          "latitude": "18.3506933",
-          "longitude": "79.1622319",
-          "mobile": mobile,
-          "status": "Valid"
-        },
-        "EncData": re
-      };
-      print(data);
-      Dio dio = Dio();
-      print(AppUrl.SCAN_CODE_GENEUNITY);
-      final response =
-      await dio.post(AppUrl.SCAN_CODE_GENEUNITY, data: data);
-      print("scan_info_Response===========" + response.toString());
-      await EasyLoading.dismiss();
-      String jsonsDataString = response.toString();
-      final jsonData = jsonDecode(jsonsDataString);
-      print(jsonData);
-      var status1 = jsonData["Status"];
-      String msg = jsonData["Message"];
-      if (status1) {
-        _presentBottomSheetGreen(
-            context, code1, code2, dateSet, msg, companyName, "Success");
-      } else {
-        _presentBottomSheet(
-            context, code1, code2, dateSet, msg, companyName, "failed");
-      }
-    } on DioError catch (e) {
-      // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      //   content: Text("'Something Went Wrong' Please Try Again Later"),
-      // ));
-      await EasyLoading.dismiss();
-      CustomAlert.showMessage(
-          context, "Info", "'Something Went Wrong' Please Try Again Later", AlertType.info);
-      // errorDialog(
-      //   context,
-      //   "'Something Went Wrong' Please Try Again Later",
-      //   icon: AlertDialogIcon.INFO_ICON,
-      // );
     }
   }
 

@@ -107,7 +107,7 @@ class StringConst {
 
   static const dashboard_ekyc='E-Kyc';
 
-  static const dashboard_wallet_b="Wallet Balance";
+  static const dashboard_wallet_b="Point Balance";
   static const dashboard_rs="Rs. 2692.40";
   static const dashboard_update="Last Update 20 Feb 2024";
 
@@ -116,5 +116,5 @@ class StringConst {
   static const dashboard_history='History';
   static const dashboard_claim='Claim';
   static const dashboard_wallet_title='Wallet';
-  static const dashboard_warranty='Warranty';
+  static const dashboard_warranty='DEMO';
 }

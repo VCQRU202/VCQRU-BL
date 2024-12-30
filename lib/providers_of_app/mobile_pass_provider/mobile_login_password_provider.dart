@@ -10,7 +10,7 @@ import '../../res/app_colors/Checksun_encry.dart';
 import '../../res/shared_preferences.dart';
 import '../../ui_view/scanner_ui/scanner_ui.dart';
 
-class LoginProvider with ChangeNotifier {
+class LoginProviderPassword with ChangeNotifier {
   final TextEditingController mobileController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   bool passwordVisible = true;

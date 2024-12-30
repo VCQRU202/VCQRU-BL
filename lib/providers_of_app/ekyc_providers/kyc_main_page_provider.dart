@@ -11,9 +11,14 @@ class KYCMainProvider with ChangeNotifier{
   final _api = RepositoriesApp();
   final Dio dio = Dio();
 
+  int _kycbtn=0;
+  int get kycbtn=>_kycbtn;
+
   bool _isloaing_kyc = false;
   bool _hasError_kyc = false;
   String _errorMessage_kyc = '';
+  String _comName="";
+  String get comName=>_comName;
 
   bool _isloaing_kycs = false;
   bool _hasError_kycs = false;
@@ -21,9 +26,19 @@ class KYCMainProvider with ChangeNotifier{
   String _panEnable="";
   String _aadharEnable="";
   String _accountEnable="";
+  String _upiEnable="";
   String get panEnable=>_panEnable;
   String get aadharEnable=>_aadharEnable;
   String get accountEnable=>_accountEnable;
+  String get upiEnable=>_upiEnable;
+  String _pankycstatus="";
+  String _aadharkycstatus="";
+  String _accountkycstatus="";
+  String _upikycstatus="";
+  String get pankycstatus=>_pankycstatus;
+  String get aadharkycstatus=>_aadharkycstatus;
+  String get accountkycstatus=>_accountkycstatus;
+  String get upikycstatus=>_upikycstatus;
   bool get isloading_kyc => _isloaing_kyc;
   bool get hasError_kyc => _hasError_kyc;
   String get errorMessage_kyc => _errorMessage_kyc;
@@ -32,76 +47,54 @@ class KYCMainProvider with ChangeNotifier{
   bool get hasError_kycs => _hasError_kycs;
   String get errorMessage_kycs => _errorMessage_kycs;
 // Fetch the logo and background image URLs from the API
-  Future<dynamic> getBrandSettingData() async {
-    _isloaing_kyc = true;
-    _hasError_kyc=false;
-    try {
-      String result = "VendorAppSetting^VCQRURD092022^"+AppUrl.Comp_ID;
-      print(result);
-      var re = await sha512Digestfinal(result);
-      print("-------" + re);
-      Map data = {
-        "Comp_ID": AppUrl.Comp_ID,
-        "EncData": re
-      };
-      print(data);
-      var value = await _api.postRequest(data,AppUrl.BRAND_SETTING);
-      _isloaing_kyc = false;
+  KYCMainProvider() {
+    getCompanyName(); // Call on provider initialization
+  }
+  void setKycZero(){
+    _kycbtn=0;
+    notifyListeners();
+  }
+  void getCompanyName() async{
+    String com = await SharedPrefHelper().get("CompanyName")??"Vender";
+    print("----com-----${com}");
+    _comName=com.split(" ")[0];
+    notifyListeners();
+  }
+  void setPanKyc(value){
+    _pankycstatus=value;
+    notifyListeners();
+  }
+  void setAadhar(value){
+    _aadharkycstatus=value;
+    notifyListeners();
+  }
+  void setBank(value){
+    _accountkycstatus=value;
+    notifyListeners();
+  }
+  void setUPI(value){
+    _upikycstatus=value;
+    notifyListeners();
+  }
+  void setKYCMAIN(int value){
+    if (_kycbtn > 0) {
+      _kycbtn--; // Subtract 1
       notifyListeners();
-      log(value.toString());
-      if (value != null) {
-        if (value['Status']) {
-          print("-----------true---");
-
-          _panEnable = value['Data']['KycDetails']['PANCard'] ?? ''; // Set logo URL
-          _aadharEnable = value['Data']['KycDetails']['AadharCard'] ?? ''; // Set logo URL
-          _accountEnable = value['Data']['KycDetails']['AccountDetails'] ?? ''; // Set logo URL
-          notifyListeners();
-        } else {
-          print("-----------false---");
-          _isloaing_kyc = false;
-          _hasError_kyc = true;
-          _errorMessage_kyc =value['message'];
-          notifyListeners();
-        }
-        return value;
-      } else {
-        print("----error---");
-        notifyListeners();
-        _isloaing_kyc = false;
-        _hasError_kyc = true;
-        _errorMessage_kyc = "'Something Went Wrong' Please Try Again Later";
-        toastRedC(AppUrl.warningMSG);
-        return null;
-      }
-    } catch (error, stackTrace) {
-      print("----error1---");
-      _isloaing_kyc = false;
-      _hasError_kyc = true;
-      _errorMessage_kyc = "'Something Went Wrong' Please Try Again Later";
-      notifyListeners();
-      return null;
-    }finally {
-      _isloaing_kyc = false;
-      notifyListeners();
+    } else {
+      print("Value cannot go below zero");
     }
-
   }
   Future<dynamic> getKYCSTATUS() async {
     _isloaing_kycs = true;
     _hasError_kycs=false;
     try {
-      String mConsumerid = await SharedPrefHelper().get("M_Consumerid")??"";
+      var mConsumerid = await SharedPrefHelper().get("M_Consumerid");
       String mobile = await SharedPrefHelper().get("MobileNumber")??"";
-      String result = "UserKycStatus^VCQRURD092022^"+AppUrl.Comp_ID+"^"+mobile+"^"+mConsumerid;
-      print(result);
-      var re = await sha512Digestfinal(result);
-      print("-------" + re);
+      String mt=mConsumerid.toString();
       Map data = {
         "Comp_ID": AppUrl.Comp_ID,
         "Mobile": mobile,
-        "M_Consumerid": mConsumerid,
-        "EncData": re
+        "M_Consumerid": mt,
       };
       print(data);
       var value = await _api.postRequest(data,AppUrl.KYC_STATUS);
@@ -109,8 +102,47 @@ class KYCMainProvider with ChangeNotifier{
       notifyListeners();
       log(value.toString());
       if (value != null) {
-        if (value['Status']) {
+        if (value['success']) {
           print("-------kyc staus----true---");
+          var panekycStatusString=value['data']['panekycStatusString'];
+          var aadharkycStatusString=value['data']['aadharkycStatusString'];
+          var bankekycStatusString=value['data']['bankekycStatusString'];
+          var upikycStatusString=value['data']['upikycStatusString'];
+          var bankkyccEnable=value['data']['bankkyccEnable']??"";
+          var panekycEnable=value['data']['panekycEnable']??"";
+          var aadharekycEnable=value['data']['aadharekycEnable']??"";
+          var upikyccEnable=value['data']['upikyccEnable']??"";
+
+           _panEnable=panekycEnable;
+          _aadharEnable=aadharekycEnable;
+           _accountEnable=bankkyccEnable;
+          _upiEnable=upikyccEnable;
+          notifyListeners();
+           if(bankkyccEnable.toString().endsWith("Yes")){
+             print("-----bank kyc yes---");
+             _kycbtn++;
+             notifyListeners();
+           }
+          if(panekycEnable.toString().endsWith("Yes")){
+            print("-----pan kyc yes---");
+            _kycbtn++;
+            notifyListeners();
+          }
+          if(upikyccEnable.toString().endsWith("Yes")){
+            print("-----UPI kyc yes---");
+            _kycbtn++;
+            notifyListeners();
+          }
+          if(aadharekycEnable.toString().endsWith("Yes")){
+            print("-----adhar kyc yes---");
+            _kycbtn++;
+            notifyListeners();
+          }
+          print("------_kycbtn-----${_kycbtn}---");
+          _pankycstatus=panekycStatusString;
+          _aadharkycstatus=aadharkycStatusString;
+          _accountkycstatus=bankekycStatusString;
+          _upikycstatus=upikycStatusString;
 
           notifyListeners();
         } else {
@@ -145,6 +177,7 @@ class KYCMainProvider with ChangeNotifier{
   }
 
   Future<void> retryFetchBrandsetting() async {
-    await getBrandSettingData();
+    notifyListeners();
+    await getKYCSTATUS();
   }
 }

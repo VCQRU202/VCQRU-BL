@@ -101,30 +101,23 @@ class Scanner_provider extends ChangeNotifier {
       print("API call blocked. Please wait for 4 seconds.");
       return null; // Early exit if last API call was less than 7 seconds ago
     }
-    await EasyLoading.show(
-      status: 'loading...',
-      maskType: EasyLoadingMaskType.black,
-    );
+
     print("Calling scan bar");
     String mobile_number = await SharedPrefHelper().get("MobileNumber");
     _isloaing_code_check = true;
     notifyListeners();
-    String result = "appcode^VCQRURD092022" +"^"+scanCode+ "^" + mobile_number+"^Sagar^"+"Sagar Petro";
-    print(result);
-    var re = await sha512Digestfinal(result);
-    print("------- " + re);
     Map data = {
-      "mobile": mobile_number,
-      "scan": scanCode,
-      "mode": "Sagar Petro",
-      "app": "Sagar",
-      "EncData": re
+      "MobileNO": mobile_number,
+      "UniqueCode": scanCode,
+      "Comp_ID": AppUrl.Comp_ID,
+      "Mode": "BL_APP",
+      "latitude": lat,
+      "longitude": long,
     };
     print(data);
     try {
       print(AppUrl.SCAN_CODE);
       var value = await _api.postRequest(data,AppUrl.SCAN_CODE);
-      await EasyLoading.dismiss();
       _isloaing_code_check = false;
       notifyListeners();
       log(value.toString());

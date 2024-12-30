@@ -88,14 +88,9 @@ class EnterMobileProvider with ChangeNotifier{
      _isloaing = true;
      notifyListeners();
      var companyName = await SharedPrefHelper().get("CompanyName")??"";
-     String result = "SendOTPLogin^VCQRURD092022^"+ mobileController.text + "^" +companyName;
-     print(result);
-     var re = await sha512Digestfinal(result);
-     print("------- " + re);
      Map data = {
        "compName":companyName,
        "mobile": mobileController.text,
-       "EncData": re
      };
      print(data.toString());
      try {
@@ -116,18 +111,14 @@ class EnterMobileProvider with ChangeNotifier{
      }
    }
 
-   Future<dynamic> verifyOtp() async {
+   Future<dynamic> verifyOtp(mobile) async {
      _isloaing_verify_otp = true;
      notifyListeners();
      var companyName = await SharedPrefHelper().get("CompanyName")??"";
-     String result = "validateotp^VCQRURD092022^" + otpValue.toString() + "^" + mobileController.text;
-     print(result);
-     var re = await sha512Digestfinal(result);
-     print("------- " + re);
+     String otp=otpValue.toString();
      Map data = {
-       "otpCode": otpValue.toString(),
-       "Mobile": mobileController.text,
-       "EncData": re,
+       "otpCode": otp,
+       "Mobile": mobile,
        "Comp_Name": companyName
      };
      print(data.toString());

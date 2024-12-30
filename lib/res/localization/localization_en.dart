@@ -6,6 +6,7 @@ class LocalizationEN{
   static const String login_hintText="Ex: 9900000000";
   static const String login_btn="LOGIN";
   static const String GET_START="GET STARTED";
+  static const String DASHBOARD="Dashboard";
   static const String LOGIN_WITH_OTP="LOGIN WITH OTP";
   static const String login_btn1="Login";
   static const String CONTINUE="CONTINUE";
@@ -14,7 +15,9 @@ class LocalizationEN{
   //---otp verify
   static const String verify_btn="VERIFY";
   static const String submit_btn="SUBMIT";
+  static const String CLAIM_NOW="Claim Now";
   static const String NEXT="Next";
+  static const String GET_OTP="Get OTP";
   static const String otp_verifyTitle="OTP Verification";
   static const String otp_verifyText='We have sent an OTP to your mobile number account with a verification code!';
   static const String resend_otp="Resend OTP";

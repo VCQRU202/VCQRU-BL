@@ -22,7 +22,16 @@ class PanVerificationProvider with ChangeNotifier {
   String get errorMessagePan => _errorMessagePan;
   bool get isVerificationSuccessful => _isVerificationSuccessful;
 
+  final TextEditingController  panController = TextEditingController();
+  final TextEditingController  nameController = TextEditingController();
 
+
+  @override
+  void dispose() {
+    panController.dispose();
+    nameController.dispose();
+    super.dispose();
+  }
   String? validatePan(String value) {
     if (value.isEmpty) {
       return 'Pan number is required';
@@ -31,7 +40,22 @@ class PanVerificationProvider with ChangeNotifier {
     }
     return null;
   }
-
+  PanVerificationProvider() {
+    // Auto-fill account holder name on initialization
+    loadAccountHolderName();
+  }
+  Future<void> loadAccountHolderName() async {
+    try {
+      String? savedName = await SharedPrefHelper().get("Name");
+      if (savedName != null && savedName.isNotEmpty) {
+        nameController.text = savedName;
+        print("------${savedName}--------");// Auto-fill
+      }
+    } catch (e) {
+      print('Failed to load account holder name: $e');
+    }
+    notifyListeners(); // Notify the UI
+  }
   String? validateName(String value) {
     if (value.isEmpty) {
       return 'Name is required';
@@ -48,7 +72,7 @@ class PanVerificationProvider with ChangeNotifier {
     return null;
   }
 // API Call to Submit PAN Verification
-  Future<dynamic> submitPanForm(String pan, String name, String dob) async {
+  Future<dynamic> submitPanForm(String pan, String name) async {
     _isLoadingPan = true;
     _hasErrorPan = false;
     _errorMessagePan = '';
@@ -56,19 +80,13 @@ class PanVerificationProvider with ChangeNotifier {
     notifyListeners();
 
     try {
-      // Make API call
-      String result = "PancardVerificatioin^VCQRURD092022^" + pan + "^" + name;
-      print(result);
-      var re = await sha512Digestfinal(result);
-      print("-------" + re);
+
       var mConsumerid = await SharedPrefHelper().get("M_Consumerid")??"";
 
       Map data = {
         "Pancard": pan,
         "PanHolderName": name,
         "M_Consumerid": mConsumerid.toString(),
-        "dob":dob,
-        "EncData": re
       };
       print(data);
       final value = await _api.postRequest(data,AppUrl.PAN_VERIFY);

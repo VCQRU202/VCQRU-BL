@@ -11,6 +11,7 @@ class ImagesAssets{
   static const dashboard_loyality_imgage="loyalty.png";
   static const dashboard_loyalty_image= 'loyalty.png';
   static const dashboard_fake_product_image="fake_product.png";
+  static const refer_image="refer_earn.png";
 
 
   static const dashboard_wallet_image="wallet.png";
@@ -20,6 +21,11 @@ class ImagesAssets{
 
 
   static const dashboard_history_image="history.png";
+  static const blog_image="Blog.png";
+  static const catlog_image="Catalogue.png";
+  static const help_image="Help.png";
+  static const brocher_image="Brochure.png";
+  static const code_check_image="Code_details.png";
 
   static const dashboard_warranty_image="warrenty.png";
   static const dashboard_image_Scanner="assets/scanner.png";
