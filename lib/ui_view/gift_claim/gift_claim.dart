@@ -111,7 +111,7 @@ class _GiftClaimUIState extends State<GiftClaimUI> {
                       var e = double.parse(total_point);
                       var f = double.parse(transferred_point);
                       // wallett = e - f;
-                      points = total_point;
+                      points =e - f;
                     } else {
                       points = "0";
                     }
@@ -129,14 +129,14 @@ class _GiftClaimUIState extends State<GiftClaimUI> {
                               Icon(Icons.card_giftcard, color: Colors.white),
                               SizedBox(width: 8.0),
                               Text(
-                                'Total Point Balance',
+                                'Total Available Balance',
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 16.0),
                               ),
                             ],
                           ),
                           Text(
-                            total_point,
+                            points.toString(),
                             style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 18.0,
@@ -202,7 +202,7 @@ class _GiftClaimUIState extends State<GiftClaimUI> {
                             title: valustate.gift1!.data![index].giftName ?? "",
                             description:
                                 valustate.gift1!.data![index].giftDesc ?? "",
-                            price: valustate.gift1!.data![index].giftValue
+                            price: valustate.gift1!.data![index].giftpoit.toString()
                                 .toString(),
                             provider: valustate,
                             index: index,
@@ -575,7 +575,7 @@ class GiftCard extends StatelessWidget {
                       child: Container(
                         margin: const EdgeInsets.only(left: 10),
                         child: Text(
-                          historyProvider.gift1!.data![index].giftValue
+                          historyProvider.gift1!.data![index].giftpoit
                               .toString(),
                           textAlign: TextAlign.left,
                           style: const TextStyle(
@@ -627,7 +627,8 @@ class GiftCard extends StatelessWidget {
                         text: "click here.",
                         recognizer: TapGestureRecognizer()
                           ..onTap = () {
-                            Navigator.push(context, MaterialPageRoute(builder: (context)=>RaisedTicketScreen()));
+                            Navigator.push(context, MaterialPageRoute(builder:
+                                (context)=>RaisedTicketScreen(ticketType: "Claim",)));
 
                           },// "click here" text
                         style: TextStyle(

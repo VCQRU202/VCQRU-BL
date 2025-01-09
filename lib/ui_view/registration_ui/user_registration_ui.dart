@@ -232,28 +232,22 @@ class _DynamicFormPageState extends State<RegistrationFormPage> {
                                                   .map((field) {
                                                 Widget fieldWidget;
                                                 switch (field['type']) {
-                                                  case 'text':
-                                                    fieldWidget = field[
-                                                                'isPassword'] ==
-                                                            true
-                                                        ? buildPasswordField(
-                                                            field, formProvider)
-                                                        : buildTextField(field,
-                                                            formProvider);
+                                                  case 'text':fieldWidget = field['isPassword'] == true
+                                                        ? buildPasswordField(field, formProvider)
+                                                        : buildTextField(field, formProvider);
                                                     break;
-                                                  case 'dropdown':
-                                                    fieldWidget = buildDropdown(
-                                                        field, formProvider);
-                                                    break;
+                                                  // case 'dropdown':fieldWidget = buildDropdown1(
+                                                  //       field, formProvider,context);
+                                                  //   break;
+                                                  case 'dropdown':fieldWidget = buildDropdown(
+                                                      field, formProvider);
+                                                  break;
                                                   case 'radio':
-                                                    fieldWidget =
-                                                        buildRadioButton(field,
+                                                    fieldWidget = buildRadioButton(field,
                                                             formProvider);
                                                     break;
                                                   case 'DOB':
-                                                    fieldWidget =
-                                                        buildDateField(field,
-                                                            formProvider);
+                                                    fieldWidget = buildDateField(field, formProvider);
                                                     break;
                                                   default:
                                                     fieldWidget =
@@ -329,24 +323,33 @@ class _DynamicFormPageState extends State<RegistrationFormPage> {
                                                             var msg = value1["message"] ?? AppUrl.warningMSG;
                                                             if (status) {
                                                               var data = value1["data"];
-                                                              var userId = value1["data"]["userId"] ?? "";
-                                                              var mId = value1["data"]["m_Consumerid"] ?? "";
-                                                              var mob = value1["data"]["mobileNo"] ?? "";
-                                                              var UserName = value1["data"]["consumerName"] ?? "";
-                                                              if (userId.toString().isNotEmpty && mId.toString().isNotEmpty && mob
-                                                                      .toString().isNotEmpty) {
-                                                                await SharedPrefHelper().save("User_ID", userId);
-                                                                await SharedPrefHelper().save("Verify", true);
-                                                                await SharedPrefHelper().save("Name", UserName);
-                                                                await SharedPrefHelper().save("M_Consumerid", mId.toString());
-                                                                await SharedPrefHelper().save("MobileNumber", mob);
-                                                                provider.resetState();
-                                                                Navigator.pushReplacement(context, MaterialPageRoute(
-                                                                    builder: (context)=>SuccessMsgSuccessfully(msg:msg ,)));
-                                                               // toastRedC(msg);
-                                                              } else {
-                                                                CustomAlert.showMessage(
-                                                                    context,
+                                                              if(data!=null){
+                                                                var userId = value1["data"]["userId"] ?? "";
+                                                                var mId = value1["data"]["m_Consumerid"] ?? "";
+                                                                var mob = value1["data"]["mobileNo"] ?? "";
+                                                                var UserName = value1["data"]["consumerName"] ?? "";
+                                                                bool isKYCRequir = value1["data"]["kycstatus"]??false;
+                                                                if (userId.toString().isNotEmpty && mId.toString().isNotEmpty && mob
+                                                                    .toString().isNotEmpty) {
+                                                                  await SharedPrefHelper().save("User_ID", userId);
+                                                                  await SharedPrefHelper().save("Verify", true);
+                                                                  await SharedPrefHelper().save("Name", UserName);
+                                                                  await SharedPrefHelper().save("M_Consumerid", mId.toString());
+                                                                  await SharedPrefHelper().save("MobileNumber", mob);
+                                                                  provider.resetState();
+                                                                  Navigator.pushReplacement(context, MaterialPageRoute(
+                                                                      builder: (context)=>SuccessMsgSuccessfully(msg:msg ,isKycRequir:isKYCRequir,)));
+                                                                  // toastRedC(msg);
+                                                                } else {
+                                                                  CustomAlert.showMessage(
+                                                                      context,
+                                                                      "",
+                                                                      msg.toString(),
+                                                                      AlertType.info);
+                                                                }
+                                                              }else {
+                                                                CustomAlert
+                                                                    .showMessage(context,
                                                                     "",
                                                                     msg.toString(),
                                                                     AlertType.info);
@@ -425,6 +428,7 @@ class _DynamicFormPageState extends State<RegistrationFormPage> {
     if (isReadOnly) {
       controller.text = widget.mobile; // Set the mobile value
     }
+    bool isPinCodeField = field['label'].toString().endsWith("PinCode");
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -435,6 +439,9 @@ class _DynamicFormPageState extends State<RegistrationFormPage> {
         ),
         TextFormField(
           controller: controller,
+          keyboardType: isPinCodeField
+              ? TextInputType.number // Show numeric keyboard for PinCode
+              : TextInputType.text,
           readOnly: isReadOnly,
           decoration: InputDecoration(
             hintText: field['hint'],
@@ -477,6 +484,12 @@ class _DynamicFormPageState extends State<RegistrationFormPage> {
             // if ((value == null || value.isEmpty) && !field['optional']) {
             //   return 'Please enter ${field['label']}';
             // }
+            if (field['label'].toString().endsWith("Email")) {
+              final RegExp regex = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+              if (!regex.hasMatch(value!)) {
+                return 'Invalid ${field['label1']} format';
+              }
+            }
             return null;
           },
         ),
@@ -542,8 +555,7 @@ class _DynamicFormPageState extends State<RegistrationFormPage> {
               borderRadius: BorderRadius.circular(8), // Add rounded border
             ),
           ),
-          items: (field['options'] as List<dynamic>)
-              .map(
+          items: (field['options'] as List<dynamic>).map(
                 (option) => DropdownMenuItem(
                   value: option.toString(),
                   child: Text(option.toString()),
@@ -557,6 +569,146 @@ class _DynamicFormPageState extends State<RegistrationFormPage> {
             }
             return null;
           },
+        ),
+      ],
+    );
+  }
+
+  Widget buildDropdown1(
+      Map<String, dynamic> field, RegistrationFormProvider provider, BuildContext context) {
+    final dropdownProvider = Provider.of<RegistrationFormProvider>(context);
+    dropdownProvider.selectedValue = dropdownProvider.selectedValue.isNotEmpty
+        ? dropdownProvider.selectedValue
+        : field['hint'] ?? 'Select ${field['label']}';
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Column(
+        children: [
+          // Dropdown Button
+          Container(
+            width: double.infinity,
+            height: 60,
+            decoration: BoxDecoration(
+              color: Colors.black54,
+              borderRadius: BorderRadius.only(
+                topLeft: const Radius.circular(5),
+                topRight: const Radius.circular(5),
+                bottomLeft: Radius.circular(dropdownProvider.isExpanded ? 0 : 5),
+                bottomRight: Radius.circular(dropdownProvider.isExpanded ? 0 : 5),
+              ),
+            ),
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15),
+                child: InkWell(
+                  onTap: () {
+                    FocusScope.of(context).unfocus(); // Close keyboard
+                    dropdownProvider.toggleDropdown(); // Toggle dropdown state
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          dropdownProvider.selectedValue,
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                      Icon(
+                        dropdownProvider.isExpanded
+                            ? Icons.keyboard_arrow_up
+                            : Icons.keyboard_arrow_down,
+                        color: Colors.white,
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+
+          // Dropdown Options
+          if (dropdownProvider.isExpanded)
+            ListView(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              children: (field['options'] as List<dynamic>).map((e) {
+                return InkWell(
+                  onTap: () {
+                    dropdownProvider.selectValue(e.toString()); // Update selected value
+                    provider.updateFormData(field['label'], e.toString()); // Update provider form data
+                  },
+                  child: Container(
+                    height: 40,
+                    margin: EdgeInsets.only(top: 10),
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: dropdownProvider.selectedValue == e.toString()
+                          ? Colors.grey
+                          : Colors.grey.shade300,
+                    ),
+                    child: Center(
+                      child: Text(
+                        e.toString(),
+                        style: Theme.of(context).textTheme.headline2!.copyWith(
+                          fontSize: 14,
+                          color: dropdownProvider.selectedValue == e.toString()
+                              ? Colors.white
+                              : Colors.black,
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              }).toList(),
+            )
+        ],
+      ),
+    );
+  }
+
+  Widget buildDropdown2(
+      Map<String, dynamic> field, RegistrationFormProvider provider) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          field['label1'],
+          textAlign: TextAlign.start,
+          style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+        ),
+        PopupMenuButton<String>(
+          onSelected: (value) {
+            provider.updateFormData(field['label'], value);
+          },
+          itemBuilder: (BuildContext context) {
+            return (field['options'] as List<dynamic>).map<PopupMenuEntry<String>>(
+                  (option) {
+                return PopupMenuItem<String>(
+                  value: option.toString(),
+                  child: Text(option.toString()),
+                );
+              },
+            ).toList();
+          },
+          child: Container(
+            padding: EdgeInsets.only(left: 9, top: 5, bottom: 5),
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Row(
+              children: [
+                Text(
+                  field['hint'] ?? 'Select ${field['label1']}',
+                  style: TextStyle(fontSize: 14, color: Colors.grey),
+                ),
+                Spacer(),
+                Icon(Icons.arrow_drop_down),
+              ],
+            ),
+          ),
         ),
       ],
     );

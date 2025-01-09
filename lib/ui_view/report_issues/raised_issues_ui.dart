@@ -1,13 +1,20 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:vcqru_bl/res/app_colors/Checksun_encry.dart';
+import 'package:vcqru_bl/res/app_colors/app_colors.dart';
 
 import '../../providers_of_app/raised_ticket_provider/raised_ticket_provider.dart';
 
 class RaisedTicketScreen extends StatefulWidget {
+  final String ticketType; // Example required parameter
+
+  // Constructor with required parameter
+  const RaisedTicketScreen({Key? key, required this.ticketType}) : super(key: key);
+
   @override
   State<RaisedTicketScreen> createState() => _RaisedTicketScreenState();
 }
@@ -42,7 +49,8 @@ class _RaisedTicketScreenState extends State<RaisedTicketScreen>
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Raised Ticket'),
+        centerTitle: true,
+        title: Text('Raised Ticket',style: GoogleFonts.roboto(fontSize: 18),),
       ),
       body: Container(
         decoration: BoxDecoration(
@@ -78,29 +86,42 @@ class _RaisedTicketScreenState extends State<RaisedTicketScreen>
                         // Contact Info
                         Row(
                           children: [
-                            Icon(Icons.phone),
+                            Icon(Icons.phone,size: 20,color: AppColor.app_btn_color_inactive,),
                             SizedBox(width: 10),
-                            Text('+91 7353000903', style: TextStyle(fontSize: 16)),
+                            Text('+91 7353000903', style: TextStyle(fontSize: 12,color: AppColor.app_btn_color_inactive)),
                           ],
                         ),
                         SizedBox(height: 15),
                         Row(
                           children: [
-                            Icon(Icons.email),
+                            Icon(Icons.email,size: 20,color: AppColor.app_btn_color_inactive,),
                             SizedBox(width: 10),
-                            Text('supportteam@vcqru.com', style: TextStyle(fontSize: 16)),
+                            Text('supportteam@vcqru.com', style: TextStyle(fontSize: 12,color: AppColor.app_btn_color_inactive)),
                           ],
                         ),
                         SizedBox(height: 15),
 
                         // Text Area for Message
-                        Text("Add your message", style: TextStyle(fontWeight: FontWeight.bold)),
+                        Text("Add your message", style: TextStyle(fontWeight: FontWeight.bold,fontSize: 12)),
                         SizedBox(height: 5),
                         TextField(
                           controller: _issueController,
                           decoration: InputDecoration(
                             hintText: 'Describe your issue in details',
+                            hintStyle: TextStyle(fontSize: 14,color: AppColor.app_btn_color_inactive),
                             border: OutlineInputBorder(),
+                              enabledBorder: OutlineInputBorder( // Border when not focused
+                                borderSide: BorderSide(
+                                  color: Colors.grey, // Set border color
+                                  width: 1.0,        // Border width
+                                ),
+                              ),
+                            focusedBorder: OutlineInputBorder( // Border when focused
+                              borderSide: BorderSide(
+                                color: Colors.black54, // Highlight color when focused
+                                width: 1.0,
+                              ),
+                            ),
                           ),
                           maxLines: 5,
                         ),
@@ -247,15 +268,20 @@ class _RaisedTicketScreenState extends State<RaisedTicketScreen>
                 child: ticketProvider.isLoading
                     ? Center(child: CircularProgressIndicator())
                     : FilledButton(
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(Colors.green)
+                  ),
                   onPressed: () async {
                     if (_issueController.text.isEmpty) {
                       toastRedC("Please description your issue...");
                       return;
                     }
-                    await ticketProvider.submitTicket(_issueController.text);
-
+                    await ticketProvider.submitTicket(_issueController.text,widget.ticketType);
                     if (!ticketProvider.hasError) {
+                      _issueController.clear();
                       _showBottomSheet(context); // Show success animation
+                    }else{
+                      toastRedC(ticketProvider.errorMessage);
                     }
                   },
                   child: Text("Submit"),
@@ -273,6 +299,12 @@ class _RaisedTicketScreenState extends State<RaisedTicketScreen>
     showModalBottomSheet(
       context: context,
       builder: (context) {
+        Future.delayed(Duration(seconds: 2), () {
+          if (Navigator.of(context).canPop()) {
+            Navigator.of(context).pop(); // Close the BottomSheet
+            Navigator.of(context).pop(); // Close the BottomSheet
+          }
+        });
         return Container(
           padding: EdgeInsets.all(20),
           child: Column(
@@ -282,19 +314,21 @@ class _RaisedTicketScreenState extends State<RaisedTicketScreen>
                 child: ScaleTransition(
                   scale: _animation!,
                   child: Container(
+                    width: 50, // Set the width of the circle container to 50
+                    height: 50,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: Colors.green,
                     ),
-                    padding: EdgeInsets.all(20),
-                    child: Icon(Icons.check, size: 50, color: Colors.white),
+                    child: Icon(Icons.check, size: 30, color: Colors.white),
                   ),
                 ),
               ),
               SizedBox(height: 20),
-              Text("Success!", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+              Text("Success!", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               SizedBox(height: 10),
-              Text("Your request has been submitted successfully.", style: TextStyle(fontSize: 16)),
+              Text("Your request has been submitted successfully.",textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 14,color:Color(0xff6c757d) )),
             ],
           ),
         );

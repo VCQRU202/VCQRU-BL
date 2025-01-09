@@ -189,9 +189,9 @@ class SplashScreenProvider with ChangeNotifier{
   }
 
   Future<void> retryFetchBrandsetting() async {
+    notifyListeners();
     await getBrandSettingData();
   }
-
 
 
   List<Map<String, dynamic>> _socialItems = [
@@ -205,7 +205,6 @@ class SplashScreenProvider with ChangeNotifier{
   ];
 
   List<Map<String, dynamic>> get socialItems => _socialItems;
-
   // Example of modifying the list dynamically
   void addSocialItem(Map<String, dynamic> newItem) {
     _socialItems.add(newItem);

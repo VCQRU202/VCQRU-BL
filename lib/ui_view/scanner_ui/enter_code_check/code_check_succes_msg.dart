@@ -180,7 +180,7 @@ class _CodeCheckSuccessScreenState extends State<CodeCheckSuccessScreen> {
                       Center(
                         child: TextButton(
                           onPressed: () {
-                             Navigator.push(context, MaterialPageRoute(builder: (context)=>RaisedTicketScreen()));
+                             Navigator.push(context, MaterialPageRoute(builder: (context)=>RaisedTicketScreen(ticketType: "Code Check Success${widget.code}")));
                           },
                           child: Text(
                             "Issue Report",

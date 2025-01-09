@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+
 import 'package:provider/provider.dart';
 import 'package:vcqru_bl/res/app_colors/Checksun_encry.dart';
 
+import '../../providers_of_app/banner_provider/banner_provider.dart';
 import '../../providers_of_app/dashboard_provider/dashboard_provider.dart';
 import '../../providers_of_app/splash_screen_provider/splash_screen_provider.dart';
 import '../../res/app_colors/app_colors.dart';
@@ -12,12 +15,16 @@ import '../../res/values/values.dart';
 import '../blogs/blogs_ui.dart';
 import '../claim_history_ui/claim_history_ui.dart';
 import '../code_check_history_ui/code_check_history.dart';
+import '../code_details_ui/code_details_ui.dart';
 import '../e_kyc_ui/e_kyc_main_dashboard.dart';
 import '../e_kyc_ui/e_kyc_main_ui.dart';
 import '../gift_claim/gift_claim.dart';
 import '../gift_claim/success_msg_claim.dart';
+import '../help_support_ui/help_support_ui.dart';
 import '../notifications/notification_ui.dart';
+import '../product_catlogs/product_catlog_list.dart';
 import '../profile_ui/profile_user.dart';
+import '../referral_ui/referral_ui_share.dart';
 import '../report/report_main_ui.dart';
 import '../scanner_ui/scanner_ui.dart';
 import '../tset_ui/test_ui.dart';
@@ -25,6 +32,8 @@ import '../wallets/wallet_balance_with_points.dart';
 import 'banner_widget.dart';
 
 import 'package:badges/badges.dart' as badges;
+
+import 'dashboard_component.dart';
 class DashboardApp extends StatefulWidget {
   DashboardApp({super.key});
 
@@ -57,6 +66,7 @@ class _Dashboard_vcqruState extends State<DashboardApp> {
     Provider.of<DashboardProvider>(context, listen: false).fetchWallet();
     Provider.of<DashboardProvider>(context, listen: false).getKYCSTATUS();
     Provider.of<DashboardProvider>(context, listen: false).getProfile();
+    Provider.of<DashboardProvider>(context, listen: false).getDashboardIName();
   }
   Future<void> _refresh() async {
     await Future.delayed(Duration(seconds: 2));
@@ -64,6 +74,7 @@ class _Dashboard_vcqruState extends State<DashboardApp> {
     Provider.of<DashboardProvider>(context, listen: false).fetchWallet();
     Provider.of<DashboardProvider>(context, listen: false).getKYCSTATUS();
     Provider.of<DashboardProvider>(context, listen: false).getProfile();
+    Provider.of<BannerProvider>(context, listen: false).getBanner();
   }
   @override
   Widget build(BuildContext context) {
@@ -115,7 +126,7 @@ class _Dashboard_vcqruState extends State<DashboardApp> {
                 end: Alignment.bottomCenter,
               ),
             ),
-        
+
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -417,7 +428,8 @@ class _Dashboard_vcqruState extends State<DashboardApp> {
                                     var e = double.parse(total_point);
                                     var f = double.parse(transferred_point);
                                    var points1 = e - f;
-                                    points =points1.toString();
+                                  //  points =points1.toString();
+                                    points =points1 % 1 == 0 ? points1.toInt().toString() : points1.toString();
                                   }else{
                                     points="0";
                                   }
@@ -645,246 +657,256 @@ class _Dashboard_vcqruState extends State<DashboardApp> {
                         }
                       }
                     }),
-                Container(
-                  margin: EdgeInsets.all(10),
-                  width: double.infinity,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        flex: 3,
-                        child: Container(
-                          padding: EdgeInsets.only(top: 9,bottom: 9),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.all(Radius.circular(8)),
-                              color: Colors.white
+                DashboardGrid(),
+SizedBox(height: 50,)
+//                 Container(
+//                   margin: EdgeInsets.all(10),
+//                   width: double.infinity,
+//                   child: Row(
+//                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+//                     crossAxisAlignment: CrossAxisAlignment.start,
+//                     children: [
+//                       Expanded(
+//                         flex: 3,
+//                         child: Container(
+//                           padding: EdgeInsets.only(top: 9,bottom: 9),
+//                           decoration: BoxDecoration(
+//                               borderRadius: BorderRadius.all(Radius.circular(8)),
+//                               color: Colors.white
+//
+//                           ),
+//                           child: GestureDetector(
+//                             onTap: (){
+//                               Navigator.push(context,
+//                                   MaterialPageRoute(builder: (context)=>GiftClaimUI()));
+//                             },
+//                             child: icon_contianer_middle(
+//                               image_name: ImagesAssets.dashboard_loyality_imgage,
+//                               colour: Color(0xFF52D5BA),
+//                               title: "Gift",
+//                             ),
+//                           ),
+//                         ),
+//                       ),
+//                       SizedBox(
+//                         width: 10,
+//                       ),
+//                       Expanded(
+//                         flex: 3,
+//                         child: Container(
+//                           padding: EdgeInsets.only(top: 9,bottom: 9),
+//                           decoration: BoxDecoration(
+//                               borderRadius: BorderRadius.all(Radius.circular(8)),
+//                               color: Colors.white
+//
+//                           ),
+//                           child:  GestureDetector(
+//                             onTap: (){
+//                              // toastRedC("Coming Soon");
+//                               print("------click----");
+//                               Navigator.push(context,
+//                                   MaterialPageRoute(builder: (context)=>ReferEarn()));
+//                             },
+//                             child: icon_contianer_middle(
+//                                 title: "Refer & Earn",
+//                                 image_name: ImagesAssets.refer_image,
+//                                 colour: Color(0xFF05AE25)
+//                             ),
+//                           ),
+//                         ),
+//                       ),
+//                       SizedBox(
+//                         width: 10,
+//                       ),
+//                       Expanded(
+//                         flex: 3,
+//                         child: Container(
+//                           decoration: BoxDecoration(
+//                               borderRadius: BorderRadius.all(Radius.circular(8)),
+//                               color: Colors.white
+//
+//                           ),
+//                           padding: EdgeInsets.only(top: 9,bottom: 9),
+//                           child: GestureDetector(
+//                             onTap: (){
+//                              // toastRedC("Coming Soon");
+//                               Navigator.push(context,
+//                                   MaterialPageRoute(builder: (context)=>WalletWithPoints()));
+//
+//                             },
+//                             child: icon_contianer_middle(
+//                                 title: "Wallet",
+//                                 image_name: ImagesAssets.dashboard_wallet_image,
+//                                 colour: Color(0xFF5207F7)
+//                             ),
+//                           ),
+//                         ),
+//                       ),
+//                     ],
+//                   ),),
+//                 Container(
+//                   margin: EdgeInsets.all(10),
+//                   width: double.infinity,
+//                   child: Row(
+//                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+//                     crossAxisAlignment: CrossAxisAlignment.start,
+//                     children: [
+//                       Expanded(
+//                         flex: 3,
+//                         child: Container(
+//                           padding: EdgeInsets.only(top: 9,bottom: 9),
+//                           decoration: BoxDecoration(
+//                               borderRadius: BorderRadius.all(Radius.circular(8)),
+//                             color: Colors.white
+//
+//                           ),
+//                           child: GestureDetector(
+//                             onTap: (){
+//                               Navigator.push(context, MaterialPageRoute(builder: (context)=>HistroyCodeCheck()));
+//                             },
+//                             child: icon_contianer_middle(
+//                               image_name: ImagesAssets.dashboard_history_image,
+//                               colour: Color(0xFFEB3678),
+//                               title: "History",
+//                             ),
+//                           ),
+//                         ),
+//                       ),
+//                       SizedBox(
+//                         width: 10,
+//                       ),
+//                       Expanded(
+//                         flex: 3,
+//                         child: Container(
+//                           padding: EdgeInsets.only(top: 9,bottom: 9),
+//                           decoration: BoxDecoration(
+//                               borderRadius: BorderRadius.all(Radius.circular(8)),
+//                               color: Colors.white
+//
+//                           ),
+//                           child:  GestureDetector(
+//                             onTap: (){
+//                                Navigator.push(context, MaterialPageRoute(builder: (context)=>BlogPage()));
+//                               //toastRedC("Coming Soon");
+//                             },
+//                             child: icon_contianer_middle(
+//                                 title: "Blog",
+//                                 image_name: ImagesAssets.blog_image,
+//                                 colour: Color(0xFFFB6B18)
+//                             ),
+//                           ),
+//                         ),
+//                       ),
+//                       SizedBox(
+//                         width: 10,
+//                       ),
+//                       Expanded(
+//                         flex: 3,
+//                         child: Container(
+//                           decoration: BoxDecoration(
+//                               borderRadius: BorderRadius.all(Radius.circular(8)),
+//                               color: Colors.white
+//
+//                           ),
+//                           padding: EdgeInsets.only(top: 9,bottom: 9),
+//                           child: GestureDetector(
+//                             onTap: (){
+//                              // toastRedC("Coming Soon");
+//                               Navigator.push(context, MaterialPageRoute(builder: (context)=>ProductCatListPage()));
+//
+//                             },
+//                             child: icon_contianer_middle(
+//                                 title: "Catalogue",
+//                                 image_name: ImagesAssets.catlog_image,
+//                                 colour: Color(0xFFED2B2A)),
+//                           ),
+//                         ),
+//                       ),
+//                     ],
+//                   ),),
+// //-----dyanmic icom image ,name
+//                 Container(
+//                   margin: EdgeInsets.only(left: 10,right: 10,bottom: 80),
+//                   child: Row(
+//                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                     children: [
+//                       Expanded(
+//                         flex: 3,
+//                         child: GestureDetector(
+//                           onTap: (){
+//                            // Navigator.push(context, MaterialPageRoute(builder: (context)=>HistroyCodeCheck()));
+//                             Navigator.push(context, MaterialPageRoute(builder: (context)=>HelpSupportUI()));
+//                           },
+//                           child: Container(
+//                             padding: EdgeInsets.only(top: 9,bottom: 9),
+//                             decoration: BoxDecoration(
+//                                 borderRadius: BorderRadius.all(Radius.circular(8)),
+//                                 color: Colors.white
+//
+//                             ),
+//                             child: icon_contianer_middle(
+//                                 title:"Help",
+//                                 image_name: ImagesAssets.help_image,
+//                                 colour: Color(0xFFFF1515)),
+//                           ),
+//                         ),
+//                       ),
+//                       SizedBox(
+//                         width: 10,
+//                       ),
+//                       Expanded(
+//                         flex: 3,
+//                         child: Container(
+//                           padding: EdgeInsets.only(top: 9,bottom: 9),
+//                           decoration: BoxDecoration(
+//                               borderRadius: BorderRadius.all(Radius.circular(8)),
+//                               color: Colors.white
+//
+//                           ),
+//                           child:  GestureDetector(
+//                             onTap: (){
+//                               // Navigator.push(context,
+//                               //     MaterialPageRoute(builder: (context)=>GiftClaimUI()));
+//
+//                                toastRedC("Coming Soon");
+//                             },
+//                             child: icon_contianer_middle(
+//                                 title: "Brochure",
+//                                 image_name: ImagesAssets.brocher_image,
+//                                 colour: Color(0xFFED2B2A)),
+//                           ),
+//                         ),
+//                       ),
+//                       SizedBox(
+//                         width: 10,
+//                       ),
+//                       Expanded(
+//                         flex: 3,
+//                         child: Container(
+//                           padding: EdgeInsets.only(top: 9,bottom: 9),
+//                           decoration: BoxDecoration(
+//                               borderRadius: BorderRadius.all(Radius.circular(8)),
+//                               color: Colors.white
+//
+//                           ),
+//                           child:  GestureDetector(
+//                             onTap: (){
+//                               Navigator.push(context,
+//                                   MaterialPageRoute(builder: (context)=>CodeDetail()));
+//                              // toastRedC("Coming Soon");
+//                             },
+//                             child: icon_contianer_middle(
+//                               title: "Code Details",
+//                               image_name: ImagesAssets.code_check_image,
+//                               colour: Color(0xFFFB6B18),
+//                             ),
+//                           ),
+//                         ),
+//                       ),
+//                     ],
+//                   ),
+//                 ),
 
-                          ),
-                          child: GestureDetector(
-                            onTap: (){
-                              Navigator.push(context,
-                                  MaterialPageRoute(builder: (context)=>GiftClaimUI()));
-                            },
-                            child: icon_contianer_middle(
-                              image_name: ImagesAssets.dashboard_loyality_imgage,
-                              colour: Color(0xFF52D5BA),
-                              title: "Gift",
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Expanded(
-                        flex: 3,
-                        child: Container(
-                          padding: EdgeInsets.only(top: 9,bottom: 9),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.all(Radius.circular(8)),
-                              color: Colors.white
-
-                          ),
-                          child:  GestureDetector(
-                            onTap: (){
-                              toastRedC("Coming Soon");
-                            },
-                            child: icon_contianer_middle(
-                                title: "Refer & Earn",
-                                image_name: ImagesAssets.refer_image,
-                                colour: Color(0xFF05AE25)
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Expanded(
-                        flex: 3,
-                        child: Container(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.all(Radius.circular(8)),
-                              color: Colors.white
-
-                          ),
-                          padding: EdgeInsets.only(top: 9,bottom: 9),
-                          child: GestureDetector(
-                            onTap: (){
-                             // toastRedC("Coming Soon");
-                              Navigator.push(context,
-                                  MaterialPageRoute(builder: (context)=>WalletWithPoints()));
-
-                            },
-                            child: icon_contianer_middle(
-                                title: "Wallet",
-                                image_name: ImagesAssets.dashboard_wallet_image,
-                                colour: Color(0xFF5207F7)
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),),
-                Container(
-                  margin: EdgeInsets.all(10),
-                  width: double.infinity,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        flex: 3,
-                        child: Container(
-                          padding: EdgeInsets.only(top: 9,bottom: 9),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.all(Radius.circular(8)),
-                            color: Colors.white
-        
-                          ),
-                          child: GestureDetector(
-                            onTap: (){
-                              Navigator.push(context, MaterialPageRoute(builder: (context)=>HistroyCodeCheck()));
-                            },
-                            child: icon_contianer_middle(
-                              image_name: ImagesAssets.dashboard_history_image,
-                              colour: Color(0xFFEB3678),
-                              title: "History",
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Expanded(
-                        flex: 3,
-                        child: Container(
-                          padding: EdgeInsets.only(top: 9,bottom: 9),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.all(Radius.circular(8)),
-                              color: Colors.white
-        
-                          ),
-                          child:  GestureDetector(
-                            onTap: (){
-                               Navigator.push(context, MaterialPageRoute(builder: (context)=>BlogPage()));
-                              //toastRedC("Coming Soon");
-                            },
-                            child: icon_contianer_middle(
-                                title: "Blog",
-                                image_name: ImagesAssets.blog_image,
-                                colour: Color(0xFFFB6B18)
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Expanded(
-                        flex: 3,
-                        child: Container(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.all(Radius.circular(8)),
-                              color: Colors.white
-        
-                          ),
-                          padding: EdgeInsets.only(top: 9,bottom: 9),
-                          child: GestureDetector(
-                            onTap: (){
-                              toastRedC("Coming Soon");
-                            },
-                            child: icon_contianer_middle(
-                                title: "Catalogue",
-                                image_name: ImagesAssets.catlog_image,
-                                colour: Color(0xFFED2B2A)),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),),
-                Container(
-                  margin: EdgeInsets.only(left: 10,right: 10,bottom: 80),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        flex: 3,
-                        child: GestureDetector(
-                          onTap: (){
-                           // Navigator.push(context, MaterialPageRoute(builder: (context)=>HistroyCodeCheck()));
-                          },
-                          child: Container(
-                            padding: EdgeInsets.only(top: 9,bottom: 9),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.all(Radius.circular(8)),
-                                color: Colors.white
-
-                            ),
-                            child: icon_contianer_middle(
-                                title:"Help",
-                                image_name: ImagesAssets.help_image,
-                                colour: Color(0xFFFF1515)),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Expanded(
-                        flex: 3,
-                        child: Container(
-                          padding: EdgeInsets.only(top: 9,bottom: 9),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.all(Radius.circular(8)),
-                              color: Colors.white
-
-                          ),
-                          child:  GestureDetector(
-                            onTap: (){
-                              // Navigator.push(context,
-                              //     MaterialPageRoute(builder: (context)=>GiftClaimUI()));
-
-                              // toastRedC("Coming Soon");
-                            },
-                            child: icon_contianer_middle(
-                                title: "Brochure",
-                                image_name: ImagesAssets.brocher_image,
-                                colour: Color(0xFFED2B2A)),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Expanded(
-                        flex: 3,
-                        child: Container(
-                          padding: EdgeInsets.only(top: 9,bottom: 9),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.all(Radius.circular(8)),
-                              color: Colors.white
-
-                          ),
-                          child:  GestureDetector(
-                            onTap: (){
-                              // Navigator.push(context,
-                              //     MaterialPageRoute(builder: (context)=>ClaimScreen()));
-                              toastRedC("Coming Soon");
-                            },
-                            child: icon_contianer_middle(
-                              title: "Code Details",
-                              image_name: ImagesAssets.code_check_image,
-                              colour: Color(0xFFFB6B18),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
               ],
             ),
           ),

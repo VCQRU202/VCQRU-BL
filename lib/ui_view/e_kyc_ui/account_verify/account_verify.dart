@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 
 import '../../../providers_of_app/ekyc_providers/account_verify_provider/account_verify_provider.dart';
 import '../../../providers_of_app/ekyc_providers/kyc_main_page_provider.dart';
+import '../../../providers_of_app/splash_screen_provider/splash_screen_provider.dart';
 import '../../../res/api_url/api_url.dart';
 import '../../../res/app_colors/Checksun_encry.dart';
 import '../../../res/components/circle_loader.dart';
@@ -12,6 +13,7 @@ import '../../../res/custom_alert_msg/custom_alert_msg.dart';
 import '../e_kyc_main_ui.dart';
 import '../pancard_verify/pancard_verify_ui.dart';
 class AccountVerifyUI extends StatefulWidget {
+
   AccountVerifyUI({super.key});
 
   @override
@@ -30,8 +32,10 @@ class _AadharVerifyUIState extends State<AccountVerifyUI> {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<AccountVerifyProvider>(context);
+    final splashProvider = Provider.of<SplashScreenProvider>(context, listen: false);
     return WillPopScope(
       onWillPop: ()async{
+        provider.clearData();
         Navigator.pushReplacement(context,
             MaterialPageRoute(builder: (context)=>KycMainScreen()));
         return true;
@@ -53,15 +57,19 @@ class _AadharVerifyUIState extends State<AccountVerifyUI> {
                   child: ListView(
                 children: [
                   // Back arrow
-                  Row(
-                    children: [
-                      IconButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        icon: Icon(Icons.arrow_back, color: Colors.black),
-                      ),
-                    ],
+                  Container(
+                    color: splashProvider.color_bg,
+                    child: Row(
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            provider.clearData();
+                            Navigator.pop(context);
+                          },
+                          icon: Icon(Icons.arrow_back, color: Colors.white),
+                        ),
+                      ],
+                    ),
                   ),
                   SizedBox(height: 24),
                   // Form container
@@ -104,7 +112,7 @@ class _AadharVerifyUIState extends State<AccountVerifyUI> {
                           ),
                           SizedBox(height: 20),
                           Text("Account Number",style: TextStyle(fontSize: 12,fontWeight: FontWeight.w500),),
-                          buildTextField("Account Number", provider.accountNumberController,1),
+                          buildTextField("Account Number", provider.accountNumberController,4),
                           SizedBox(height: 16),
                           Text("Re-enter Account Number",style: TextStyle(fontSize: 12),),
                           buildTextField("Re-enter Account Number", provider.reenterAccountNumberController,1),
@@ -141,6 +149,27 @@ class _AadharVerifyUIState extends State<AccountVerifyUI> {
                         onPressed: () async {
                           if (_formKey.currentState!.validate()) {
                             // If the form is valid, you can proceed with further actions
+                            String accountNumber = provider.accountNumberController.text.trim();
+                            String reenterAccountNumber = provider.reenterAccountNumberController.text.trim();
+                            // Check for empty or null values first
+                            if (accountNumber.isEmpty || reenterAccountNumber.isEmpty) {
+                              CustomAlert.showMessage(
+                                  context, "", "Account number fields cannot be empty.", AlertType.info);
+                              return;
+                            }
+
+// Check for minimum length (e.g., 10 digits - adjust as needed)
+                            if (accountNumber.length < 10 || reenterAccountNumber.length < 10) {
+                              CustomAlert.showMessage(
+                                  context, "", "Account number must be at least 10 digits.", AlertType.info);
+                              return;
+                            }
+                            // Finally, check if both account numbers match
+                            if (accountNumber != reenterAccountNumber) {
+                              CustomAlert.showMessage(
+                                  context, "", "Account number and Re-enter account number do not match.", AlertType.info);
+                              return;
+                            }
                             presentBottomProgress(context);
                             var value1 = await provider.verifyAccount(
                               account: provider.accountNumberController.text,
@@ -172,7 +201,7 @@ class _AadharVerifyUIState extends State<AccountVerifyUI> {
                         },
                         style: ElevatedButton.styleFrom(
                           padding: EdgeInsets.symmetric(vertical: 1),
-                          backgroundColor: Colors.green,
+                          backgroundColor: splashProvider.color_bg,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
                           ),
@@ -296,13 +325,11 @@ class _AadharVerifyUIState extends State<AccountVerifyUI> {
   Widget buildTextField(String label, TextEditingController controller, int type,{Function(String)? onChanged}) {
     return TextFormField(
       controller: controller,
-      keyboardType: type == 1
-          ? TextInputType.number
-          : type == 2
-          ? TextInputType.text
-          : TextInputType.text,
+      obscureText:type == 4?true:false,
+      keyboardType: type == 1 ? TextInputType.number: type == 4 ? TextInputType.number : type == 2 ? TextInputType.text : TextInputType.text,
       inputFormatters: type == 1
-          ? [FilteringTextInputFormatter.digitsOnly,LengthLimitingTextInputFormatter(18)] // Only numbers allowed
+          ? [FilteringTextInputFormatter.digitsOnly,LengthLimitingTextInputFormatter(18)]:
+        type==4?[FilteringTextInputFormatter.digitsOnly,LengthLimitingTextInputFormatter(18)]// Only numbers allowed
           : type == 3
           ? [
             UpperCaseTextFormatter(),

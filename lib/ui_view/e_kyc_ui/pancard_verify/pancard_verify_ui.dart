@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../../../providers_of_app/ekyc_providers/kyc_main_page_provider.dart';
 import '../../../providers_of_app/ekyc_providers/pancard_verify_provider/pancard_verify_provider.dart';
+import '../../../providers_of_app/splash_screen_provider/splash_screen_provider.dart';
 import '../../../res/api_url/api_url.dart';
 import '../../../res/app_colors/Checksun_encry.dart';
 import '../../../res/app_colors/app_colors.dart';
@@ -30,9 +31,10 @@ class _PanCardVerifyUIState extends State<PanCardVerifyUI> {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<PanVerificationProvider>(context);
+    final splashProvider = Provider.of<SplashScreenProvider>(context, listen: false);
     return WillPopScope(
       onWillPop: () async {
-        provider.dispose();
+        provider.clearData();
         return true;
       },
       child: Scaffold(
@@ -51,15 +53,19 @@ class _PanCardVerifyUIState extends State<PanCardVerifyUI> {
                   child: ListView(
                     children: [
                       // Back arrow
-                      Row(
-                        children: [
-                          IconButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            icon: Icon(Icons.arrow_back, color: Colors.black),
-                          ),
-                        ],
+                      Container(
+                        color: splashProvider.color_bg,
+                        child: Row(
+                          children: [
+                            IconButton(
+                              onPressed: () {
+                                provider.clearData();
+                                Navigator.pop(context);
+                              },
+                              icon: Icon(Icons.arrow_back, color: Colors.white),
+                            ),
+                          ],
+                        ),
                       ),
                       SizedBox(height: 24),
                       // Form container
@@ -226,7 +232,7 @@ class _PanCardVerifyUIState extends State<PanCardVerifyUI> {
                           },
                           style: ElevatedButton.styleFrom(
                             padding: EdgeInsets.symmetric(vertical: 1),
-                            backgroundColor: Colors.green,
+                            backgroundColor: splashProvider.color_bg,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
                             ),

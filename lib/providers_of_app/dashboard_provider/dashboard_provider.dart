@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../data/repositorys/repositories_app.dart';
+import '../../models/dashboard/dashboard_dyamic_model.dart';
 import '../../models/dashboard/dashboard_model.dart';
 import '../../models/profile/profile_model.dart';
 import '../../res/api_url/api_url.dart';
@@ -44,6 +45,16 @@ class DashboardProvider with ChangeNotifier{
   ProfileData? get profile => _profile;
   String _kycStatu="Pending";
   String get kycStatus=>_kycStatu;
+
+  DashboardDynamicModel? _dashdynaData;
+  bool _isLoading = true;
+  bool _hasError = false;
+  String _errorMessage = '';
+
+  DashboardDynamicModel? get dashdynaData => _dashdynaData;
+  bool get isLoading => _isLoading;
+  bool get hasError => _hasError;
+  String get errorMessage => _errorMessage;
 
   DateTime _currentDate = DateTime.now();
 
@@ -212,6 +223,48 @@ class DashboardProvider with ChangeNotifier{
   Future<void> retryProfile() async {
     notifyListeners();
     await getProfile();
-
   }
+
+
+  Future<void> getDashboardIName() async {
+    _isLoading = true;
+    _hasError = false;
+    Map requestData = {
+      "Comp_ID":AppUrl.Comp_ID,
+    };
+    print(requestData);
+    try {
+      final response = await _api.postRequest(requestData, AppUrl.DASHBOARD_NAME_IMAGE);
+      print(response);
+      print("-------");
+      print(response['success']);
+      if (response['success']) {
+        print("-----------true---");
+        _isLoading = true;
+        _hasError = false;
+        _dashdynaData=DashboardDynamicModel.fromJson(response);
+      } else {
+        print("-----------false---");
+        _isLoading = false;
+        _hasError = true;
+        _errorMessage =response['message'];
+        notifyListeners();
+      }
+    } catch (error) {
+      _isLoading = false;
+      _hasError = true;
+      _errorMessage = "'Something Went Wrong' Please Try Again Later1";
+      print('Failed to load profile');
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+  Future<void> retryDashboardIName() async {
+    _isLoading = true;
+    _hasError = false;
+    notifyListeners();
+    await getDashboardIName();
+  }
+
 }

@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:vcqru_bl/ui_view/e_kyc_ui/adhar_card/otp_screen_adhar.dart';
 
 import '../../../providers_of_app/ekyc_providers/aadhar_verify_provider/aadhar_verify_provider.dart';
+import '../../../providers_of_app/splash_screen_provider/splash_screen_provider.dart';
 import '../../../res/api_url/api_url.dart';
 import '../../../res/app_colors/Checksun_encry.dart';
 import '../../../res/app_colors/app_colors.dart';
@@ -21,9 +22,11 @@ class _AdharCardVerifyUIState extends State<AadharVerifyUI> {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<AadharVerifyProvider>(context);
+    final splashProvider = Provider.of<SplashScreenProvider>(context, listen: false);
     return WillPopScope(
       onWillPop: () async {
-        provider.dispose();
+        provider.clearData();
+       // provider.dispose();
         return true;
       },
       child: Scaffold(
@@ -42,15 +45,19 @@ class _AdharCardVerifyUIState extends State<AadharVerifyUI> {
               Expanded(child: ListView(
                 children: [
                   // Back arrow
-                  Row(
-                    children: [
-                      IconButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        icon: Icon(Icons.arrow_back, color: Colors.black),
-                      ),
-                    ],
+                  Container(
+                    color: splashProvider.color_bg,
+                    child: Row(
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            provider.clearData();
+                            Navigator.pop(context);
+                          },
+                          icon: Icon(Icons.arrow_back, color: Colors.white),
+                        ),
+                      ],
+                    ),
                   ),
                   SizedBox(height: 24),
                   // Form container
@@ -180,7 +187,7 @@ class _AdharCardVerifyUIState extends State<AadharVerifyUI> {
                         },
                         style: ElevatedButton.styleFrom(
                           padding: EdgeInsets.symmetric(vertical: 1),
-                          backgroundColor: Colors.green,
+                          backgroundColor: splashProvider.color_bg,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
                           ),

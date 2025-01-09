@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:vcqru_bl/ui_view/dashboard_ui/dashboard_ui.dart';
 
 import '../../providers_of_app/enter_mobile_provider/enter_mobile_provider.dart';
@@ -283,60 +284,286 @@ class OtpBottomSheet extends StatelessWidget {
                   flex: 3,
                   child: Column(
                     children: [
+
                       Expanded(
-                        flex: 0,
-                        child: Container(
-                          // This can hold other UI elements above the GridView
-                          color: Colors.indigo,
-                        ),
-                      ),
-                      Expanded(
-                        flex: 9, // Adjust this flex value to control the size of the grid area
-                        child: Container(
-                          child: GridView.builder(
-                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 4, // Number of columns set to 4
-                                crossAxisSpacing: 0, // Spacing between columns
-                                mainAxisSpacing: 0,
-                                childAspectRatio: 1// Spacing between rows
-                            ),
-                            itemCount: splashProvider.socialItems.length,
-                            itemBuilder: (context, index) {
-                              final item = splashProvider.socialItems[index];
-                              return GestureDetector(
-                                onTap: () {
-                                  // Example: Show a snackbar with the selected item's label
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text("Clicked: ${item['label']}")),
+                        flex: 10, // Adjust this flex value to control the size of the grid area
+                        child: Consumer<EnterMobileProvider>(
+                            builder: (context, valustate, child) {
+                              if (valustate.isLoading_social) {
+                                return Center(
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Text("Please Wait"),
+                                        CircularProgressIndicator(),
+                                      ],
+                                    ));
+                              } else {
+                                if (valustate.hasError_social) {
+                                  return Center(
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        Text(' ${valustate.errorMessage_social}'),
+                                        SizedBox(height: 20),
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            valustate.retrygetSocialMedia();
+                                          },
+                                          child: Text('Retry'),
+                                        ),
+                                      ],
+                                    ),
                                   );
-                                },
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    CircleAvatar(
-                                      backgroundColor: Colors.white,
-                                      radius: 20, // Circle size
-                                      child: Icon(
-                                        item['icon'],
-                                        color: Colors.purple, // Icon color
-                                        size: 22, // Icon size
+                                }
+                                // else {
+                                //   String req=valustate.socialModel_social!.data!.socialMediaRequired??"false";
+                                //   print("-----requesr----${req}--");
+                                //   final List<Map<String, dynamic>> filteredSocialItems = valustate.socialItems.where((item) {
+                                //     return item['isEnabled']?.toString().toLowerCase() == "true"; // Filter by 'isEnabled' set to 'true'
+                                //   }).toList();
+                                //   return Visibility(
+                                //     visible: req=="true",
+                                //     child: Container(
+                                //       width: double.infinity,
+                                //       color: Colors.blue,
+                                //       margin: EdgeInsets.all(10),
+                                //       child:Container(
+                                //         child: GridView.builder(
+                                //           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                //               crossAxisCount: 4, // Number of columns set to 4
+                                //               crossAxisSpacing: 0, // Spacing between columns
+                                //               mainAxisSpacing: 0,
+                                //               childAspectRatio: 1// Spacing between rows
+                                //           ),
+                                //           itemCount: filteredSocialItems.length,
+                                //           scrollDirection: Axis.vertical,
+                                //           itemBuilder: (context, index) {
+                                //             final item = filteredSocialItems[index];
+                                //             print("-----ener Length---${filteredSocialItems.length}");
+                                //             print("-----ener Length---${item['isEnabled']}--${item['label']}");
+                                //             return Visibility(
+                                //               visible: filteredSocialItems.isNotEmpty,
+                                //               child: GestureDetector(
+                                //                 onTap: () {
+                                //                   // Example: Show a snackbar with the selected item's label
+                                //                   // ScaffoldMessenger.of(context).showSnackBar(
+                                //                   //   SnackBar(content: Text("Clicked: ${item['label']}")),
+                                //                   // );
+                                //                   if (item['label'] == "Call") {
+                                //                     // Handle call (for example, make a phone call if a valid number exists)
+                                //                     if (item['url'].isNotEmpty) {
+                                //                       _launchPhoneCall(item['url']);
+                                //                     }
+                                //                   } else if (item['label'] == "Mail") {
+                                //                     // Handle mail functionality (no URL here, so just call without URL)
+                                //                     if (item['url'].isNotEmpty) {
+                                //                       _launchEmail(item['url']);
+                                //                     }
+                                //                   } else if (item['label'] == "Facebook") {
+                                //                     // Handle Facebook URL
+                                //                     if (item['url'].isNotEmpty) {
+                                //                       _launchURLScial(item['url']);
+                                //                     }
+                                //                   } else if (item['label'] == "Twitter") {
+                                //                     // Handle Twitter URL
+                                //                     if (item['url'].isNotEmpty) {
+                                //                       _launchURLScial(item['url']);
+                                //                     }
+                                //                   } else if (item['label'] == "Linkedin") {
+                                //                     // Handle LinkedIn URL
+                                //                     if (item['url'].isNotEmpty) {
+                                //                       _launchURLScial(item['url']);
+                                //                     }
+                                //                   } else if (item['label'] == "Youtube") {
+                                //                     // Handle YouTube URL
+                                //                     if (item['url'].isNotEmpty) {
+                                //                       _launchURLScial(item['url']);
+                                //                     }
+                                //                   } else if (item['label'] == "Instagram") {
+                                //                     // Handle Instagram URL
+                                //                     if (item['url'].isNotEmpty) {
+                                //                       _launchURLScial(item['url']);
+                                //                     }
+                                //                   } else if (item['label'] == "Contact") {
+                                //                     // Handle Contact URL
+                                //                     if (item['url'].isNotEmpty) {
+                                //                       _launchURLScial(item['url']);
+                                //                     }
+                                //                   } else {
+                                //                     // Default case: If the URL exists and is not empty, launch it
+                                //                     if (item['url'].isNotEmpty) {
+                                //                       _launchURLScial(item['url']);
+                                //                     }
+                                //                   }
+                                //                 },
+                                //                 child: Container(
+                                //                   color: Colors.yellow,
+                                //                   width: double.infinity,
+                                //                   alignment: Alignment.center,
+                                //                   child: Column(
+                                //                     mainAxisSize: MainAxisSize.min,
+                                //                                                                   crossAxisAlignment: CrossAxisAlignment.center,
+                                //                   //   mainAxisAlignment: MainAxisAlignment.center,
+                                //
+                                //
+                                //                     children: [
+                                //                       CircleAvatar(
+                                //                         backgroundColor: Colors.white,
+                                //                         radius: 20, // Circle size
+                                //                         child: Icon(
+                                //                           item['icon'],
+                                //                           color: Colors.purple, // Icon color
+                                //                           size: 22, // Icon size
+                                //                         ),
+                                //                       ),
+                                //                       SizedBox(height: 3), // Spacing between icon and label
+                                //                       Text(
+                                //                         item['label'],
+                                //                         style: TextStyle(
+                                //                           color: Colors.white,
+                                //                           fontSize: 12,
+                                //                         ),
+                                //                         textAlign: TextAlign.center,
+                                //                       ),
+                                //                     ],
+                                //                   ),
+                                //                 ),
+                                //               ),
+                                //             );
+                                //           },
+                                //         ),
+                                //       ),
+                                //     ),
+                                //   );
+                                // }
+
+
+                                else {
+                                  String req = valustate.socialModel_social!.data!.socialMediaRequired ?? "false";
+                                  print("-----request----${req}--");
+
+                                  // Filter social items by 'isEnabled' set to 'true'
+                                  final List<Map<String, dynamic>> filteredSocialItems = valustate.socialItems.where((item) {
+                                    return item['isEnabled']?.toString().toLowerCase() == "true";
+                                  }).toList();
+
+                                  // Set crossAxisCount based on the number of items
+                                  int crossAxisCount = (filteredSocialItems.length < 4) ? filteredSocialItems.length : 4;
+
+                                  return Visibility(
+                                    visible: req == "true",
+                                    child: Container(
+                                      width: double.infinity,
+                                      //color: Colors.blue,
+                                      margin: EdgeInsets.only(left: 10,right: 10),
+                                      child: GridView.builder(
+                                        // +===>> Set up grid layout with dynamic crossAxisCount
+                                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                          crossAxisCount: crossAxisCount, // Number of columns set dynamically
+                                          crossAxisSpacing: 0, // Spacing between columns
+                                          mainAxisSpacing: 0, // Spacing between rows
+                                          childAspectRatio: 1,
+                                        ),
+                                        itemCount: filteredSocialItems.length,
+                                        scrollDirection: Axis.vertical,
+                                        itemBuilder: (context, index) {
+                                          final item = filteredSocialItems[index];
+                                          print("-----item Length---${filteredSocialItems.length}");
+                                          print("-----item Length---${item['isEnabled']}--${item['label']}");
+
+                                          // Display each social media item
+                                          return Visibility(
+                                            visible: filteredSocialItems.isNotEmpty,
+                                            child: Container(
+                                              width: double.infinity,
+                                              child: GestureDetector(
+                                                onTap: () {
+                                                  // Handle item tap
+                                                  if (item['label'] == "Call") {
+                                                    // Handle call
+                                                    if (item['url'].isNotEmpty) {
+                                                      _launchPhoneCall(item['url']);
+                                                    }
+                                                  } else if (item['label'] == "Mail") {
+                                                    // Handle mail
+                                                    if (item['url'].isNotEmpty) {
+                                                      _launchEmail(item['url']);
+                                                    }
+                                                  } else if (item['label'] == "Facebook") {
+                                                    // Handle Facebook URL
+                                                    if (item['url'].isNotEmpty) {
+                                                      _launchURLScial(item['url']);
+                                                    }
+                                                  } else if (item['label'] == "Twitter") {
+                                                    // Handle Twitter URL
+                                                    if (item['url'].isNotEmpty) {
+                                                      _launchURLScial(item['url']);
+                                                    }
+                                                  } else if (item['label'] == "Linkedin") {
+                                                    // Handle LinkedIn URL
+                                                    if (item['url'].isNotEmpty) {
+                                                      _launchURLScial(item['url']);
+                                                    }
+                                                  } else if (item['label'] == "Youtube") {
+                                                    // Handle YouTube URL
+                                                    if (item['url'].isNotEmpty) {
+                                                      _launchURLScial(item['url']);
+                                                    }
+                                                  } else if (item['label'] == "Instagram") {
+                                                    // Handle Instagram URL
+                                                    if (item['url'].isNotEmpty) {
+                                                      _launchURLScial(item['url']);
+                                                    }
+                                                  } else if (item['label'] == "Contact") {
+                                                    // Handle Contact URL
+                                                    if (item['url'].isNotEmpty) {
+                                                      _launchURLScial(item['url']);
+                                                    }
+                                                  } else {
+                                                    // Default case: Handle other URLs
+                                                    if (item['url'].isNotEmpty) {
+                                                      _launchURLScial(item['url']);
+                                                    }
+                                                  }
+                                                },
+                                                child: Column(
+                                                  mainAxisSize: MainAxisSize.min,
+                                                  // crossAxisAlignment: CrossAxisAlignment.center,
+                                                  children: [
+                                                    CircleAvatar(
+                                                      backgroundColor: Colors.white,
+                                                      radius: 20, // Circle size
+                                                      child: Icon(
+                                                        item['icon'],
+                                                        color: Colors.purple, // Icon color
+                                                        size: 22, // Icon size
+                                                      ),
+                                                    ),
+                                                    SizedBox(height: 3), // Spacing between icon and label
+                                                    Text(
+                                                      item['label'],
+                                                      style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 12,
+                                                      ),
+                                                      textAlign: TextAlign.center,
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          );
+                                        },
                                       ),
                                     ),
-                                    SizedBox(height: 3), // Spacing between icon and label
-                                    Text(
-                                      item['label'],
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 12,
-                                      ),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ],
-                                ),
-                              );
-                            },
-                          ),
-                        ),
+                                  );
+                                }
+
+
+                              }
+                            }),
                       ),
                     ],
                   ))
@@ -345,5 +572,34 @@ class OtpBottomSheet extends StatelessWidget {
         ),
       ),
     );
+  }
+  void _launchURLScial(String urlString) async {
+    final Uri url = Uri.parse(urlString);
+    print('Trying to launch $urlString');
+    if (await canLaunchUrl(url)) {
+      print('Launching $urlString');
+      await launchUrl(url, mode: LaunchMode.platformDefault);
+    } else {
+      print('Could not launch $urlString');
+      throw 'Could not launch $urlString';
+    }
+  }
+  void _launchEmail(String emailAddress) async {
+    final url = 'mailto:$emailAddress';
+    if (await canLaunch(url)) {
+      await launch(url);  // Launch the email client with the email address
+    } else {
+      print("Could not launch email app");
+      // Handle failure case here, e.g., show an error message
+    }
+  }
+  void _launchPhoneCall(String phoneNumber) async {
+    final url = 'tel:$phoneNumber';
+    if (await canLaunch(url)) {
+      await launch(url);  // Launch the phone dialer
+    } else {
+      print("Could not launch phone dialer");
+      // Handle failure case here, e.g., show an error message
+    }
   }
 }

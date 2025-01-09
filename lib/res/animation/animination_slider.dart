@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:vcqru_bl/res/values/values.dart';
 
+import '../../providers_of_app/splash_screen_provider/splash_screen_provider.dart';
 import '../app_colors/app_colors.dart';
 
 class AnimatedBullet extends StatelessWidget {
@@ -10,6 +12,7 @@ class AnimatedBullet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final splashProvider = Provider.of<SplashScreenProvider>(context, listen: false);
     return AnimatedOpacity(
       duration: Duration(milliseconds: 300),
       opacity: isSelected ? 1.0 : 0.5,
@@ -22,9 +25,9 @@ class AnimatedBullet extends StatelessWidget {
           shape: BoxShape.circle,
           border: Border.all(
             width: 1,
-            color: AppColor.app_btn_color//                   <--- border width here
+            color: Colors.white//                   <--- border width here
           ),
-          color: isSelected ? AppColor.app_btn_color : Colors.white,
+          color: isSelected ? splashProvider.color_bg : Colors.white,
         ),
       ),
     );

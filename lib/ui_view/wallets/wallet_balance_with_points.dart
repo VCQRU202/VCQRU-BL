@@ -959,7 +959,7 @@ class _WalletWithPointsState extends State<WalletWithPoints> {
                         text: "click here.",
                         recognizer: TapGestureRecognizer()
                           ..onTap = () {
-                            Navigator.push(context, MaterialPageRoute(builder: (context)=>RaisedTicketScreen()));
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=>RaisedTicketScreen(ticketType: "Wallet",)));
 
                           },// "click here" text
                         style: TextStyle(
@@ -977,7 +977,7 @@ class _WalletWithPointsState extends State<WalletWithPoints> {
                 children: [
                   GestureDetector(
                       onTap: (){
-                        Navigator.push(context, MaterialPageRoute(builder: (context)=>RaisedTicketScreen()));
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=>RaisedTicketScreen(ticketType: "Wallet")));
                       },
                       child: Text("Issue Report",style: GoogleFonts.roboto(color: AppColor.app_btn_color),)
                   ),

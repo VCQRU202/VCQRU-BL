@@ -46,7 +46,7 @@ class RaisedTicketProvider with ChangeNotifier{
     notifyListeners();
   }
 
-  Future<void> submitTicket(String description) async {
+  Future<void> submitTicket(String description,String cate) async {
     _isLoading = true;
     _hasError = false;
     notifyListeners();
@@ -59,6 +59,7 @@ class RaisedTicketProvider with ChangeNotifier{
         'Description': description,
         'Comp_id': compId,
         'M_Consumerid': consumerId.toString(),
+        'Category': cate.toString(),
       };
 
       List<File> files = _images.map((e) => File(e!.path)).toList();

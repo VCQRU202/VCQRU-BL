@@ -5,6 +5,16 @@ import 'package:vcqru_bl/ui_view/claim_history_ui/claim_history_ui.dart';
 import 'package:vcqru_bl/ui_view/e_kyc_ui/e_kyc_main_ui.dart';
 
 import '../../providers_of_app/notification_provider/notification_provider.dart';
+import '../../providers_of_app/splash_screen_provider/splash_screen_provider.dart';
+import '../blogs/blogs_ui.dart';
+import '../code_check_history_ui/code_check_history.dart';
+import '../code_details_ui/code_details_ui.dart';
+import '../gift_claim/gift_claim.dart';
+import '../help_support_ui/help_support_ui.dart';
+import '../product_catlogs/product_catlog_list.dart';
+import '../referral_ui/referral_ui_share.dart';
+import '../tds_ui/tds_ui.dart';
+import '../wallets/wallet_balance_with_points.dart';
 class NotificationsPage extends StatefulWidget {
   const NotificationsPage({super.key});
 
@@ -26,13 +36,15 @@ class _NotificationsPageState extends State<NotificationsPage> {
   }
   @override
   Widget build(BuildContext context) {
+    final splashProvider = Provider.of<SplashScreenProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Notifications'),
+        title: Text('Notifications',style: GoogleFonts.roboto(fontSize: 18,color: Colors.white),),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: Icon(Icons.arrow_back,color: Colors.white),
           onPressed: () => Navigator.of(context).pop(),
         ),
+        backgroundColor: splashProvider.color_bg,
       ),
       body: Container(
         width: double.infinity,
@@ -160,7 +172,8 @@ class _NotificationsPageState extends State<NotificationsPage> {
                       return GestureDetector(
                         onTap: () {
                           // Validate and handle notification type
-                          switch (notification.notiType) {
+                          switch (notification.notiType)
+                          {
                             case 'KYC':
                             // Navigate to screen or perform action for TYPE_1
                               Navigator.push(
@@ -189,6 +202,124 @@ class _NotificationsPageState extends State<NotificationsPage> {
                                   builder: (context) => KycMainScreen(), // Example screen
                                 ),
                               );
+                              break;
+
+                            case 'Product Catalog':
+                            // Navigate to screen or perform action for TYPE_2
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ProductCatListPage(), // Example screen
+                                ),
+                              );
+                              break;
+                            case 'Wallet':
+                            // Navigate to screen or perform action for TYPE_2
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => WalletWithPoints(), // Example screen
+                                ),
+                              );
+                              break;
+                            case 'Gift':
+                            // Navigate to screen or perform action for TYPE_2
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => GiftClaimUI(), // Example screen
+                                ),
+                              );
+                              break;
+                            case 'ReferEarn':
+                            // Navigate to screen or perform action for TYPE_2
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ReferEarn(), // Example screen
+                                ),
+                              );
+                              break;
+                            case 'History':
+                            // Navigate to screen or perform action for TYPE_2
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => HistroyCodeCheck(), // Example screen
+                                ),
+                              );
+                              break;
+                            case 'Blog':
+                            // Navigate to screen or perform action for TYPE_2
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => BlogPage(), // Example screen
+                                ),
+                              );
+                              break;
+                            case 'Help':
+                            // Navigate to screen or perform action for TYPE_2
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => HelpSupportUI(), // Example screen
+                                ),
+                              );
+                              break;
+                            case 'Brochure':
+                            // Navigate to screen or perform action for TYPE_2
+                            //   Navigator.push(
+                            //     context,
+                            //     MaterialPageRoute(
+                            //       builder: (context) => ClaimScreen(), // Example screen
+                            //     ),
+                            //   );
+                              break;
+                            case 'CodeDetails':
+                            // Navigate to screen or perform action for TYPE_2
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => CodeDetail(), // Example screen
+                                ),
+                              );
+                              break;
+                            case 'TDS':
+                            // Navigate to screen or perform action for TYPE_2
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => TdsScren(), // Example screen
+                                ),
+                              );
+                              break;
+                            case 'About':
+                            // Navigate to screen or perform action for TYPE_2
+                            //   Navigator.push(
+                            //     context,
+                            //     MaterialPageRoute(
+                            //       builder: (context) => ClaimScreen(), // Example screen
+                            //     ),
+                            //   );
+                              break;
+                            case 'Contact':
+                            // Navigate to screen or perform action for TYPE_2
+                            //   Navigator.push(
+                            //     context,
+                            //     MaterialPageRoute(
+                            //       builder: (context) => ClaimScreen(), // Example screen
+                            //     ),
+                            //   );
+                              break;
+                            case 'TermsConditions':
+                            // Navigate to screen or perform action for TYPE_2
+                            //   Navigator.push(
+                            //     context,
+                            //     MaterialPageRoute(
+                            //       builder: (context) => ClaimScreen(), // Example screen
+                            //     ),
+                            //   );
                               break;
 
                             default:

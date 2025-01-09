@@ -24,11 +24,13 @@ class _BlogPageState extends State<BlogPage> {
 
   @override
   Widget build(BuildContext context) {
+    final splashProvider = Provider.of<SplashScreenProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Blog'),
-        backgroundColor: Colors.white,
+        title: Text('Blog',style: TextStyle(color: Colors.white),),
+        backgroundColor: splashProvider.color_bg,
         foregroundColor: Colors.black,
+        iconTheme: IconThemeData(color: Colors.white),
         elevation: 0,
         // leading: IconButton(
         //   icon: Icon(Icons.arrow_back),
@@ -135,23 +137,23 @@ class _BlogContainerState extends State<BlogContainer> {
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Container(
-                height: 40.0, // Height of the circular container
-                width: 40.0,  // Width of the circular container
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle, // Ensures the container is circular
-                  image: DecorationImage(
-                    image: NetworkImage(splashProvider.logoUrlF), // Replace with your image URL
-                    fit: BoxFit.cover, // Adjust fit to cover the entire circle
-                  ),
-                  color: Colors.grey.shade200, // Optional background color while the image loads
-                ),
-                child: splashProvider.logoUrlF.isNotEmpty
-                    ? null
-                    : Center(
-                  child: CircularProgressIndicator(), // Loader while the image is being fetched
-                ),
-              ),
+              // Container(
+              //   height: 40.0, // Height of the circular container
+              //   width: 40.0,  // Width of the circular container
+              //   decoration: BoxDecoration(
+              //     shape: BoxShape.circle, // Ensures the container is circular
+              //     image: DecorationImage(
+              //       image: NetworkImage(splashProvider.logoUrlF), // Replace with your image URL
+              //       fit: BoxFit.cover, // Adjust fit to cover the entire circle
+              //     ),
+              //     color: Colors.grey.shade200, // Optional background color while the image loads
+              //   ),
+              //   child: splashProvider.logoUrlF.isNotEmpty
+              //       ? null
+              //       : Center(
+              //     child: CircularProgressIndicator(), // Loader while the image is being fetched
+              //   ),
+              // ),
               SizedBox(width: 10),
               Expanded(
                 child: Column(

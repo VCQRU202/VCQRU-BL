@@ -43,7 +43,7 @@ class RepositoriesApp{
       toastRedC("No internet connection");
       return;
     }
-
+    print(url);
     Dio dio = Dio();
 
     try {

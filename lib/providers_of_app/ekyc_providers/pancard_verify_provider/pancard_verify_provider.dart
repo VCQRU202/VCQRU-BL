@@ -25,6 +25,10 @@ class PanVerificationProvider with ChangeNotifier {
   final TextEditingController  panController = TextEditingController();
   final TextEditingController  nameController = TextEditingController();
 
+  void clearData(){
+    panController.clear();
+    nameController.clear();
+  }
 
   @override
   void dispose() {

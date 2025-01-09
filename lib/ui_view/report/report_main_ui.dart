@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../../providers_of_app/splash_screen_provider/splash_screen_provider.dart';
 import '../claim_history_ui/claim_history_ui.dart';
 import '../code_check_history_ui/code_check_history.dart';
 class ReportMainUI extends StatefulWidget {
@@ -12,12 +14,14 @@ class ReportMainUI extends StatefulWidget {
 class _ReportMainUIState extends State<ReportMainUI> {
   @override
   Widget build(BuildContext context) {
+    final splashProvider = Provider.of<SplashScreenProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('All Report'),
+        title: const Text('All Report',style: TextStyle(color: Colors.white),),
         centerTitle: true,
-        backgroundColor: Colors.white,
+        backgroundColor: splashProvider.color_bg,
         foregroundColor: Colors.black,
+        iconTheme: IconThemeData(color: Colors.white),
         elevation: 0,
       ),
       body: Column(

@@ -157,7 +157,7 @@ class EditProfileProvider extends ChangeNotifier {
           var data1 = data['Data'];
           if(data1!=null){
             var location = data['Data'][0];
-            String city = location['Name'];
+            String city = location['Division'];
             String state = location['State'];
             String district = location['District'];
             // Update the provider with fetched location data
@@ -170,6 +170,7 @@ class EditProfileProvider extends ChangeNotifier {
             _formData['City'] = "";
             _formData['State'] = "";
             _formData['district'] = "";
+            _formData['PinCode'] = "";
             notifyListeners();
           }
           // Notify listeners to update UI
