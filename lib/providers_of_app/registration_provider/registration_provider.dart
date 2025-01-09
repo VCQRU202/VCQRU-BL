@@ -265,16 +265,25 @@ class RegistrationFormProvider extends ChangeNotifier {
         final data = json.decode(response.body);
         print(data);
         if (data['Status'] == true) {
-          var location = data['Data'][0];
-          String city = location['Name'];
-          String state = location['State'];
-          String district = location['District'];
-
-          // Update the provider with fetched location data
-          _formData['City'] = city;
-          _formData['State'] = state;
-          _formData['District'] = district;
-
+          var data1 = data['Data'];
+          if(data1!=null){
+            var location = data['Data'][0];
+            String city = location['Division'];
+            String state = location['State'];
+            String district = location['District'];
+            // Update the provider with fetched location data
+            _formData['City'] = city;
+            _formData['State'] = state;
+            _formData['district'] = district;
+            notifyListeners();
+          }else{
+            toastRedC("Data not found");
+            _formData['City'] = "";
+            _formData['State'] = "";
+            _formData['district'] = "";
+            _formData['PinCode'] = "";
+            notifyListeners();
+          }
           notifyListeners(); // Notify listeners to update UI
         } else {
           print('Failed to fetch valid location data');
@@ -318,5 +327,19 @@ class RegistrationFormProvider extends ChangeNotifier {
       _isLoadingPan = false;
       notifyListeners();
     }
+  }
+
+  bool isExpanded = false;
+  String selectedValue = '';
+
+  void toggleDropdown() {
+    isExpanded = !isExpanded;
+    notifyListeners();
+  }
+
+  void selectValue(String value) {
+    selectedValue = value;
+    isExpanded = false; // Collapse dropdown after selection
+    notifyListeners();
   }
 }

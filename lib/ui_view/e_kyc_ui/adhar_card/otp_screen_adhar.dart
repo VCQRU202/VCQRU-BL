@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../../../providers_of_app/ekyc_providers/aadhar_verify_provider/aadhar_verify_provider.dart';
 import '../../../providers_of_app/ekyc_providers/kyc_main_page_provider.dart';
+import '../../../providers_of_app/splash_screen_provider/splash_screen_provider.dart';
 import '../../../res/api_url/api_url.dart';
 import '../../../res/app_colors/Checksun_encry.dart';
 import '../../../res/app_colors/app_colors.dart';
@@ -23,7 +24,7 @@ class OtpBottomSheetAadhar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final MediaQueryData mediaQueryData = MediaQuery.of(context);
-
+    final splashProvider = Provider.of<SplashScreenProvider>(context, listen: false);
     return Padding(
       padding: EdgeInsets.only(
         left: 16.0,
@@ -36,25 +37,26 @@ class OtpBottomSheetAadhar extends StatelessWidget {
           width: double.infinity,
           child: Stack(
             children: [
-              // GestureDetector(
-              //   onTap: (){
-              //     Navigator.pop(context);
-              //     print("----click--");
-              //   },
-              //   child: Container(
-              //     width: double.infinity,
-              //     alignment: Alignment.topRight,
-              //     margin: EdgeInsets.only(top: 10),
-              //     child: CircleAvatar(
-              //       radius: 20,
-              //       backgroundColor: Colors.grey.shade300,
-              //       child:Icon(
-              //         Icons.clear,
-              //         color: Colors.red,
-              //       ),
-              //     ),
-              //   ),
-              // ),
+              GestureDetector(
+                onTap: (){
+                  Navigator.pop(context);
+                  print("----click--");
+                },
+                child: Container(
+                  width: double.infinity,
+                  alignment: Alignment.topRight,
+                  margin: EdgeInsets.only(top: 10),
+                  child: CircleAvatar(
+                    radius: 15,
+                    backgroundColor: Colors.grey.shade300,
+                    child:Icon(
+                      Icons.clear,
+                      size: 19,
+                      color: Colors.red,
+                    ),
+                  ),
+                ),
+              ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 mainAxisSize: MainAxisSize.max,
@@ -71,7 +73,7 @@ class OtpBottomSheetAadhar extends StatelessWidget {
                   Container(
                     width: double.infinity,
                     child: Text(
-                      'Enter the 4-digit code sent to you at  '+aadhar,
+                      'Enter the 6-digit code sent to you at  '+aadhar,
                       textAlign: TextAlign.start,
                       style: TextStyle(fontSize: 14,color: AppColor.otp_color),
                     ),
@@ -102,7 +104,7 @@ class OtpBottomSheetAadhar extends StatelessWidget {
                           activeColor: AppColor.grey_color,
                           activeFillColor: Colors.transparent,
                           inactiveFillColor: Colors.transparent,
-                          selectedColor: AppColor.app_btn_color,
+                          selectedColor: splashProvider.color_bg,
                           selectedFillColor: Colors.transparent,
                           disabledColor: Colors.transparent,
                         ),
@@ -140,7 +142,7 @@ class OtpBottomSheetAadhar extends StatelessWidget {
                         },
                           child: Text("Resend OTP",
                             textAlign: TextAlign.center,
-                            style: TextStyle(color: AppColor.app_btn_color,fontSize: 14),)):Text(
+                            style: TextStyle(color: splashProvider.color_bg,fontSize: 14),)):Text(
                         'I haven’t received a code (0:${timerProvider.start})',
                         textAlign: TextAlign.center,
                         style: TextStyle(color: Colors.grey),
@@ -189,7 +191,7 @@ class OtpBottomSheetAadhar extends StatelessWidget {
                             toastRedC("Please Enter OTP");
                           }
                         },
-                        buttonColor:AppColor.app_btn_color,
+                        buttonColor:splashProvider.color_bg,
                         textColor: AppColor.white_color,
                         widget: valueProvider.isLoading_verify ? CircularProgressIndicator(
                           color: AppColor.white_color,

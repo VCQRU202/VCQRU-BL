@@ -16,11 +16,17 @@ import 'package:vcqru_bl/providers_of_app/ekyc_providers/pancard_verify_provider
 import 'package:vcqru_bl/providers_of_app/ekyc_providers/upi_verify_provider/upi_verify_provider.dart';
 import 'package:vcqru_bl/providers_of_app/enter_mobile_provider/enter_mobile_provider.dart';
 import 'package:vcqru_bl/providers_of_app/gift_claim_provider/gift_claim_provider.dart';
+import 'package:vcqru_bl/providers_of_app/help_support_provider/faq_q_ans_provider.dart';
+import 'package:vcqru_bl/providers_of_app/help_support_provider/help_support_provider.dart';
+import 'package:vcqru_bl/providers_of_app/language_change_provider/language_change_provider.dart';
 import 'package:vcqru_bl/providers_of_app/mobile_pass_provider/mobile_login_password_provider.dart';
 import 'package:vcqru_bl/providers_of_app/notification_provider/notification_provider.dart';
+import 'package:vcqru_bl/providers_of_app/product_catlog_provider/product_catlog_list_provider.dart';
 import 'package:vcqru_bl/providers_of_app/profile_provider/edit_profile_provider.dart';
 import 'package:vcqru_bl/providers_of_app/profile_provider/profile_provider.dart';
+import 'package:vcqru_bl/providers_of_app/raised_ticket_history_provider/raised_ticket_history_provider.dart';
 import 'package:vcqru_bl/providers_of_app/raised_ticket_provider/raised_ticket_provider.dart';
+import 'package:vcqru_bl/providers_of_app/referral_provider/referral_provider.dart';
 import 'package:vcqru_bl/providers_of_app/registration_provider/registration_provider.dart';
 import 'package:vcqru_bl/providers_of_app/scanner_provider/scanner_provider.dart';
 import 'package:vcqru_bl/providers_of_app/scanner_provider/scanner_qr_provider/scanner_qr_provider.dart';
@@ -65,6 +71,12 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => BlogProvider()),
         ChangeNotifierProvider(create: (_) => NotificationsProvider()),
         ChangeNotifierProvider(create: (_) => RaisedTicketProvider()),
+        ChangeNotifierProvider(create: (_) => HelpAndSupportProvider()),
+        ChangeNotifierProvider(create: (_) => TranslationProvider()),
+        ChangeNotifierProvider(create: (_) => FAQProvider()),
+        ChangeNotifierProvider(create: (_) => ProductCatListProvider()),
+        ChangeNotifierProvider(create: (_) => ReferralProvider()),
+        ChangeNotifierProvider(create: (_) => RaisedTicketHistoryProvider()),
       ],
       builder: (context, child) {
         return MaterialApp(

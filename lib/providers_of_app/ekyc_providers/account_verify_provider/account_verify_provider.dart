@@ -24,6 +24,13 @@ class AccountVerifyProvider extends ChangeNotifier {
     ifscCodeController.dispose();
     super.dispose();
   }
+  void clearData(){
+    accountNumberController.clear();
+    reenterAccountNumberController.clear();
+    bankNameController.clear();
+    accountHolderController.clear();
+    ifscCodeController.clear();
+  }
 
   final _api = RepositoriesApp();
   bool _isLoading = false;

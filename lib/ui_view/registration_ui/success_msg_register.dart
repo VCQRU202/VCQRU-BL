@@ -3,12 +3,14 @@ import 'package:provider/provider.dart';
 import 'package:vcqru_bl/res/app_colors/app_colors.dart';
 
 import '../../res/components/custom_text.dart';
+import '../dashboard_ui/dashboard_ui.dart';
 import '../e_kyc_ui/e_kyc_main_ui.dart';
 
 
 class SuccessMsgSuccessfully extends StatefulWidget {
   String msg;
-  SuccessMsgSuccessfully({Key? key,required this.msg}):super(key: key);
+  bool isKycRequir;
+  SuccessMsgSuccessfully({Key? key,required this.msg,required this.isKycRequir}):super(key: key);
 
   @override
   State<SuccessMsgSuccessfully> createState() => _LoginSuccessfullyState();
@@ -64,14 +66,19 @@ class _LoginSuccessfullyState extends State<SuccessMsgSuccessfully> {
               LoadingWidget(
                 onCompleted: () {
                   print('Loading completed');
+                  if(widget.isKycRequir){
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder:
+                                (context) =>
+                                KycMainScreen()));
+                  }else{
+                    Navigator.pushReplacement(context,
+                        MaterialPageRoute(builder: (context)=>DashboardApp()));
+                  }
                   // Navigator.pushReplacement(context, MaterialPageRoute(
                   //     builder: (context) => DashboardAssistantScreen()));
-                  Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder:
-                              (context) =>
-                              KycMainScreen()));
                 },
               ),
             ],

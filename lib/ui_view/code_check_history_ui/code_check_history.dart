@@ -652,7 +652,15 @@ class _HistroyCodeCheckState extends State<HistroyCodeCheck> {
                         text: "click here.",
                         recognizer: TapGestureRecognizer()
                           ..onTap = () {
-                            Navigator.push(context, MaterialPageRoute(builder: (context)=>RaisedTicketScreen()));
+                            Navigator.push(context, MaterialPageRoute(builder:
+                                (context)=>RaisedTicketScreen(
+                                  ticketType: "Code Check History ${
+                                      historyProvider.historyData!.data![index].code1
+                                          .toString() +
+                                          historyProvider.historyData!.data![index].code2
+                                              .toString()
+                                  }",
+                                )));
 
                           },// "click here" text
                         style: TextStyle(
@@ -670,7 +678,13 @@ class _HistroyCodeCheckState extends State<HistroyCodeCheck> {
                 children: [
                   GestureDetector(
                     onTap: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (context)=>RaisedTicketScreen()));
+                      Navigator.push(context, MaterialPageRoute(builder:
+                          (context)=>RaisedTicketScreen(ticketType: "Code Check History ${
+                              historyProvider.historyData!.data![index].code1
+                                  .toString() +
+                                  historyProvider.historyData!.data![index].code2
+                                      .toString()
+                          }",)));
                     },
                       child: Text("Issue Report",style: GoogleFonts.roboto(color: AppColor.app_btn_color),)
                   ),

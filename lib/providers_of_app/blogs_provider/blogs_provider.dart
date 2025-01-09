@@ -5,6 +5,8 @@ import 'package:flutter/cupertino.dart';
 
 import '../../models/blogs/blogs_model.dart';
 import 'package:http/http.dart' as http;
+
+import '../../res/api_url/api_url.dart';
 class BlogProvider with ChangeNotifier {
   List<Blog> blogs = [];
 
@@ -13,7 +15,9 @@ class BlogProvider with ChangeNotifier {
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
-      body: json.encode({"Comp_ID": "Comp-1436"}),
+      body: json.encode({
+        "Comp_ID": AppUrl.Comp_ID
+      }),
     );
 
     if (response.statusCode == 200) {

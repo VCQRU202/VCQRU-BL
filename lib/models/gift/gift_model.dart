@@ -38,6 +38,7 @@ class GiftData {
   List<String>? giftImages;
   var btnFlag;
   String? giftMessage;
+  var giftpoit;
 
   GiftData(
       {this.giftId,
@@ -49,7 +50,8 @@ class GiftData {
         this.compID,
         this.giftImages,
         this.btnFlag,
-        this.giftMessage});
+        this.giftMessage,this.giftpoit
+      });
 
   GiftData.fromJson(Map<String, dynamic> json) {
     giftId = json['gift_id'];
@@ -62,6 +64,7 @@ class GiftData {
     giftImages = json['gift_images'].cast<String>();
     btnFlag = json['btn_flag'];
     giftMessage = json['gift_message'];
+    giftpoit = json['Gift_point'];
   }
 
   Map<String, dynamic> toJson() {
@@ -75,6 +78,7 @@ class GiftData {
     data['CompID'] = this.compID;
     data['gift_images'] = this.giftImages;
     data['btn_flag'] = this.btnFlag;
+    data['Gift_point'] = this.giftpoit;
     data['gift_message'] = this.giftMessage;
     return data;
   }

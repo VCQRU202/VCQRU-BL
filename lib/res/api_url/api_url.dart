@@ -47,7 +47,16 @@ class AppUrl {
   static const String IFSC_CODE_GET = baseUrl + "Getbankdetailsbyifsc";
   static const String BANNER = baseUrl + "Banner";
   static const String NOTIFICATIONS = baseUrl + "GetNotification";
-  static const String RAISE_TICKET = baseUrl + "GetNotification";
+  static const String RAISE_TICKET = baseUrl + "TicketRaise/raise-ticket";
+  static const String HELP_SUPPORT = baseUrl + "HelpAndSupportCategory";
+  static const String HELP_SUPPORT_SUB = baseUrl + "HelpandsupportFAQ/get-faq";
+  static const String PRODUCT_CAT_LIST = baseUrl + "Productcatalog";
+  static const String PRODUCT_CAT_DETAILS = baseUrl + "Productcatalogdetails";
+  static const String REFERAL_HISTORY = baseUrl + "ReferralHistory";
+  static const String REFERAL_CONTENT = baseUrl + "ReferralContents";
+  static const String RAISED_HISTORY = baseUrl + "TicketRaise/ticket-history";
+  static const String SOCIAL_MEDIA_API = baseUrl + "SocialMediaIcons/get-social-media-icons";
+  static const String DASHBOARD_NAME_IMAGE = baseUrl + "DashboardICons";
 
 
   static const String warningMSG="Sorry We are unable to process your request at this time. Please try after sometime";

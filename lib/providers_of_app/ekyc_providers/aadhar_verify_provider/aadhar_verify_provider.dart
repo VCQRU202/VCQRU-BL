@@ -42,7 +42,9 @@ class AadharVerifyProvider extends ChangeNotifier {
   bool get otpCOmpleted => _completed;
 
 
-
+  void clearData(){
+    aadharController.clear();
+  }
   @override
   void dispose() {
     aadharController.dispose();

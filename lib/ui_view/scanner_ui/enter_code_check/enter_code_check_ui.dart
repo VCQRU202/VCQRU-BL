@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../../providers_of_app/dashboard_provider/dashboard_provider.dart';
 import '../../../providers_of_app/scanner_provider/scanner_provider.dart';
+import '../../../providers_of_app/splash_screen_provider/splash_screen_provider.dart';
 import '../../../res/api_url/api_url.dart';
 import '../../../res/app_colors/Checksun_encry.dart';
 import '../../../res/app_colors/app_colors.dart';
@@ -25,6 +26,7 @@ class _EnterCodeCheckState extends State<EnterCodeCheck> {
 
   @override
   Widget build(BuildContext context) {
+    final splashProvider = Provider.of<SplashScreenProvider>(context, listen: false);
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -33,7 +35,7 @@ class _EnterCodeCheckState extends State<EnterCodeCheck> {
           "Code Check",
           style: TextStyle(fontSize: 14, color: Colors.white),
         ),
-        backgroundColor:AppColor.app_btn_color,
+        backgroundColor:splashProvider.color_bg,
         actions: <Widget>[],
       ),
       body: Column(
@@ -118,7 +120,7 @@ class _EnterCodeCheckState extends State<EnterCodeCheck> {
                     toastRedC("Please Enter 13 digit code");
                   }
                 },
-                buttonColor: AppColor.app_btn_color,
+                buttonColor: splashProvider.color_bg,
                 textColor: AppColor.white_color,
                 widget: scanner_provider.isloaing_appcodeck ? CircularProgressIndicator(
                   color: AppColor.white_color,

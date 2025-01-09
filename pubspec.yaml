@@ -60,6 +60,10 @@ dependencies:
   url_launcher: ^6.0.20
   share_plus:
   image_picker:
+  translator:
+  dotted_border:
+  flutter_svg: ^2.0.10+1
+  iconsax: ^0.0.8
 
 dev_dependencies:
   flutter_test:

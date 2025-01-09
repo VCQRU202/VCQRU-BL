@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../../models/claim/claim_history_model.dart';
 import '../../providers_of_app/claim_history/claim_history_provider.dart';
+import '../../providers_of_app/splash_screen_provider/splash_screen_provider.dart';
 import '../../res/app_colors/app_colors.dart';
 import '../../res/values/values.dart';
 import '../report_issues/raised_issues_ui.dart';
@@ -24,6 +25,7 @@ class _ClaimScreenState extends State<ClaimScreen> {
   }
   @override
   Widget build(BuildContext context) {
+    final splashProvider = Provider.of<SplashScreenProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         title: Text('Claim History'),
@@ -581,7 +583,7 @@ class _ClaimScreenState extends State<ClaimScreen> {
                         text: "click here.",
                         recognizer: TapGestureRecognizer()
                           ..onTap = () {
-                            Navigator.push(context, MaterialPageRoute(builder: (context)=>RaisedTicketScreen()));
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=>RaisedTicketScreen(ticketType: "Claim",)));
 
                           },// "click here" text
                         style: TextStyle(
@@ -650,9 +652,10 @@ class FilterButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final currentFilter = context.watch<ClaimHistoryProvider>().currentFilter;
     final isSelected = currentFilter == status;
+    final splashProvider = Provider.of<SplashScreenProvider>(context, listen: false);
     return Container(
       decoration: BoxDecoration(
-        color: isSelected ? Colors.blue : Colors.white,
+        color: isSelected ? splashProvider.color_bg : Colors.white,
         borderRadius: BorderRadius.circular(4),
       ),
       height: 40,

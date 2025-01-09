@@ -121,8 +121,9 @@ class _SplashScreenState extends State<SplashScreen> {
                             onCompleted: () {
                               print('Loading completed');
                              //  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>SliderScreen()));
-                              // Navigator.push(context, MaterialPageRoute(builder: (context)=>DashboardApp()));
-
+                              // Navigator.push(context, MaterialPageRoute(builder: (context)=>RegistrationFormPage(mobile: "9876554531",)));
+// Navigator.pushReplacement(context,
+//                                   MaterialPageRoute(builder: (context)=>KycMainScreen()));
                               splashProvider.checkLoginStatus().then((value) async {
                                 if (value == true) {
                                   Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>DashboardApp()));

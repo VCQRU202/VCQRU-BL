@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../../../providers_of_app/ekyc_providers/kyc_main_page_provider.dart';
 import '../../../providers_of_app/ekyc_providers/upi_verify_provider/upi_verify_provider.dart';
+import '../../../providers_of_app/splash_screen_provider/splash_screen_provider.dart';
 import '../../../res/api_url/api_url.dart';
 import '../../../res/app_colors/Checksun_encry.dart';
 import '../../../res/app_colors/app_colors.dart';
@@ -27,6 +28,7 @@ class _UpiIdVerifyUIState extends State<UpiIdVerifyUI> {
   }
   @override
   Widget build(BuildContext context) {
+    final splashProvider = Provider.of<SplashScreenProvider>(context, listen: false);
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
@@ -43,15 +45,18 @@ class _UpiIdVerifyUIState extends State<UpiIdVerifyUI> {
             Expanded(child: ListView(
               children: [
                 // Back arrow
-                Row(
-                  children: [
-                    IconButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      icon: Icon(Icons.arrow_back, color: Colors.black),
-                    ),
-                  ],
+                Container(
+                  color: splashProvider.color_bg,
+                  child: Row(
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        icon: Icon(Icons.arrow_back, color: Colors.white),
+                      ),
+                    ],
+                  ),
                 ),
                 SizedBox(height: 24),
                 // Form container
@@ -180,7 +185,7 @@ class _UpiIdVerifyUIState extends State<UpiIdVerifyUI> {
                       },
                       style: ElevatedButton.styleFrom(
                         padding: EdgeInsets.symmetric(vertical: 1),
-                        backgroundColor: Colors.green,
+                        backgroundColor: splashProvider.color_bg,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),

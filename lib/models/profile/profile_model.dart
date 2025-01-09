@@ -35,7 +35,7 @@ class ProfileData {
   bool? isDeleted;
   String? address;
   String? perAddress;
-  String? referralCode;
+  var referralCode;
   bool? isSharedReferralCode;
   String? employeeID;
   String? distributorID;
