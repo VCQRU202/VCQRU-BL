@@ -120,16 +120,41 @@ class SidebarIcons {
   }
 }
 class AdditionalData {
-  bool? loyalitypoint;
+  String? totalPoint;
+  String? txtPoint;
+  String? reedemPoint;
+  String? txtreedemPoint;
+  String? avlaiblepoint;
+  String? txtavlaiblepoint;
+  String? loyalitypoint;
 
-  AdditionalData({this.loyalitypoint});
+  AdditionalData(
+      {this.totalPoint,
+        this.txtPoint,
+        this.reedemPoint,
+        this.txtreedemPoint,
+        this.avlaiblepoint,
+        this.txtavlaiblepoint,
+        this.loyalitypoint});
 
   AdditionalData.fromJson(Map<String, dynamic> json) {
+    totalPoint = json['totalPoint'];
+    txtPoint = json['txtPoint'];
+    reedemPoint = json['reedemPoint'];
+    txtreedemPoint = json['txtreedemPoint'];
+    avlaiblepoint = json['avlaiblepoint'];
+    txtavlaiblepoint = json['txtavlaiblepoint'];
     loyalitypoint = json['Loyalitypoint'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['totalPoint'] = this.totalPoint;
+    data['txtPoint'] = this.txtPoint;
+    data['reedemPoint'] = this.reedemPoint;
+    data['txtreedemPoint'] = this.txtreedemPoint;
+    data['avlaiblepoint'] = this.avlaiblepoint;
+    data['txtavlaiblepoint'] = this.txtavlaiblepoint;
     data['Loyalitypoint'] = this.loyalitypoint;
     return data;
   }

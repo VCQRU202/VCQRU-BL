@@ -229,8 +229,13 @@ class DashboardProvider with ChangeNotifier{
   Future<void> getDashboardIName() async {
     _isLoading = true;
     _hasError = false;
-    Map requestData = {
-      "Comp_ID":AppUrl.Comp_ID,
+    var mConsumerid = await SharedPrefHelper().get("M_Consumerid");
+    String mobile = await SharedPrefHelper().get("MobileNumber")??"";
+    String mt=mConsumerid.toString();
+    Map requestData ={
+      "Comp_id":AppUrl.Comp_ID,
+      "Mobileno":mobile,
+      "M_consumerid":mt
     };
     print(requestData);
     try {

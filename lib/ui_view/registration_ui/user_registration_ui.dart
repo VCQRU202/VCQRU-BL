@@ -651,7 +651,7 @@ class _DynamicFormPageState extends State<RegistrationFormPage> {
                     child: Center(
                       child: Text(
                         e.toString(),
-                        style: Theme.of(context).textTheme.headline2!.copyWith(
+                        style: Theme.of(context).textTheme.headlineSmall!.copyWith(
                           fontSize: 14,
                           color: dropdownProvider.selectedValue == e.toString()
                               ? Colors.white
