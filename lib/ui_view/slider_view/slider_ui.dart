@@ -111,17 +111,17 @@ class _SliderScreenState extends State<SliderScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Container(
-                                margin: EdgeInsets.only(left: 15),
+                                margin: EdgeInsets.only(left: 16,right: 16),
                                 child: CustomText(
                                   text: sliderProvider.title, // Using the title from SliderProvider
                                   fontSize: 20,
                                   color: Colors.white,
-                                  fontWeight: FontWeight.bold,
+                                  fontWeight: FontWeight.w700,
                                 ),
                               ),
                               SizedBox(height: 0),
                               Container(
-                                margin: EdgeInsets.only(left: 15, right: 10),
+                                margin: EdgeInsets.only(left: 16, right: 16),
                                 child: CustomText(
                                   text: sliderProvider.description, // Using the description from SliderProvider
                                   fontSize: 14,
@@ -141,7 +141,7 @@ class _SliderScreenState extends State<SliderScreen> {
                               ),
 
                               Container(
-                                margin: EdgeInsets.only(left: 15, right: 15,bottom: 8),
+                                margin: EdgeInsets.only(left: 16, right: 16,bottom: 20),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
@@ -168,8 +168,8 @@ class _SliderScreenState extends State<SliderScreen> {
                                           borderRadius: BorderRadius.circular(8.0),
                                           widget: CustomText(
                                             text: LocalizationEN.GET_START,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 14,
+                                            fontWeight: FontWeight.w700,
+                                            fontSize: 12,
                                             color: AppColor.white_color,
                                           ),
                                         ),

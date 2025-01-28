@@ -28,13 +28,14 @@ class ProductCatDetailModel {
 }
 
 class Data {
-  String? rowId;
-  String? productId;
-  String? productName;
-  String? productDescription;
-  String? stockQuantity;
-  String? price;
-  String? imagePath;
+  var rowId;
+  var productId;
+  var productName;
+  var productDescription;
+  var stockQuantity;
+  var price;
+  var imagePath;
+  var point;
 
   Data(
       {this.rowId,
@@ -43,6 +44,7 @@ class Data {
         this.productDescription,
         this.stockQuantity,
         this.price,
+        this.point,
         this.imagePath});
 
   Data.fromJson(Map<String, dynamic> json) {
@@ -52,6 +54,7 @@ class Data {
     productDescription = json['productDescription'];
     stockQuantity = json['stockQuantity'];
     price = json['price'];
+    point = json['point'];
     imagePath = json['imagePath'];
   }
 
@@ -63,6 +66,7 @@ class Data {
     data['productDescription'] = this.productDescription;
     data['stockQuantity'] = this.stockQuantity;
     data['price'] = this.price;
+    data['point'] = this.point;
     data['imagePath'] = this.imagePath;
     return data;
   }

@@ -23,11 +23,11 @@ class GiftClaimUI extends StatefulWidget {
 }
 
 class _GiftClaimUIState extends State<GiftClaimUI> {
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-
     Provider.of<GiftProvider>(context, listen: false).getGift();
   }
 
@@ -195,14 +195,14 @@ class _GiftClaimUIState extends State<GiftClaimUI> {
                           mainAxisSpacing: 10.0,
                           childAspectRatio: 90 / 100,
                         ),
-                        itemCount: valustate.gift1!.data!.length,
+                        itemCount: valustate.gift1!.data!.rows!.length,
                         itemBuilder: (context, index) {
                           return GiftCard(
-                            image: valustate.gift1!.data![index].giftImage ?? "",
-                            title: valustate.gift1!.data![index].giftName ?? "",
+                            image: valustate.gift1!.data!.rows![index].giftImage ?? "",
+                            title: valustate.gift1!.data!.rows![index].giftName ?? "",
                             description:
-                                valustate.gift1!.data![index].giftDesc ?? "",
-                            price: valustate.gift1!.data![index].giftpoit.toString()
+                                valustate.gift1!.data!.rows![index].giftDesc ?? "",
+                            price: valustate.gift1!.data!.rows![index].giftPoint.toString()
                                 .toString(),
                             provider: valustate,
                             index: index,
@@ -416,7 +416,7 @@ class GiftCard extends StatelessWidget {
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   itemCount:
-                      historyProvider.gift1!.data![index].giftImages!.length,
+                      historyProvider.gift1!.data!.rows![index].giftImages!.length,
                   itemBuilder: (context, imageIndex) {
                     return Padding(
                       padding: const EdgeInsets.only(right: 10.0),
@@ -424,7 +424,7 @@ class GiftCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(8),
                         child: Image.network(
                           historyProvider
-                              .gift1!.data![index].giftImages![imageIndex],
+                              .gift1!.data!.rows![index].giftImages![imageIndex],
                           height: 100,
                           width: 90,
                           fit: BoxFit.cover,
@@ -492,7 +492,7 @@ class GiftCard extends StatelessWidget {
                       child: Container(
                         margin: const EdgeInsets.only(left: 10),
                         child: Text(
-                          historyProvider.gift1!.data![index].giftName!,
+                          historyProvider.gift1!.data!.rows![index].giftName!,
                           textAlign: TextAlign.left,
                           style: const TextStyle(
                               fontWeight: FontWeight.bold,
@@ -533,7 +533,7 @@ class GiftCard extends StatelessWidget {
                       child: Container(
                         margin: const EdgeInsets.only(left: 10),
                         child: Text(
-                          historyProvider.gift1!.data![index].giftDesc
+                          historyProvider.gift1!.data!.rows![index].giftDesc
                               .toString(),
                           textAlign: TextAlign.left,
                           style: const TextStyle(
@@ -575,7 +575,7 @@ class GiftCard extends StatelessWidget {
                       child: Container(
                         margin: const EdgeInsets.only(left: 10),
                         child: Text(
-                          historyProvider.gift1!.data![index].giftpoit
+                          historyProvider.gift1!.data!.rows![index].giftPoint
                               .toString(),
                           textAlign: TextAlign.left,
                           style: const TextStyle(
@@ -643,7 +643,7 @@ class GiftCard extends StatelessWidget {
               ),
               Consumer<GiftProvider>(builder: (context,claim_provider,child){
                 return Visibility(
-                  visible:historyProvider.gift1!.data![index].btnFlag==1?true:false,
+                  visible:historyProvider.gift1!.data!.rows![index].btnFlag==1?true:false,
                   child: Container(
                     width: double.infinity,
                     margin: EdgeInsets.only(left: 20,right: 20),
@@ -652,8 +652,8 @@ class GiftCard extends StatelessWidget {
                         print("----------");
 
                         var serId="";
-                        var pId=claim_provider.gift1!.data![index].giftId??"";
-                        var PV=claim_provider.gift1!.data![index].giftValue??"";
+                        var pId=claim_provider.gift1!.data!.rows![index].giftId??"";
+                        var PV=claim_provider.gift1!.data!.rows![index].giftValue??"";
                        var responce= await claim_provider.submitClaim(serId,pId,PV);
                         if (responce != null) {
                           var status = responce["success"] ?? false;

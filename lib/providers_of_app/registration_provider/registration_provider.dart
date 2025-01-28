@@ -257,7 +257,7 @@ class RegistrationFormProvider extends ChangeNotifier {
 
   // Fetch location details based on pincode
   Future<void> fetchLocationDetails(String pincode) async {
-    final url = 'https://vrkableuat.vcqru.com/api/Postalcode?pincode=$pincode';
+    final url = 'https://api2.vcqru.com/api/Postalcode?pincode=$pincode';
     print(url);
     try {
       final response = await http.get(Uri.parse(url));

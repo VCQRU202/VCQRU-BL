@@ -33,6 +33,7 @@ class KycData {
   var upiId;
   var upiname;
   var holdername;
+  var bank_name;
 
   KycData(
       {this.ifscCode,
@@ -44,6 +45,7 @@ class KycData {
         this.aadharName,
         this.upiId,
         this.holdername,
+        this.bank_name,
         this.upiname});
 
   KycData.fromJson(Map<String, dynamic> json) {
@@ -57,6 +59,7 @@ class KycData {
     holdername = json['accountHoldername'];
     upiId = json['upiId'];
     upiname = json['upiname'];
+    bank_name = json['bank_Name'];
   }
 
   Map<String, dynamic> toJson() {
@@ -69,6 +72,7 @@ class KycData {
     data['aadharNo'] = this.aadharNo;
     data['aadharName'] = this.aadharName;
     data['upiId'] = this.upiId;
+    data['bank_Name'] = this.bank_name;
     data['accountHoldername'] = this.holdername;
     data['upiname'] = this.upiname;
     return data;

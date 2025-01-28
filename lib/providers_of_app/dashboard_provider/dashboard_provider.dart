@@ -44,7 +44,11 @@ class DashboardProvider with ChangeNotifier{
   ProfileData? _profile;
   ProfileData? get profile => _profile;
   String _kycStatu="Pending";
+  String _userProfile="";
+  String _iskycRquir="false";
   String get kycStatus=>_kycStatu;
+  String get iskycRquir=>_iskycRquir;
+  String get userProfile=>_userProfile;
 
   DashboardDynamicModel? _dashdynaData;
   bool _isLoading = true;
@@ -131,8 +135,12 @@ class DashboardProvider with ChangeNotifier{
         if (value['success']) {
           print("-------kyc staus----true---");
           var kycStatus=value['data']['vrKbl_KYC_StatusString']??"";
+          var iskycRquir=value['data']['iskycrequired']??"false";
           var count=value['data']['countNotification']??0;
+          var profile=value['data']['profileimg']??"";
           _kycStatu=kycStatus;
+          _userProfile=profile.toString();
+          _iskycRquir=iskycRquir.toString();
           _countNotication=count;
           notifyListeners();
         } else {
@@ -164,6 +172,10 @@ class DashboardProvider with ChangeNotifier{
       notifyListeners();
     }
 
+  }
+  void resetImage(){
+    _userProfile="";
+    notifyListeners();
   }
   Future<void> retryKYCSTATUS() async {
     await getKYCSTATUS();
@@ -229,8 +241,13 @@ class DashboardProvider with ChangeNotifier{
   Future<void> getDashboardIName() async {
     _isLoading = true;
     _hasError = false;
+    var mConsumerid = await SharedPrefHelper().get("M_Consumerid");
+    String mobile_number = await SharedPrefHelper().get("MobileNumber");
+    String mt=mConsumerid.toString();
     Map requestData = {
       "Comp_ID":AppUrl.Comp_ID,
+      "M_Consumerid":mt,
+      "mobileNo":mobile_number
     };
     print(requestData);
     try {

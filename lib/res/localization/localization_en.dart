@@ -5,7 +5,7 @@ class LocalizationEN{
   static const String login_mobile="Mobile Number";
   static const String login_hintText="Ex: 9900000000";
   static const String login_btn="LOGIN";
-  static const String GET_START="GET STARTED";
+  static const String GET_START="Get Start";
   static const String DASHBOARD="Dashboard";
   static const String LOGIN_WITH_OTP="LOGIN WITH OTP";
   static const String login_btn1="Login";

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/product_cat_model/product_cat_details_model.dart';
@@ -112,94 +113,109 @@ class _ImagesSurieState extends State<ProductCatDetails> {
                             physics: NeverScrollableScrollPhysics(),
                             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 2,
-                              crossAxisSpacing: 0.0,
-                              mainAxisSpacing: 0.0,
+                              crossAxisSpacing:10,
+                              mainAxisSpacing: 15,
+                              childAspectRatio: 0.68,
                             ),
                             itemCount: productList.length,
                             itemBuilder: (context, index) {
                               final pointData = productList[index];
-                              return Card(
-                                elevation: 2.0,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: Stack(
-                                  children: [
-                                    // Background Image
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(8),
-                                        image: pointData.imagePath != null && pointData.imagePath!.isNotEmpty
-                                            ? DecorationImage(
-                                          image: NetworkImage(
-                                            pointData.imagePath!.replaceAll('~', ''),
-                                          ),
-                                          fit: BoxFit.cover, // Cover the full card area
-                                        )
-                                            : null, // No background image if path is empty
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  // Image Section
+                                  GestureDetector(
+                                    onTap: (){
+                                      if (index >= 0 && index < productList.length) {
+                                        _presentBottomSheet(context, valustate, index);
+                                      } else {
+                                        print('Index out of bounds: $index');
+                                      }
+                                    },
+                                    child: Card(
+                                      color: Color(0xFFF5F5F5),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8.0), // Adjust the radius as needed
                                       ),
-                                    ),
-          
-                                    // Foreground Overlay (Optional, e.g., for gradients or labels)
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(8),
-                                        gradient: LinearGradient(
-                                          colors: [Colors.black54, Colors.transparent], // Fade effect
-                                          begin: Alignment.bottomCenter,
-                                          end: Alignment.topCenter,
+                                    elevation: 0,
+                                    child: Stack(
+                                      children: [
+                                        Container(
+                                          height: 140, // Adjust image height as needed
+                                          width: double.infinity,
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.only(
+                                              topLeft: Radius.circular(8),
+                                              topRight: Radius.circular(8),
+                                            ),
+                                            image: pointData.imagePath != null && pointData.imagePath!.isNotEmpty
+                                                ? DecorationImage(
+                                              image: NetworkImage(
+                                                pointData.imagePath!.replaceAll('~', ''),
+                                              ),
+                                              fit: BoxFit.contain, // Cover the full card area
+                                            )
+                                                : null, // No background image if path is empty
+                                          ),
                                         ),
-                                      ),
-                                    ),
-          
-                                    // Content
-                                    Positioned(
-                                      bottom: 8,
-                                      left: 8,
-                                      right: 8,
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            pointData.productName ?? "No Name",
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.w700,
+                                        // Quantity Badge
+                                        Positioned(
+                                          top: 0,
+                                          left: 0,
+                                          child: Container(
+                                            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                            decoration: BoxDecoration(
+                                              color:Color(0xFF5207F7).withOpacity(0.16),
+                                              borderRadius: BorderRadius.only(
+                                                topLeft: Radius.circular(8),
+                                                bottomRight: Radius.circular(8)
+                                              ),
+                                            ),
+                                            child: Text(
+                                              "${pointData.price} Qty",
+                                              style: GoogleFonts.roboto(
+                                                color: Color(0xFF5207F7),
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w500,
+                                              ),
                                             ),
                                           ),
-                                          Text(
-                                            pointData.productDescription ?? "",
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 12,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
+                                        ),
+                                      ],
                                     ),
-          
-                                    // Label
-                                    Positioned(
-                                      top: 8,
-                                      right: 8,
-                                      child: Container(
-                                        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                        decoration: BoxDecoration(
+                                    ),
+                                  ),
+                                  Text(
+                                    pointData.productName ?? "No Name",
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  // Points Label
+                                  Flexible(
+                                    fit: FlexFit.tight,
+                                    child: Container(
+                                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                      height: 40,
+                                      decoration: BoxDecoration(
+                                        color: Colors.green.withOpacity(0.16),
+                                        borderRadius: BorderRadius.circular(2),
+                                      ),
+                                      child: Text(
+                                        "${pointData.productId} Points",
+                                        style: TextStyle(
                                           color: Colors.green,
-                                          borderRadius: BorderRadius.circular(8),
-                                        ),
-                                        child: Text(
-                                          pointData.price ?? "0", // Example label
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 12,
-                                          ),
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold,
                                         ),
                                       ),
                                     ),
-                                  ],
-                                ),
+                                  )
+                                ],
                               );
                             },
                           )
@@ -214,4 +230,196 @@ class _ImagesSurieState extends State<ProductCatDetails> {
       ),
     );
   }
+void _presentBottomSheet(BuildContext context, ProductCatListProvider provider, index) {
+  showModalBottomSheet(
+    context: context,
+    shape: RoundedRectangleBorder(
+      borderRadius: const BorderRadius.only(
+        topLeft: Radius.circular(10),
+        topRight: Radius.circular(10),
+      ),
+    ),
+    isScrollControlled: true,
+    isDismissible: false,
+    builder: (context) => Container(
+      margin: const EdgeInsets.only(left: 10, right: 10),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            const SizedBox(height: 10),
+            Row(
+              children: [
+                Expanded(
+                  flex: 6, // 10%
+                  child: Container(
+                    width: double.infinity,
+                    margin:
+                     EdgeInsets.only(left: 20, top: 0, right: 10),
+                    child:  Text(
+                      provider.productDetailData?.data?[index].productName.toString()??"",
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontStyle: FontStyle.normal,
+                          fontSize: 18),
+                    ),
+                  ),
+                ),
+                InkWell(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                    padding: EdgeInsets.all(4),
+                    margin: EdgeInsets.only(top: 10),
+                    decoration: BoxDecoration(
+                      color: Colors.grey,
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: Icon(
+                      Icons.close,
+                      color: Colors.white,
+                      size: 15,
+                    ),
+                  ),
+                )
+              ],
+            ),
+
+            Container(
+              margin: EdgeInsets.only(top: 10, left: 20, right: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Expanded(
+                    flex: 4,
+                    child: Container(
+                      margin: const EdgeInsets.only(left: 0),
+                      child: Text(
+                        "Product Points",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                            fontStyle: FontStyle.normal,
+                            fontSize: 12),
+                      ),
+                    ),
+                  ),
+                  Text(
+                    ":",
+                    textAlign: TextAlign.left,
+                  ),
+                  Expanded(
+                    flex: 6,
+                    child: Container(
+                      margin: const EdgeInsets.only(left: 10),
+                      child: Text(
+                        provider.productDetailData?.data?[index].point.toString()??"",
+                        textAlign: TextAlign.left,
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.grey,
+                            fontStyle: FontStyle.normal,
+                            fontSize: 11),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.only(top: 5, left: 20, right: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Expanded(
+                    flex: 4,
+                    child: Container(
+                      margin: const EdgeInsets.only(left: 0),
+                      child: Text(
+                        "Price",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                            fontStyle: FontStyle.normal,
+                            fontSize: 12),
+                      ),
+                    ),
+                  ),
+                  Text(
+                    ":",
+                    textAlign: TextAlign.left,
+                  ),
+                  Expanded(
+                    flex: 6,
+                    child: Container(
+                      margin: const EdgeInsets.only(left: 10),
+                      child: Text(
+                        "₹ "+(provider.productDetailData?.data?[index].price.toString()??"0")+" /-",
+                        textAlign: TextAlign.left,
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.grey,
+                            fontStyle: FontStyle.normal,
+                            fontSize: 11),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ),
+
+            Container(
+              margin: EdgeInsets.only(top: 10, left: 20, right: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Expanded(
+                    flex: 4,
+                    child: Container(
+                      margin: const EdgeInsets.only(left: 0),
+                      child: Text(
+                        "Stock",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                            fontStyle: FontStyle.normal,
+                            fontSize: 12),
+                      ),
+                    ),
+                  ),
+                  Text(
+                    ":",
+                    textAlign: TextAlign.left,
+                  ),
+                  Expanded(
+                    flex: 6,
+                    child: Container(
+                      margin: const EdgeInsets.only(left: 10),
+                      child: Text(
+                        (provider.productDetailData?.data?[index].stockQuantity.toString()??"0")+" Qty",
+                        textAlign: TextAlign.left,
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.grey,
+                            fontStyle: FontStyle.normal,
+                            fontSize: 11),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ),
+            SizedBox(
+              height: 20,
+            )
+          ],
+        ),
+      ),
+    ),
+  );
+}
 }

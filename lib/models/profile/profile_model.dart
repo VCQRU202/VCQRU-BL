@@ -102,6 +102,7 @@ class ProfileData {
   String? teslaPayoutMode;
   String? selfieImage;
   String? userRoleType;
+  String? isKYCRequire;
   var percent;
 
   ProfileData(
@@ -184,6 +185,7 @@ class ProfileData {
         this.teslaPayoutMode,
         this.selfieImage,
         this.userRoleType,
+        this.isKYCRequire,
         this.percent
       });
 
@@ -268,6 +270,7 @@ class ProfileData {
     selfieImage = json['selfieImage'];
     userRoleType = json['userRoleType'];
     percent = json['persent'];
+    isKYCRequire = json['iskycrequired'];
   }
 
   Map<String, dynamic> toJson() {
@@ -352,6 +355,7 @@ class ProfileData {
     data['selfieImage'] = this.selfieImage;
     data['userRoleType'] = this.userRoleType;
     data['persent'] = this.percent;
+    data['iskycrequired'] = this.isKYCRequire;
     return data;
   }
 }

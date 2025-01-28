@@ -4,18 +4,31 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:vcqru_bl/ui_view/profile_ui/profile_details.dart';
 
+import '../../models/contact/contact_us_model.dart';
+import '../../providers_of_app/contact_us_provider/contact_us_provider.dart';
 import '../../providers_of_app/dashboard_provider/dashboard_provider.dart';
+import '../../providers_of_app/ekyc_providers/aadhar_verify_provider/aadhar_verify_provider.dart';
+import '../../providers_of_app/ekyc_providers/account_verify_provider/account_verify_provider.dart';
+import '../../providers_of_app/ekyc_providers/pancard_verify_provider/pancard_verify_provider.dart';
 import '../../providers_of_app/splash_screen_provider/splash_screen_provider.dart';
 import '../../res/app_colors/Checksun_encry.dart';
 import '../../res/components/circle_profile.dart';
 import '../../res/shared_preferences.dart';
 import '../../res/values/values.dart';
 import '../blogs/blogs_ui.dart';
+import '../brochure_ui/brochure_ui.dart';
+import '../cash_gift_table/gift.dart';
+import '../claim_all/start_main_claim_ui.dart';
 import '../claim_history_ui/claim_history_ui.dart';
 import '../code_details_ui/code_details_ui.dart';
+import '../contact_us/contact_us.dart';
 import '../e_kyc_ui/e_kyc_main_dashboard.dart';
+import '../games/game1_snack.dart';
+import '../games/games_selection.dart';
+import '../games/runner_games/game_wrapper.dart';
 import '../gift_claim/gift_claim.dart';
 import '../help_support_ui/help_support_ui.dart';
 import '../mobile_enter/mobile_enter_screen.dart';
@@ -24,10 +37,22 @@ import '../referral_ui/referral_ui_share.dart';
 import '../report_issues/raised_issues_ui.dart';
 import '../tds_ui/tds_ui.dart';
 import '../wallets/wallet_balance_with_points.dart';
+class ProfilePage extends StatefulWidget {
+  const ProfilePage({super.key});
 
-class ProfilePage extends StatelessWidget {
+  @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
   final double profileCompletion = 0.9; // 90% profile completion (dynamic)
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Provider.of<ContactDetailsProvider>(context, listen: false).getContactHistory();
+  }
   @override
   Widget build(BuildContext context) {
     final splashProvider = Provider.of<SplashScreenProvider>(context, listen: false);
@@ -62,359 +87,398 @@ class ProfilePage extends StatelessWidget {
           children: [
             Expanded(
                 child: ListView(
-              children: [
-                // Profile Heading
-                Padding(
-                  padding: const EdgeInsets.only(left: 8.0, bottom: 10.0),
-                  child: Text(
-                    'Profile',
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-                // Profile Info Container
-                Container(
-                  padding: EdgeInsets.all(16),
-                  margin: EdgeInsets.only(left: 16,right: 16),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(15),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.shade300,
-                        blurRadius: 10,
-                        spreadRadius: 2,
+                  children: [
+                    // Profile Heading
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8.0, bottom: 10.0),
+                      child: Text(
+                        'Profile',
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
                       ),
-                    ],
-                  ),
-                  child: Consumer<DashboardProvider>(
-                      builder: (context, valustate, child) {
-                    if (valustate.isloading_profile) {
-                      return Center(
-                          child: Container(
-                              height: 40,
-                              width: 40,
-                              margin: EdgeInsets.only(top: 10),
-                              child: CircularProgressIndicator()));
-                    } else {
-                      if (valustate.hasError_profile) {
-                        return Container(
-                          width: double.infinity,
-                          margin:
-                              EdgeInsets.only(top: 15, left: 10, right: 10),
-                          child: Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text('${valustate.errorMessage_profile}'),
-                                ElevatedButton(
-                                  onPressed: () {
-                                    valustate.retryProfile();
-                                  },
-                                  child: Text('Retry'),
-                                ),
-                              ],
-                            ),
+                    ),
+                    // Profile Info Container
+                    Container(
+                      padding: EdgeInsets.all(16),
+                      margin: EdgeInsets.only(left: 16,right: 16),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(15),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.shade300,
+                            blurRadius: 10,
+                            spreadRadius: 2,
                           ),
-                        );
-                      } else {
-                        return Column(
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            ProfileDetail()));
-                              },
-                              child: Container(
-                                child: Row(
-                                  children: [
-                                    // Profile Picture
-                                    SizedBox(
-                                      width: 42,
-                                      height: 42,
-                                      child: Stack(
-                                        alignment: Alignment.center,
-                                        children: [
-                                          // Custom painter for the circular progress
-                                          CustomPaint(
-                                            painter: CircularPaint(
-                                              progressValue: getValidatedPercent(valustate.profile!.percent.toString()), // Set your progress here [0.0 - 1.0]
-                                              borderThickness: 4.0, // Adjust the thickness
-                                            ),
-                                            child: const SizedBox.expand(),
-                                          ),
-                                          // Inner blue circle with centered text
-                                          GestureDetector(
-                                            onTap: (){
-                                           },
-                                            child: Container(
-                                              width: 35, // Adjusted for smaller size
-                                              height: 35,
-                                              decoration: BoxDecoration(
-                                                color: Colors.blue, // Inner blue circle
-                                                shape: BoxShape.circle,
-                                              ),
-                                              child:  Center(
-                                                child:Text(
-                                                  valustate.profile?.consumerName?.isNotEmpty == true
-                                                      ? getInitials(valustate.profile!.consumerName) // Use initials
-                                                      : 'U', // Default fallback for User
-                                                  style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 12,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    // CircleAvatar(
-                                    //   backgroundImage:
-                                    //       AssetImage('assets/profile.png'),
-                                    //   radius: 30,
-                                    // ),
-                                    SizedBox(width: 16),
-                                    // Name and Phone Number
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                        ],
+                      ),
+                      child: Consumer<DashboardProvider>(
+                          builder: (context, valustate, child) {
+                            if (valustate.isloading_profile) {
+                              return Center(
+                                  child: Container(
+                                      height: 40,
+                                      width: 40,
+                                      margin: EdgeInsets.only(top: 10),
+                                      child: CircularProgressIndicator()));
+                            } else {
+                              if (valustate.hasError_profile) {
+                                return Container(
+                                  width: double.infinity,
+                                  margin:
+                                  EdgeInsets.only(top: 15, left: 10, right: 10),
+                                  child: Center(
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
                                       children: [
-                                        Text(
-                                          valustate.profile?.consumerName.toString().split(' ')[0] ??
-                                              "",
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 18,
-                                          ),
-                                        ),
-                                        Text(
-                                          valustate.profile?.mobileNo ?? "",
-                                          style: TextStyle(
-                                              color: Colors.grey.shade600,
-                                              fontSize: 16),
+                                        Text('${valustate.errorMessage_profile}'),
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            valustate.retryProfile();
+                                          },
+                                          child: Text('Retry'),
                                         ),
                                       ],
                                     ),
-                                    Spacer(),
-                                    Icon(Icons.arrow_forward_ios,
-                                        color: Colors.grey),
-                                  ],
-                                ),
-                              ),
-                            ),
-
-                            SizedBox(height: 20),
-                            // Profile Status Bar (Dynamic with percent_indicator)
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text('Profile Status',
-                                        style: TextStyle(
-                                            color: Colors.black87,
-                                            fontSize: 12)),
-                                    Text(
-                                      '${((int.tryParse(valustate.profile!.percent) ?? 0)).toInt()}% ',
-                                      style: TextStyle(
-                                          color: Colors.grey.shade600),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(height: 8),
-                                LinearPercentIndicator(
-                                  width: MediaQuery.of(context).size.width - 64,
-                                  // Adjust width based on padding
-                                  lineHeight: 8.0,
-                                  percent: getValidatedPercent(valustate.profile!.percent.toString()),
-                                  // Dynamic percentage
-                                  backgroundColor: Colors.grey.shade300,
-                                  progressColor: getValidatedPercent(valustate.profile!.percent.toString()) == 1.0
-                                      ? Colors.green // Green for 100%
-                                      : splashProvider.color_bg,
-                                  barRadius: Radius.circular(10),
-                                ),
-                              ],
-                            ),
-                          ],
-                        );
-                      }
-                    }
-                  }),
-                ),
-                SizedBox(height: 20),
-                // Menu Options with Dividers
-                Container(
-                  padding: EdgeInsets.all(16),
-                  margin: EdgeInsets.only(left: 16,right: 16),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(15),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.shade300,
-                        blurRadius: 10,
-                        spreadRadius: 2,
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    children: [
-                      Consumer<DashboardProvider>(
-                          builder: (context, valustate, child) {
-                            if (valustate.isLoading) {
-                              return Center(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text("Please Wait"),
-                                      CircularProgressIndicator(),
-                                    ],
-                                  ));
-                            } else {
-                              if (valustate.hasError) {
-                                return Center(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      Text(' ${valustate.errorMessage}'),
-                                      SizedBox(height: 20),
-                                      ElevatedButton(
-                                        onPressed: () {
-                                          valustate.retryDashboardIName();
-                                        },
-                                        child: Text('Retry'),
-                                      ),
-                                    ],
                                   ),
                                 );
                               } else {
-                                final filteredIcons = valustate.dashdynaData?.data?.sidebarIcons??[];
-                                return Container(
-                                  margin: EdgeInsets.only(left: 0,right: 8,bottom: 10,top: 10),
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.all(Radius.circular(5)),
-                                      color: Colors.transparent),
-                                  child:Container(
-                                    width: double.infinity,
-                                    child: ListView.builder(
-                                      shrinkWrap: true,
-                                      physics: NeverScrollableScrollPhysics(),
-                                      itemCount: filteredIcons.length,
-                                      itemBuilder: (context, index) {
-                                        final item = filteredIcons[index];
-                                        return Container(
-                                          padding: EdgeInsets.all(0),
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.all(Radius.circular(8)),
-                                            color: Colors.white,
-                                          ),
-                                          child: GestureDetector(
-                                            onTap: () {
-                                              // // Handle item tap
-                                              print(item.imagePath);
-                                              if(item.id.toString().endsWith("gift")){
-                                                Navigator.push(context,
-                                                    MaterialPageRoute(builder: (context)=>GiftClaimUI()));
-                                              }else if(item.id.toString().endsWith("referandearn")){
-                                                Navigator.push(context,
-                                                    MaterialPageRoute(builder: (context)=>ReferEarn()));
-                                              }else if(item.id.toString().endsWith("wallet")){
-                                                Navigator.push(context,
-                                                    MaterialPageRoute(builder: (context)=>WalletWithPoints()));
-                                              }else if(item.id.toString().endsWith("claimhistory")){
-                                                Navigator.push(context, MaterialPageRoute(builder: (context)=>ClaimScreen()));                                                }else if(item.id.toString().endsWith("blog")){
+                                return Column(
+                                  children: [
+                                    GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    ProfileDetail()));
+                                      },
+                                      child: Container(
+                                        child: Row(
+                                          children: [
+                                            // Profile Picture
+                                            SizedBox(
+                                              width: 42,
+                                              height: 42,
+                                              child: Stack(
+                                                alignment: Alignment.center,
+                                                children: [
+                                                  // Custom painter for the circular progress
+                                                  CustomPaint(
+                                                    painter: CircularPaint(
+                                                      progressValue: getValidatedPercent(valustate.profile!.percent.toString()), // Set your progress here [0.0 - 1.0]
+                                                      borderThickness: 4.0, // Adjust the thickness
+                                                    ),
+                                                    child: const SizedBox.expand(),
+                                                  ),
+                                                  // Inner blue circle with centered text
+                                                  GestureDetector(
+                                                    onTap: (){
 
-                                              }else if(item.id.toString().endsWith("productcatalogue")){
-                                                Navigator.push(context, MaterialPageRoute(builder: (context)=>ProductCatListPage()));
-                                              }else if(item.id.toString().endsWith("help")){
-                                                Navigator.push(context, MaterialPageRoute(builder: (context)=>HelpSupportUI()));
-                                              }else if(item.id.toString().endsWith("kycdetails")){
-                                                Navigator.push(context,
-                                                    MaterialPageRoute(builder: (context)=>KycMainScreenDashboard()));
-                                              }else if(item.id.toString().endsWith("codedetails")){
-                                                Navigator.push(context,
-                                                    MaterialPageRoute(builder: (context)=>CodeDetail()));
-                                              }else if(item.id.toString().endsWith("brochure")){
-                                                toastRedC("Coming Soon");
-                                              }else if(item.id.toString().endsWith("tds")){
-                                                Navigator.push(context, MaterialPageRoute(builder: (context)=>TdsScren()));
-                                              }else if(item.id.toString().endsWith("chooselanguage")){
-                                                toastRedC("Coming Soon");
-                                              }else if(item.id.toString().endsWith("helpandsupport")){
-                                                Navigator.push(context, MaterialPageRoute(builder: (context)=>HelpSupportUI()));
-                                              }else if(item.id.toString().endsWith("aboutus")){
-                                                toastRedC("Coming Soon");
-                                              }else if(item.id.toString().endsWith("blog")){
-                                                Navigator.push(context, MaterialPageRoute(builder: (context)=>BlogPage()));
-                                              }else if(item.id.toString().endsWith("tremandcondition")){
-                                                toastRedC("Coming Soon");
-                                              }else if(item.id.toString().endsWith("contactus")){
-                                                toastRedC("Coming Soon");
-                                              }
-                                            },
-                                            child: Column(
+                                                    },
+                                                    child: Container(
+                                                      width: 35, // Adjusted for smaller size
+                                                      height: 35,
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.blue, // Inner blue circle
+                                                        shape: BoxShape.circle,
+                                                      ),
+                                                      child:  Center(
+                                                        child:Text(
+                                                          valustate.profile?.consumerName?.isNotEmpty == true
+                                                              ? getInitials(valustate.profile!.consumerName) // Use initials
+                                                              : 'U', // Default fallback for User
+                                                          style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontSize: 12,
+                                                            fontWeight: FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            // CircleAvatar(
+                                            //   backgroundImage:
+                                            //       AssetImage('assets/profile.png'),
+                                            //   radius: 30,
+                                            // ),
+                                            SizedBox(width: 16),
+                                            // Name and Phone Number
+                                            Column(
+                                              crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                               children: [
-                                                Row(
-                                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                                  children: [
-                                                    SvgPicture.network(
-                                                      item.imagePath?.trim() ??
-                                                          "",
-                                                      placeholderBuilder: (context) {
-                                                        print('Image URL: ${item.imagePath}'); // Debugging URL
-                                                        return CircularProgressIndicator(); // Show loading spinner
-                                                      },
-                                                      fit: BoxFit.contain,
-                                                      color: Colors.grey,
-                                                      width: 30,
-                                                      height: 30,
-                                                    ),
-                                                    SizedBox(width: 8,),
-                                                    Text(
-                                                      item.iconName??"",
-                                                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-                                                    ),
-                                                    Spacer(),
-                                                    Icon(
-                                                      Icons.arrow_forward_ios,
-                                                      color:  Colors.grey, // Hide arrow for non-clickable items
-                                                    ),
-                                                  ],
+                                                Text(
+                                                  valustate.profile?.consumerName.toString().split(' ')[0] ??
+                                                      "",
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 18,
+                                                  ),
                                                 ),
-                                                SizedBox(height: 5,),
-                                                Divider(color: Colors.grey.shade300),
-                                                SizedBox(height: 8,),
+                                                Text(
+                                                  valustate.profile?.mobileNo ?? "",
+                                                  style: TextStyle(
+                                                      color: Colors.grey.shade600,
+                                                      fontSize: 16),
+                                                ),
                                               ],
                                             ),
-                                          ),
-                                        );
-                                      },
+                                            Spacer(),
+                                            Icon(Icons.arrow_forward_ios,
+                                                color: Colors.grey),
+                                          ],
+                                        ),
+                                      ),
                                     ),
-                                  ),
+
+                                    SizedBox(height: 20),
+                                    // Profile Status Bar (Dynamic with percent_indicator)
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text('Profile Status',
+                                                style: TextStyle(
+                                                    color: Colors.black87,
+                                                    fontSize: 12)),
+                                            Text(
+                                              '${((int.tryParse(valustate.profile!.percent) ?? 0)).toInt()}% ',
+                                              style: TextStyle(
+                                                  color: Colors.grey.shade600),
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(height: 8),
+                                        LinearPercentIndicator(
+                                          width: MediaQuery.of(context).size.width - 64,
+                                          // Adjust width based on padding
+                                          lineHeight: 8.0,
+                                          percent: getValidatedPercent(valustate.profile!.percent.toString()),
+                                          // Dynamic percentage
+                                          backgroundColor: Colors.grey.shade300,
+                                          progressColor: getValidatedPercent(valustate.profile!.percent.toString()) == 1.0
+                                              ? Colors.green // Green for 100%
+                                              : splashProvider.color_bg,
+                                          barRadius: Radius.circular(10),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
                                 );
                               }
                             }
-                          })
-                    ],
-                  ),
-                ),
-                SizedBox(height: 20),
-              ],
-            )),
+                          }),
+                    ),
+                    SizedBox(height: 20),
+                    // Menu Options with Dividers
+                    Container(
+                      padding: EdgeInsets.all(16),
+                      margin: EdgeInsets.only(left: 16,right: 16),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(15),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.shade300,
+                            blurRadius: 10,
+                            spreadRadius: 2,
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        children: [
+                          Consumer<DashboardProvider>(
+                              builder: (context, valustate, child) {
+                                if (valustate.isLoading) {
+                                  return Center(
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Text("Please Wait"),
+                                          CircularProgressIndicator(),
+                                        ],
+                                      ));
+                                } else {
+                                  if (valustate.hasError) {
+                                    return Center(
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+                                          Text(' ${valustate.errorMessage}'),
+                                          SizedBox(height: 20),
+                                          ElevatedButton(
+                                            onPressed: () {
+                                              valustate.retryDashboardIName();
+                                            },
+                                            child: Text('Retry'),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  } else {
+                                    final filteredIcons = valustate.dashdynaData?.data?.sidebarIcons??[];
+                                    return Container(
+                                      margin: EdgeInsets.only(left: 0,right: 8,bottom: 10,top: 10),
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.all(Radius.circular(5)),
+                                          color: Colors.transparent),
+                                      child:Container(
+                                        width: double.infinity,
+                                        child: ListView.builder(
+                                          shrinkWrap: true,
+                                          physics: NeverScrollableScrollPhysics(),
+                                          itemCount: filteredIcons.length,
+                                          itemBuilder: (context, index) {
+                                            final item = filteredIcons[index];
+                                            return Container(
+                                              padding: EdgeInsets.all(0),
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.all(Radius.circular(8)),
+                                                color: Colors.white,
+                                              ),
+                                              child: GestureDetector(
+                                                onTap: () {
+                                                  // // Handle item tap
+                                                  print("---click sidebar--${item.id}");
+                                                  if(item.id.toString().endsWith("gift")){
+                                                    Navigator.push(context,
+                                                        MaterialPageRoute(builder: (context)=>GiftClaimUI()));
+                                                  }
+                                                  if(item.id.toString().endsWith("referandearn")){
+                                                    Navigator.push(context,
+                                                        MaterialPageRoute(builder: (context)=>ReferEarn()));
+                                                  }
+                                                  if(item.id.toString().endsWith("wallet")){
+                                                    Navigator.push(context,
+                                                        MaterialPageRoute(builder: (context)=>WalletWithPoints()));
+                                                  }
+                                                  if(item.id.toString().endsWith("claimhistory")){
+                                                    Navigator.push(context, MaterialPageRoute(builder: (context)=>ClaimScreen()));                                                }else if(item.id.toString().endsWith("blog")){
+
+                                                  }
+                                                  if(item.id.toString().endsWith("productcatalogue")){
+                                                    Navigator.push(context, MaterialPageRoute(builder: (context)=>ProductCatListPage()));
+                                                  }
+                                                  if(item.id.toString().endsWith("help")){
+                                                    Navigator.push(context, MaterialPageRoute(builder: (context)=>HelpSupportUI()));
+                                                  }
+                                                  if(item.id.toString().endsWith("kycdetails")){
+                                                    Navigator.push(context,
+                                                        MaterialPageRoute(builder: (context)=>KycMainScreenDashboard()));
+                                                  }
+                                                  if(item.id.toString().endsWith("codedetails")){
+                                                    Navigator.push(context,
+                                                        MaterialPageRoute(builder: (context)=>CodeDetail()));
+                                                  }
+                                                  if(item.id.toString().endsWith("brochure")){
+                                                    // toastRedC("Coming Soon");
+                                                    Navigator.push(context,
+                                                        MaterialPageRoute(builder: (context)=>BrochureShow()));
+                                                  }
+                                                  if(item.id.toString().endsWith("tds")){
+                                                    Navigator.push(context, MaterialPageRoute(builder: (context)=>TdsScren()));
+                                                  }
+                                                  if(item.id.toString().endsWith("chooselanguage")){
+                                                    toastRedC("Coming Soon");
+                                                  }
+                                                  if(item.id.toString().endsWith("helpandsupport")){
+                                                    Navigator.push(context, MaterialPageRoute(builder: (context)=>HelpSupportUI()));
+                                                  }
+                                                  if(item.id.toString().endsWith("aboutus")){
+                                                    //toastRedC("Coming Soon");
+                                                    final contactus = Provider.of<ContactDetailsProvider>(context,
+                                                        listen: false);
+                                                    if(contactus.historyContact!=null&&contactus.historyContact?.data!=null){
+                                                      ContactUsModel contt=contactus.historyContact!;
+                                                     String linkAbou= contt.data?.aboutUS??"";
+                                                     if(linkAbou.isNotEmpty){
+                                                       _launchURLScial(linkAbou);
+                                                      }
+                                                    }
+                                                  }
+                                                  if(item.id.toString().endsWith("blog")){
+                                                    Navigator.push(context, MaterialPageRoute(builder: (context)=>BlogPage()));
+                                                  }
+                                                  if(item.id.toString().endsWith("tremandcondition")){
+                                                    final contactus = Provider.of<ContactDetailsProvider>(context,
+                                                        listen: false);
+                                                    if(contactus.historyContact!=null&&contactus.historyContact?.data!=null){
+                                                      ContactUsModel contt=contactus.historyContact!;
+                                                      String linkAbou= contt.data?.termandcondition??"";
+                                                      if(linkAbou.isNotEmpty){
+                                                        _launchURLScial(linkAbou);
+                                                      }
+                                                    }
+                                                    // toastRedC("Coming Soon");
+                                                    // Navigator.push(context,
+                                                    //     MaterialPageRoute(builder: (context)=>GameGridScreen()));
+                                                  }
+                                                  if(item.id.toString().endsWith("contactus")){
+                                                    Navigator.push(context, MaterialPageRoute(builder: (context)=>ContactUs()));
+                                                    //toastRedC("Coming Soon");
+                                                  }
+                                                },
+                                                child: Column(
+                                                  children: [
+                                                    Row(
+                                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                                      children: [
+                                                        SvgPicture.network(
+                                                          item.imagePath?.trim() ??
+                                                              "",
+                                                          placeholderBuilder: (context) {
+                                                            print('Image URL: ${item.imagePath}'); // Debugging URL
+                                                            return CircularProgressIndicator(); // Show loading spinner
+                                                          },
+                                                          fit: BoxFit.contain,
+                                                          color: Colors.grey,
+                                                          width: 30,
+                                                          height: 30,
+                                                        ),
+                                                        SizedBox(width: 8,),
+                                                        Text(
+                                                          item.iconName??"",
+                                                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                                                        ),
+                                                        Spacer(),
+                                                        Icon(
+                                                          Icons.arrow_forward_ios,
+                                                          color:  Colors.grey, // Hide arrow for non-clickable items
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    SizedBox(height: 5,),
+                                                    Divider(color: Colors.grey.shade300),
+                                                    SizedBox(height: 8,),
+                                                  ],
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                }
+                              })
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                  ],
+                )),
             // Logout Button
             Container(
               width: double.infinity,
@@ -474,7 +538,17 @@ class ProfilePage extends StatelessWidget {
       ),
     );
   }
-
+  void _launchURLScial(String urlString) async {
+    final Uri url = Uri.parse(urlString);
+    print('Trying to launch $urlString');
+    if (await canLaunchUrl(url)) {
+      print('Launching $urlString');
+      await launchUrl(url, mode: LaunchMode.platformDefault);
+    } else {
+      print('Could not launch $urlString');
+      throw 'Could not launch $urlString';
+    }
+  }
 
   double getValidatedPercent(String? percent) {
     if (percent != null && percent.isNotEmpty) {
@@ -556,16 +630,16 @@ class ProfilePage extends StatelessWidget {
                                   style: TextStyle(color: AppColors.black)),
                               style: ButtonStyle(
                                   foregroundColor:
-                                      MaterialStateProperty.all<Color>(
-                                          AppColors.white),
+                                  MaterialStateProperty.all<Color>(
+                                      AppColors.white),
                                   backgroundColor:
-                                      MaterialStateProperty.all<Color>(
-                                          AppColors.white),
+                                  MaterialStateProperty.all<Color>(
+                                      AppColors.white),
                                   shape: MaterialStateProperty.all<
-                                          RoundedRectangleBorder>(
+                                      RoundedRectangleBorder>(
                                       RoundedRectangleBorder(
                                           borderRadius:
-                                              BorderRadius.circular(5),
+                                          BorderRadius.circular(5),
                                           side: BorderSide(
                                               color: AppColors.grey)))),
                               onPressed: () {
@@ -581,30 +655,32 @@ class ProfilePage extends StatelessWidget {
                                   style: TextStyle(color: AppColors.white)),
                               style: ButtonStyle(
                                   foregroundColor:
-                                      MaterialStateProperty.all<Color>(
-                                          AppColors.dashboard_color),
+                                  MaterialStateProperty.all<Color>(
+                                      AppColors.dashboard_color),
                                   backgroundColor:
-                                      MaterialStateProperty.all<Color>(
-                                          AppColors.dashboard_color),
+                                  MaterialStateProperty.all<Color>(
+                                      AppColors.dashboard_color),
                                   shape: MaterialStateProperty.all<
-                                          RoundedRectangleBorder>(
+                                      RoundedRectangleBorder>(
                                       RoundedRectangleBorder(
                                           borderRadius:
-                                              BorderRadius.circular(5),
+                                          BorderRadius.circular(5),
                                           side: BorderSide(
                                               color:
-                                                  AppColors.dashboard_color)))),
+                                              AppColors.dashboard_color)))),
                               onPressed: () async {
+                                Provider.of<AccountVerifyProvider>(context, listen: false).clearData();
+                                Provider.of<PanVerificationProvider>(context, listen: false).clearData();
+                                Provider.of<AadharVerifyProvider>(context, listen: false).clearData();
                                 Navigator.of(context).pop();
                                 await SharedPrefHelper().save("Verify", false);
-                                Navigator.of(context, rootNavigator: true)
-                                    .pushAndRemoveUntil(
+                                Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
                                   MaterialPageRoute(
                                     builder: (BuildContext context) {
                                       return MobileEnterScreen();
                                     },
                                   ),
-                                  (_) => false,
+                                      (_) => false,
                                 );
                               },
                             ),

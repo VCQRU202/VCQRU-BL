@@ -2,20 +2,14 @@ class AppUrl {
   //---comp name
 
   //----comp ID
-   static const CompId_QA = 'Comp-1436';
-  // static const CompId_UAT = 'Comp-1647';
+   static const CompId_QA = 'Comp-1440';
+   static const CompId_UAT = 'Comp-1655';
  // static const CompId_LIVE = 'Comp-1669';
   static const Comp_ID = CompId_QA;
 
-  //----Image
-  static const String ImageViewURL_QA = "https://qa.vcqru.com";
-  //static const String ImageViewURL_UAT = "https://uat.vcqru.com";
-   //static const String ImageViewURL_Live = "https://www.vcqru.com";
-
-  static const String ImageViewURL = ImageViewURL_QA;
-
   //-----Base Url
    static const String baseUrl_QA = "https://apicore.vcqru.com/api/";
+   static const String baseUrl_UAT = "https://apibl.vcqru.com/api/";
   // static const String baseUrl_UAT = "https://api.vcqru.com/api/";
  // static const String baseUrl_LIVE = "https://api2.vcqru.com/api/";
   static const String baseUrl = baseUrl_QA;
@@ -36,7 +30,7 @@ class AppUrl {
   static const String CODE_HISTORY = baseUrl + "ApiCodeCheckHistory";
   static const String DASHBOARD = baseUrl + "Dashboard";
   static const String GETPROFILE = baseUrl + "Profiledetails";
-  static const String GIFTLIST = baseUrl + "GetVerdoerwiseGiftList";
+  static const String GIFTLIST = baseUrl + "GetVendorwiseGiftList";
   static const String GETPROFILE_DETAIL = baseUrl + "Profiledetailswithdata";
   static const String UPDATE_PROFILE = baseUrl + "Updateprofile";
   static const String SUBMIT_CLAIM = baseUrl + "ApiSubmitClaim";
@@ -57,6 +51,12 @@ class AppUrl {
   static const String RAISED_HISTORY = baseUrl + "TicketRaise/ticket-history";
   static const String SOCIAL_MEDIA_API = baseUrl + "SocialMediaIcons/get-social-media-icons";
   static const String DASHBOARD_NAME_IMAGE = baseUrl + "DashboardICons";
+  static const String BROCHURE = baseUrl + "Brochure";
+  static const String USERPROFILE_IMAGE = baseUrl + "ProfilePicture/UpdateProfilePic";
+  static const String CLIAM_MAIN = baseUrl + "ClaimIcons";
+  static const String CLAIM_CONFIRM_DATA = baseUrl + "GiftList";
+  static const String SUBMIT_CLIAM_CASH = baseUrl + "VendorviseSubmitClaim";
+  static const String CONTACT_US = baseUrl + "ContactUS";
 
 
   static const String warningMSG="Sorry We are unable to process your request at this time. Please try after sometime";

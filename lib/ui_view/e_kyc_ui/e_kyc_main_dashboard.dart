@@ -236,343 +236,336 @@ class _KycMainScreenState extends State<KycMainScreenDashboard> {
                                   // Buttons Section
                                   Visibility(
                                     visible:valustate.panEnable.toString().endsWith("Yes")?true:false,
-                                    child: Container(
-                                      margin: const EdgeInsets.only(bottom: 12),
-                                      decoration: BoxDecoration(
-                                        border: Border.all(
-                                          color: Colors.grey.shade300,
-                                          width:  1,
-                                        ),
-                                        borderRadius: BorderRadius.circular(8),
-                                        gradient:valustate.pankycstatus.endsWith("0")?LinearGradient(
-                                          colors: [
-                                            Color(0xFFF9FAFB), Color(0xFFF9FAFB),Color(0xFFF9FAFB),// Darker red
-                                          ],
-                                          begin: Alignment.topLeft, // Start of the gradient
-                                          end: Alignment.bottomRight, // End of the gradient
-                                        ):valustate.pankycstatus.endsWith("1")? LinearGradient(
-                                          colors: [
-                                            Color(0xFFBCFABF), // Lighter red
-                                            Color(0xFFDAF8DC),
-                                            Color(0xFFF6ECEC),
-                                            // Darker red
-                                          ],
-                                          begin: Alignment.topLeft, // Start of the gradient
-                                          end: Alignment.bottomRight, // End of the gradient
-                                        ):LinearGradient(
-                                          colors: [
-                                            Color(0xFFFABCBD), // Lighter red
-                                            Color(0xFFF8DADA),
-                                            Color(0xFFF6ECEC),// Darker red
-                                          ],
-                                          begin: Alignment.topLeft, // Start of the gradient
-                                          end: Alignment.bottomRight, // End of the gradient
-                                        ),
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          // Step Number
-                                          Container(
-                                            width: screenHeight * 0.07,
-                                            // Dynamic size for circle based on screen height
-                                            height: screenHeight * 0.07,
-                                            margin: const EdgeInsets.all(12),
-                                            decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              color:valustate.pankycstatus.endsWith("1")?Colors.white: Colors.grey.shade300,
-                                            ),
-                                            child: Center(
-                                              child:valustate.pankycstatus.endsWith("0")? Text(
-                                                "${ 1}",
-                                                style: TextStyle(
-                                                  color:Colors.black,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ):valustate.pankycstatus.endsWith("1")?Icon(Icons.check_circle_rounded,color: Colors.green,):
-                                              Icon(Icons.error,color: Colors.red,),
-                                            ),
+                                    child: GestureDetector(
+                                      onTap: (){
+                                        print("---click---");
+                                        if(valustate.pankycstatus.endsWith("1")){
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      PanCardDetails()));
+                                        }else{
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      PanCardVerifyUI()));
+                                        }
+                                      },
+                                      child: Container(
+                                        margin: const EdgeInsets.only(bottom: 12),
+                                        decoration: BoxDecoration(
+                                          border: Border.all(
+                                            color: Colors.grey.shade300,
+                                            width:  1,
                                           ),
-                                          // Details
-                                          Expanded(
-                                            child: Column(
-                                              crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  "Pan",
-                                                  style: TextStyle(
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.bold,
-                                                    color:valustate.pankycstatus.endsWith("1")?
-                                                    Colors.black:Colors.grey,
-                                                  ),
-                                                ),
-                                                const SizedBox(height: 4),
-                                                Text(
-                                                  valustate.pankycstatus.endsWith("1")?"Verified": "Kindly provide your full name and PAN number.",
-                                                  style: const TextStyle(
-                                                    fontSize: 12,
-                                                    color: Colors.grey,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
+                                          borderRadius: BorderRadius.circular(8),
+                                          gradient:valustate.pankycstatus.endsWith("0")?LinearGradient(
+                                            colors: [
+                                              Color(0xFFF9FAFB), Color(0xFFF9FAFB),Color(0xFFF9FAFB),// Darker red
+                                            ],
+                                            begin: Alignment.topLeft, // Start of the gradient
+                                            end: Alignment.bottomRight, // End of the gradient
+                                          ):valustate.pankycstatus.endsWith("1")? LinearGradient(
+                                            colors: [
+                                              Color(0xFFBCFABF), // Lighter red
+                                              Color(0xFFDAF8DC),
+                                              Color(0xFFF6ECEC),
+                                              // Darker red
+                                            ],
+                                            begin: Alignment.topLeft, // Start of the gradient
+                                            end: Alignment.bottomRight, // End of the gradient
+                                          ):LinearGradient(
+                                            colors: [
+                                              Color(0xFFFABCBD), // Lighter red
+                                              Color(0xFFF8DADA),
+                                              Color(0xFFF6ECEC),// Darker red
+                                            ],
+                                            begin: Alignment.topLeft, // Start of the gradient
+                                            end: Alignment.bottomRight, // End of the gradient
                                           ),
-                                          InkWell(
-                                            onTap: () {
-                                              // Your action here
-                                              // Navigator.push(
-                                              //     context,
-                                              //     MaterialPageRoute(
-                                              //         builder: (context) =>
-                                              //             PanCardDetails()));
-                                              if(valustate.pankycstatus.endsWith("1")){
-                                                Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            PanCardDetails()));
-                                              }else{
-                                                Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            PanCardVerifyUI()));
-                                              }
-                                            },
-                                            child: const Icon(
-                                              Icons.arrow_forward_ios,
-                                              size: 16,
-                                            ),
-                                          ),
-                                          const SizedBox(width: 16),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                  Visibility(
-                                    visible:valustate.aadharEnable.toString().endsWith("Yes")?true:false,
-                                    child: Container(
-                                      margin: const EdgeInsets.only(bottom: 12),
-                                      decoration: BoxDecoration(
-                                        border: Border.all(
-                                          color: Colors.grey.shade300,
-                                          width:  1,
                                         ),
-                                        borderRadius: BorderRadius.circular(8),
-                                        gradient:valustate.aadharkycstatus.endsWith("0")?LinearGradient(
-                                          colors: [
-                                            Color(0xFFF9FAFB), Color(0xFFF9FAFB),Color(0xFFF9FAFB)// Darker red
-                                          ],
-                                          begin: Alignment.topLeft, // Start of the gradient
-                                          end: Alignment.bottomRight, // End of the gradient
-                                        ):valustate.aadharkycstatus.endsWith("2")? LinearGradient(
-                                          colors: [
-                                            Color(0xFFFABCBD), // Lighter red
-                                            Color(0xFFF8DADA),
-                                            Color(0xFFF6ECEC),// Darker red
-                                          ],
-                                          begin: Alignment.topLeft, // Start of the gradient
-                                          end: Alignment.bottomRight, // End of the gradient
-                                        ):LinearGradient(
-                                          colors: [
-                                            Color(0xFFBCFABF), // Lighter red
-                                            Color(0xFFDAF8DC),
-                                            Color(0xFFF6ECEC),// Darker red
-                                          ],
-                                          begin: Alignment.topLeft, // Start of the gradient
-                                          end: Alignment.bottomRight, // End of the gradient
-                                        ),
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          // Step Number
-                                          Container(
+                                        child: Row(
+                                          children: [
+                                            // Step Number
+                                            Container(
                                               width: screenHeight * 0.07,
                                               // Dynamic size for circle based on screen height
                                               height: screenHeight * 0.07,
                                               margin: const EdgeInsets.all(12),
                                               decoration: BoxDecoration(
                                                 shape: BoxShape.circle,
-                                                color:valustate.aadharkycstatus.endsWith("1")?Colors.white: Colors.grey.shade300,
+                                                color:valustate.pankycstatus.endsWith("1")?Colors.white: Colors.grey.shade300,
                                               ),
                                               child: Center(
-                                                child:valustate.aadharkycstatus.endsWith("0")? Text(
-                                                  "${ 2}",
+                                                child:valustate.pankycstatus.endsWith("0")? Text(
+                                                  "${ 1}",
                                                   style: TextStyle(
                                                     color:Colors.black,
                                                     fontWeight: FontWeight.bold,
                                                   ),
-                                                ):valustate.aadharkycstatus.endsWith("1")?Icon(Icons.check_circle_rounded,color: Colors.green,):
+                                                ):valustate.pankycstatus.endsWith("1")?Icon(Icons.check_circle_rounded,color: Colors.green,):
                                                 Icon(Icons.error,color: Colors.red,),
-                                              )
-                                          ),
-                                          // Details
-                                          Expanded(
-                                            child: Column(
-                                              crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  "Aadhar",
-                                                  style: TextStyle(
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.bold,
-                                                    color:valustate.aadharkycstatus.endsWith("1")?
-                                                    Colors.black:Colors.grey,
-                                                  ),
-                                                ),
-                                                const SizedBox(height: 4),
-                                                Text(
-                                                  valustate.aadharkycstatus.endsWith("1")?"Verified":"Provide Aadhaar details to complete eKYC",
-                                                  style: const TextStyle(
-                                                    fontSize: 12,
-                                                    color: Colors.grey,
-                                                  ),
-                                                ),
-                                              ],
+                                              ),
                                             ),
-                                          ),
-                                          InkWell(
-                                            onTap: () {
-                                              // Your action here
-                                              if(valustate.aadharkycstatus.endsWith("1")){
-                                                Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            AdharCardDetails()));
-                                              }else{
-                                                Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            AadharVerifyUI()));
-                                              }
-
-                                              print(valustate.kycbtn);
-                                            },
-                                            child: const Icon(
+                                            // Details
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    "Pan",
+                                                    style: TextStyle(
+                                                      fontSize: 16,
+                                                      fontWeight: FontWeight.bold,
+                                                      color:valustate.pankycstatus.endsWith("1")?
+                                                      Colors.black:Colors.grey,
+                                                    ),
+                                                  ),
+                                                  const SizedBox(height: 4),
+                                                  Text(
+                                                    valustate.pankycstatus.endsWith("1")?"Verified": "Kindly provide your full name and PAN number.",
+                                                    style: const TextStyle(
+                                                      fontSize: 12,
+                                                      color: Colors.grey,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            const Icon(
                                               Icons.arrow_forward_ios,
                                               size: 16,
                                             ),
+                                            const SizedBox(width: 16),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Visibility(
+                                    visible:valustate.aadharEnable.toString().endsWith("Yes")?true:false,
+                                    child: GestureDetector(
+                                      onTap: (){
+                                        if(valustate.aadharkycstatus.endsWith("1")){
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      AdharCardDetails()));
+                                        }else{
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      AadharVerifyUI()));
+                                        }
+
+                                        print(valustate.kycbtn);
+                                      },
+                                      child: Container(
+                                        margin: const EdgeInsets.only(bottom: 12),
+                                        decoration: BoxDecoration(
+                                          border: Border.all(
+                                            color: Colors.grey.shade300,
+                                            width:  1,
                                           ),
-                                          const SizedBox(width: 16),
-                                        ],
+                                          borderRadius: BorderRadius.circular(8),
+                                          gradient:valustate.aadharkycstatus.endsWith("0")?LinearGradient(
+                                            colors: [
+                                              Color(0xFFF9FAFB), Color(0xFFF9FAFB),Color(0xFFF9FAFB)// Darker red
+                                            ],
+                                            begin: Alignment.topLeft, // Start of the gradient
+                                            end: Alignment.bottomRight, // End of the gradient
+                                          ):valustate.aadharkycstatus.endsWith("2")? LinearGradient(
+                                            colors: [
+                                              Color(0xFFFABCBD), // Lighter red
+                                              Color(0xFFF8DADA),
+                                              Color(0xFFF6ECEC),// Darker red
+                                            ],
+                                            begin: Alignment.topLeft, // Start of the gradient
+                                            end: Alignment.bottomRight, // End of the gradient
+                                          ):LinearGradient(
+                                            colors: [
+                                              Color(0xFFBCFABF), // Lighter red
+                                              Color(0xFFDAF8DC),
+                                              Color(0xFFF6ECEC),// Darker red
+                                            ],
+                                            begin: Alignment.topLeft, // Start of the gradient
+                                            end: Alignment.bottomRight, // End of the gradient
+                                          ),
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            // Step Number
+                                            Container(
+                                                width: screenHeight * 0.07,
+                                                // Dynamic size for circle based on screen height
+                                                height: screenHeight * 0.07,
+                                                margin: const EdgeInsets.all(12),
+                                                decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  color:valustate.aadharkycstatus.endsWith("1")?Colors.white: Colors.grey.shade300,
+                                                ),
+                                                child: Center(
+                                                  child:valustate.aadharkycstatus.endsWith("0")? Text(
+                                                    "${ 2}",
+                                                    style: TextStyle(
+                                                      color:Colors.black,
+                                                      fontWeight: FontWeight.bold,
+                                                    ),
+                                                  ):valustate.aadharkycstatus.endsWith("1")?Icon(Icons.check_circle_rounded,color: Colors.green,):
+                                                  Icon(Icons.error,color: Colors.red,),
+                                                )
+                                            ),
+                                            // Details
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    "Aadhar",
+                                                    style: TextStyle(
+                                                      fontSize: 16,
+                                                      fontWeight: FontWeight.bold,
+                                                      color:valustate.aadharkycstatus.endsWith("1")?
+                                                      Colors.black:Colors.grey,
+                                                    ),
+                                                  ),
+                                                  const SizedBox(height: 4),
+                                                  Text(
+                                                    valustate.aadharkycstatus.endsWith("1")?"Verified":"Provide Aadhaar details to complete eKYC",
+                                                    style: const TextStyle(
+                                                      fontSize: 12,
+                                                      color: Colors.grey,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            const Icon(
+                                              Icons.arrow_forward_ios,
+                                              size: 16,
+                                            ),
+                                            const SizedBox(width: 16),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
                                   Visibility(
                                     visible:valustate.accountEnable.toString().endsWith("Yes")?true:false,
-                                    child: Container(
-                                      margin: const EdgeInsets.only(bottom: 12),
-                                      decoration: BoxDecoration(
-                                        border: Border.all(
-                                          color: Colors.grey.shade300,
-                                          width:  1,
-                                        ),
-                                        borderRadius: BorderRadius.circular(8),
-                                        gradient:valustate.accountkycstatus.endsWith("0")?LinearGradient(
-                                          colors: [
-                                            Color(0xFFF9FAFB), Color(0xFFF9FAFB),Color(0xFFF9FAFB)// Darker red
-                                          ],
-                                          begin: Alignment.topLeft, // Start of the gradient
-                                          end: Alignment.bottomRight, // End of the gradient
-                                        ):valustate.accountkycstatus.endsWith("1")? LinearGradient(
-                                          colors: [
-                                            Color(0xFFBCFABF), // Lighter red
-                                            Color(0xFFDAF8DC),
-                                            Color(0xFFF6ECEC),
-                                            // Darker red
-                                          ],
-                                          begin: Alignment.topLeft, // Start of the gradient
-                                          end: Alignment.bottomRight, // End of the gradient
-                                        ):LinearGradient(
-                                          colors: [
-                                            Color(0xFFFABCBD), // Lighter red
-                                            Color(0xFFF8DADA),
-                                            Color(0xFFF6ECEC),
-                                          ],
-                                          begin: Alignment.topLeft, // Start of the gradient
-                                          end: Alignment.bottomRight, // End of the gradient
-                                        ),
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          // Step Number
-                                          Container(
-                                            width: screenHeight * 0.07,
-                                            // Dynamic size for circle based on screen height
-                                            height: screenHeight * 0.07,
-                                            margin: const EdgeInsets.all(12),
-                                            decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              color:valustate.accountkycstatus.endsWith("1")?Colors.white: Colors.grey.shade300,
-                                            ),
-                                            child: Center(
-                                              child:valustate.accountkycstatus.endsWith("0")? Text(
-                                                "${ 3}",
-                                                style: TextStyle(
-                                                  color:Colors.black,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ):valustate.accountkycstatus.endsWith("1")?Icon(Icons.check_circle_rounded,color: Colors.green,):
-                                              Icon(Icons.error,color: Colors.red,),
-                                            ),
+                                    child: GestureDetector(
+                                      onTap: (){
+                                        if(valustate.accountkycstatus.endsWith("1")){
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      AccountDetails()));
+                                        }else{
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      AccountVerifyUI()));
+                                        }
+                                        print("Arrow icon clicked!");
+                                      },
+                                      child: Container(
+                                        margin: const EdgeInsets.only(bottom: 12),
+                                        decoration: BoxDecoration(
+                                          border: Border.all(
+                                            color: Colors.grey.shade300,
+                                            width:  1,
                                           ),
-                                          // Details
-                                          Expanded(
-                                            child: Column(
-                                              crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  "Bank",
+                                          borderRadius: BorderRadius.circular(8),
+                                          gradient:valustate.accountkycstatus.endsWith("0")?LinearGradient(
+                                            colors: [
+                                              Color(0xFFF9FAFB), Color(0xFFF9FAFB),Color(0xFFF9FAFB)// Darker red
+                                            ],
+                                            begin: Alignment.topLeft, // Start of the gradient
+                                            end: Alignment.bottomRight, // End of the gradient
+                                          ):valustate.accountkycstatus.endsWith("1")? LinearGradient(
+                                            colors: [
+                                              Color(0xFFBCFABF), // Lighter red
+                                              Color(0xFFDAF8DC),
+                                              Color(0xFFF6ECEC),
+                                              // Darker red
+                                            ],
+                                            begin: Alignment.topLeft, // Start of the gradient
+                                            end: Alignment.bottomRight, // End of the gradient
+                                          ):LinearGradient(
+                                            colors: [
+                                              Color(0xFFFABCBD), // Lighter red
+                                              Color(0xFFF8DADA),
+                                              Color(0xFFF6ECEC),
+                                            ],
+                                            begin: Alignment.topLeft, // Start of the gradient
+                                            end: Alignment.bottomRight, // End of the gradient
+                                          ),
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            // Step Number
+                                            Container(
+                                              width: screenHeight * 0.07,
+                                              // Dynamic size for circle based on screen height
+                                              height: screenHeight * 0.07,
+                                              margin: const EdgeInsets.all(12),
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color:valustate.accountkycstatus.endsWith("1")?Colors.white: Colors.grey.shade300,
+                                              ),
+                                              child: Center(
+                                                child:valustate.accountkycstatus.endsWith("0")? Text(
+                                                  "${ 3}",
                                                   style: TextStyle(
-                                                    fontSize: 16,
+                                                    color:Colors.black,
                                                     fontWeight: FontWeight.bold,
-                                                    color:valustate.accountkycstatus.endsWith("1")?
-                                                  Colors.black:Colors.grey,
                                                   ),
-                                                ),
-                                                const SizedBox(height: 4),
-                                                Text(
-                                                  valustate.accountkycstatus.endsWith("1")?"Verified":
-                                                  "Please provide Your Bank Account number and IFSC code",
-                                                  style: const TextStyle(
-                                                    fontSize: 12,
-                                                    color: Colors.grey,
-                                                  ),
-                                                ),
-                                              ],
+                                                ):valustate.accountkycstatus.endsWith("1")?Icon(Icons.check_circle_rounded,color: Colors.green,):
+                                                Icon(Icons.error,color: Colors.red,),
+                                              ),
                                             ),
-                                          ),
-                                          InkWell(
-                                            onTap: () {
-                                              // Your action here
-                                              if(valustate.accountkycstatus.endsWith("1")){
-                                                Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            AccountDetails()));
-                                              }else{
-                                                Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            AccountVerifyUI()));
-                                              }
-                                              print("Arrow icon clicked!");
-                                            },
-                                            child: const Icon(
+                                            // Details
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    "Bank",
+                                                    style: TextStyle(
+                                                      fontSize: 16,
+                                                      fontWeight: FontWeight.bold,
+                                                      color:valustate.accountkycstatus.endsWith("1")?
+                                                    Colors.black:Colors.grey,
+                                                    ),
+                                                  ),
+                                                  const SizedBox(height: 4),
+                                                  Text(
+                                                    valustate.accountkycstatus.endsWith("1")?"Verified":
+                                                    "Please provide Your Bank Account number and IFSC code",
+                                                    style: const TextStyle(
+                                                      fontSize: 12,
+                                                      color: Colors.grey,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            const Icon(
                                               Icons.arrow_forward_ios,
                                               size: 16,
                                             ),
-                                          ),
 
-                                          const SizedBox(width: 16),
-                                        ],
+                                            const SizedBox(width: 16),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -580,116 +573,114 @@ class _KycMainScreenState extends State<KycMainScreenDashboard> {
                                   const SizedBox(height: 16),
                                   Visibility(
                                     visible:valustate.upiEnable.toString().endsWith("Yes")?true:false,
-                                    child: Container(
-                                      margin: const EdgeInsets.only(bottom: 12),
-                                      decoration: BoxDecoration(
-                                        border: Border.all(
-                                          color: Colors.grey.shade300,
-                                          width:  1,
-                                        ),
-                                        borderRadius: BorderRadius.circular(8),
-                                        gradient:valustate.upikycstatus.endsWith("0")?LinearGradient(
-                                          colors: [
-                                            Color(0xFFF9FAFB), Color(0xFFF9FAFB),Color(0xFFF9FAFB)// Darker red
-                                          ],
-                                          begin: Alignment.topLeft, // Start of the gradient
-                                          end: Alignment.bottomRight, // End of the gradient
-                                        ):valustate.upikycstatus.endsWith("1")? LinearGradient(
-                                          colors: [
-                                            Color(0xFFBCFABF), // Lighter red
-                                            Color(0xFFDAF8DC),
-                                            Color(0xFFF6ECEC),
-                                            // Darker red
-                                          ],
-                                          begin: Alignment.topLeft, // Start of the gradient
-                                          end: Alignment.bottomRight, // End of the gradient
-                                        ):LinearGradient(
-                                          colors: [
-                                            Color(0xFFFABCBD), // Lighter red
-                                            Color(0xFFF8DADA),
-                                            Color(0xFFF6ECEC),
-                                          ],
-                                          begin: Alignment.topLeft, // Start of the gradient
-                                          end: Alignment.bottomRight, // End of the gradient
-                                        ),
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          // Step Number
-                                          Container(
-                                            width: screenHeight * 0.07,
-                                            // Dynamic size for circle based on screen height
-                                            height: screenHeight * 0.07,
-                                            margin: const EdgeInsets.all(12),
-                                            decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              color:valustate.upikycstatus.endsWith("1")?Colors.white: Colors.grey.shade300,
-                                            ),
-                                            child: Center(
-                                              child:valustate.upikycstatus.endsWith("0")? Text(
-                                                "${ 4}",
-                                                style: TextStyle(
-                                                  color:Colors.black,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ):valustate.upikycstatus.endsWith("1")?Icon(Icons.check_circle_rounded,color: Colors.green,):
-                                              Icon(Icons.error,color: Colors.red,),
-                                            ),
+                                    child: GestureDetector(
+                                      onTap: (){
+                                        if(valustate.upikycstatus.endsWith("1")){
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      UPIDetails()));
+                                        }else{
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      UpiIdVerifyUI()));
+                                        }
+                                        print("Arrow icon clicked!");
+                                      },
+                                      child: Container(
+                                        margin: const EdgeInsets.only(bottom: 12),
+                                        decoration: BoxDecoration(
+                                          border: Border.all(
+                                            color: Colors.grey.shade300,
+                                            width:  1,
                                           ),
-                                          // Details
-                                          Expanded(
-                                            child: Column(
-                                              crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  "UPI",
+                                          borderRadius: BorderRadius.circular(8),
+                                          gradient:valustate.upikycstatus.endsWith("0")?LinearGradient(
+                                            colors: [
+                                              Color(0xFFF9FAFB), Color(0xFFF9FAFB),Color(0xFFF9FAFB)// Darker red
+                                            ],
+                                            begin: Alignment.topLeft, // Start of the gradient
+                                            end: Alignment.bottomRight, // End of the gradient
+                                          ):valustate.upikycstatus.endsWith("1")? LinearGradient(
+                                            colors: [
+                                              Color(0xFFBCFABF), // Lighter red
+                                              Color(0xFFDAF8DC),
+                                              Color(0xFFF6ECEC),
+                                              // Darker red
+                                            ],
+                                            begin: Alignment.topLeft, // Start of the gradient
+                                            end: Alignment.bottomRight, // End of the gradient
+                                          ):LinearGradient(
+                                            colors: [
+                                              Color(0xFFFABCBD), // Lighter red
+                                              Color(0xFFF8DADA),
+                                              Color(0xFFF6ECEC),
+                                            ],
+                                            begin: Alignment.topLeft, // Start of the gradient
+                                            end: Alignment.bottomRight, // End of the gradient
+                                          ),
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            // Step Number
+                                            Container(
+                                              width: screenHeight * 0.07,
+                                              // Dynamic size for circle based on screen height
+                                              height: screenHeight * 0.07,
+                                              margin: const EdgeInsets.all(12),
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color:valustate.upikycstatus.endsWith("1")?Colors.white: Colors.grey.shade300,
+                                              ),
+                                              child: Center(
+                                                child:valustate.upikycstatus.endsWith("0")? Text(
+                                                  "${ 4}",
                                                   style: TextStyle(
-                                                    fontSize: 16,
+                                                    color:Colors.black,
                                                     fontWeight: FontWeight.bold,
-                                                    color:valustate.upikycstatus.endsWith("1")?
-                                                    Colors.black:Colors.grey,
                                                   ),
-                                                ),
-                                                const SizedBox(height: 4),
-                                                Text(
-                                                  valustate.upikycstatus.endsWith("1")?"Verified":
-                                                  "Provide your UPI Id.",
-                                                  style: const TextStyle(
-                                                    fontSize: 12,
-                                                    color: Colors.grey,
-                                                  ),
-                                                ),
-                                              ],
+                                                ):valustate.upikycstatus.endsWith("1")?Icon(Icons.check_circle_rounded,color: Colors.green,):
+                                                Icon(Icons.error,color: Colors.red,),
+                                              ),
                                             ),
-                                          ),
-                                          InkWell(
-                                            onTap: () {
-                                              // Your action here
-                                              if(valustate.upikycstatus.endsWith("1")){
-                                                Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            UPIDetails()));
-                                              }else{
-                                                Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            UpiIdVerifyUI()));
-                                              }
-                                              print("Arrow icon clicked!");
-
-                                            },
-                                            child: const Icon(
+                                            // Details
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    "UPI",
+                                                    style: TextStyle(
+                                                      fontSize: 16,
+                                                      fontWeight: FontWeight.bold,
+                                                      color:valustate.upikycstatus.endsWith("1")?
+                                                      Colors.black:Colors.grey,
+                                                    ),
+                                                  ),
+                                                  const SizedBox(height: 4),
+                                                  Text(
+                                                    valustate.upikycstatus.endsWith("1")?"Verified":
+                                                    "Provide your UPI Id.",
+                                                    style: const TextStyle(
+                                                      fontSize: 12,
+                                                      color: Colors.grey,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            const Icon(
                                               Icons.arrow_forward_ios,
                                               size: 16,
                                             ),
-                                          ),
 
-                                          const SizedBox(width: 16),
-                                        ],
+                                            const SizedBox(width: 16),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),

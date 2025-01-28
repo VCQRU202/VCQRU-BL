@@ -39,9 +39,9 @@ class _DynamicFormPageState extends State<EditProfileFormPage> {
     });
     super.dispose();
   }
-  void dialogProfile(BuildContext context) {
+  void dialogProfile(BuildContext context1,EditProfileProvider provider) {
     showDialog(
-        context: context,
+        context: context1,
         builder: (BuildContext context) {
           return Dialog(
             shape: RoundedRectangleBorder(
@@ -69,7 +69,7 @@ class _DynamicFormPageState extends State<EditProfileFormPage> {
                                   color: Colors.deepOrange,
                                 ),
                                 onPressed: () {
-                                 // getImgCamera();
+                                  provider.getImgCamera(context1);
                                   Navigator.of(context).pop();
                                 },
                               ),
@@ -101,7 +101,7 @@ class _DynamicFormPageState extends State<EditProfileFormPage> {
                                 ),
                                 onPressed: () {
                                   //_imageFromGallery();
-                                 // getImg();
+                                  provider.getImgGallery(context1);
                                   Navigator.of(context).pop();
                                 },
                               ),
@@ -138,393 +138,384 @@ class _DynamicFormPageState extends State<EditProfileFormPage> {
       },
       child: Scaffold(
           // appBar: AppBar(title: Text('')),
-          body:Consumer<EditProfileProvider>(builder: (context,valustate,child){
-            if(valustate.isLoadingForm){
-              return Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      //Text("Please Wait"),
-                      CircularProgressIndicator(),
-                    ],
-                  ));
-            }else{
-              if (valustate.hasErrorForm) {
-                return Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(' ${valustate.errorMessageForm}'),
-                      SizedBox(height: 20),
-                      ElevatedButton(
-                        onPressed: () {
-                          valustate.retryFetchfetchFormFields();
-                        },
-                        child: Text('Retry'),
-                      ),
-                    ],
-                  ),
-                );
-              }else{
-                return Form(
-                    key: formProvider.formKey,
-                    child:Column(
-                      children: [
-                        Container(
-                          width: 360,
-                          height: 166,
-                          padding: const EdgeInsets.only(
-                            top: 0,
-                            left: 0,
-                            right: 0,
-                            bottom: 16,
-                          ),
-                          clipBehavior: Clip.antiAlias,
-                          decoration: ShapeDecoration(
-                            gradient: SweepGradient(
-                              center: Alignment(0.11, 0.76),
-                              startAngle: -0.78,
-                              endAngle: -0.11,
-                              colors: [
-                                splashProvider.color_bg,
-                                splashProvider.color_bg
+          appBar: AppBar(
+            title: Text('Edit Profile',style: TextStyle(fontSize: 18,color: Colors.white),),
+            backgroundColor: splashProvider.color_bg,
+            centerTitle: true,
+            leading: IconButton(
+              icon: Icon(Icons.arrow_back,color: Colors.white,),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ),
+          body:Column(
+            children: [
+              SizedBox(height: 15,),
+              Consumer<DashboardProvider>(
+                  builder: (context, valustate, child) {
+                    if (valustate.isloading_kycs) {
+                      return Center(
+                          child: Container(
+                              height: 20,
+                              width: 20,
+                              margin: EdgeInsets.only(top: 10),
+                              child: CircularProgressIndicator()));
+                    } else {
+                      if (valustate.hasError_kycs) {
+                        return Container(
+                          width: double.infinity,
+                          margin:
+                          EdgeInsets.only(top: 15, left: 10, right: 10),
+                          decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                  colors: [
+                                    const Color(0xFF3366FF),
+                                    const Color(0xFF00CCFF),
+                                  ],
+                                  begin: const FractionalOffset(0.0, 0.0),
+                                  end: const FractionalOffset(1.0, 0.0),
+                                  stops: [0.0, 1.0],
+                                  tileMode: TileMode.clamp),
+                              borderRadius:
+                              BorderRadius.all(Radius.circular(10))),
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(' ${valustate.errorMessage_kycs}'),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    valustate.retryKYCSTATUS();
+                                  },
+                                  child: Text('Retry'),
+                                ),
                               ],
                             ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(16),
-                                bottomRight: Radius.circular(16),
-                              ),
-                            ),
-                            shadows: [
-                              BoxShadow(
-                                color: Color(0x1E000000),
-                                blurRadius: 16,
-                                offset: Offset(0, 12),
-                                spreadRadius: 0,
-                              )
-                            ],
                           ),
-                          child: Consumer<DashboardProvider>(
-                              builder: (context, valustate, child) {
-                                if (valustate.isloading_profile) {
-                                  return Center(
-                                      child: Container(
-                                          height: 40,
-                                          width: 40,
-                                          margin: EdgeInsets.only(top: 10),
-                                          child: CircularProgressIndicator()));
-                                } else {
-                                  if (valustate.hasError_profile) {
-                                    return Container(
-                                      width: double.infinity,
-                                      margin:
-                                      EdgeInsets.only(top: 15, left: 10, right: 10),
-
-                                      child: Center(
-                                        child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                          children: [
-                                            Text('${valustate.errorMessage_profile}'),
-                                            ElevatedButton(
-                                              onPressed: () {
-                                                valustate.retryProfile();
-                                              },
-                                              child: Text('Retry'),
+                        );
+                      } else {
+                        print("--------------reload Image---------");
+                        return  SizedBox(
+                          width: 90,
+                          height: 90,
+                          child: Center(
+                            child: Stack(
+                              children: <Widget>[
+                                CircleAvatar(
+                                    radius: 120,
+                                    child:valustate.userProfile == null || valustate.userProfile!.isEmpty?CircleAvatar(
+                                      radius: 42,
+                                      backgroundImage: AssetImage('assets/profile_photo_demo.jpg'),
+                                      backgroundColor:Colors.grey,
+                                    ): ClipOval(
+                                      child: Image.network(
+                                        valustate.userProfile!,
+                                        width: 120,
+                                        height: 120,
+                                        fit: BoxFit.fill,
+                                        loadingBuilder:
+                                            (BuildContext context,
+                                            Widget child,
+                                            ImageChunkEvent?
+                                            loadingProgress) {
+                                          if (loadingProgress == null)
+                                            return child;
+                                          return Center(
+                                            child:
+                                            CircularProgressIndicator(
+                                              value: loadingProgress
+                                                  .expectedTotalBytes !=
+                                                  null
+                                                  ? loadingProgress
+                                                  .cumulativeBytesLoaded /
+                                                  loadingProgress
+                                                      .expectedTotalBytes!
+                                                  : null,
                                             ),
-                                          ],
+                                          );
+                                        },
+                                      ),
+                                    )),
+                                //Container//Container
+                                Positioned(
+                                  top: 65,
+                                  left: 65,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      final provid = Provider.of<EditProfileProvider>(context, listen: false);
+                                      dialogProfile(context,provid);
+                                    },
+                                    child:Material(
+                                      elevation: 4.0,  // Set the elevation (higher value = more shadow)
+                                      shape: CircleBorder(),  // Ensures the container remains circular
+                                      child: Container(
+                                        height: 25,
+                                        width: 25,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Colors.white,
+                                        ),
+                                        child: Icon(
+                                          Icons.edit,
+                                          color: Colors.black54,
+                                          size: 15,
                                         ),
                                       ),
-                                    );
-                                  } else {
-
-                                    return Column(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        SizedBox(height: 30,),
-                                        Stack(
-                                          alignment: Alignment.center,
-                                          children: [
-                                            Row(
-                                              children: [
-                                                IconButton(
-                                                  icon: Icon(Icons.arrow_back, color: Colors.white),
-                                                  onPressed: () {
-                                                    Navigator.pop(context);
-                                                  },
-                                                ),
-                                              ],
-                                            ),
-                                            Text(
-                                              "Edit Profile",
-                                              style: TextStyle(
-                                                fontSize: 18,
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-
-                                        Row(
-                                          children: [
-                                            Container(
-                                              width: 48,
-                                              height: 48,
-                                              margin: EdgeInsets.only(left: 10),
-                                              decoration: ShapeDecoration(
-                                                gradient: LinearGradient(
-                                                  begin: Alignment(0.00, -1.00),
-                                                  end: Alignment(0, 1),
-                                                  colors: [Colors.black.withOpacity(0), Colors.black],
-                                                ),
-                                                shape: OvalBorder(
-                                                  side: BorderSide(width: 2, color: Colors.white),
-                                                ),
-                                              ),
-                                            ),
-                                            SizedBox(width: 10,),
-                                            Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                Text(valustate.profile?.consumerName.toString().split(' ')[0]??"",style: TextStyle(fontSize: 18,color: Colors.white),),
-                                                Row(
-                                                  children: [
-                                                    CustomText(
-                                                      text: "KYC : ${_getKYCStatusText(int.tryParse(valustate.profile?.vrKblKYCStatus ?? "0") ?? 0)}",
-                                                      color: _getKYCStatusColor(int.tryParse(valustate.profile?.vrKblKYCStatus ?? "0") ?? 0),
-                                                      fontSize: 12,
-                                                    ),
-                                                    SizedBox(width: 4), // Spacing between text and icon
-                                                    Icon(
-                                                      _getKYCStatusIcon(int.tryParse(valustate.profile?.vrKblKYCStatus ?? "0") ?? 0),
-                                                      color: _getKYCStatusColor1(int.tryParse(valustate.profile?.vrKblKYCStatus ?? "0") ?? 0),
-                                                      size: 16,
-                                                    ),
-                                                  ],
-                                                ),
-                                              ],
-                                            ),
-                                            Spacer(),
-
-                                          ],
-                                        ),
-                                      ],
-                                    );
-                                  }
-                                }
-                              }),
+                                    ),
+                                  ),
+                                ),
+                                //Container
+                              ], //<Widget>[]
+                            ), //Stack
+                          ), //Center
+                        );
+                      }
+                    }
+                  }),
+              Expanded(
+                child: Consumer<EditProfileProvider>(builder: (context,valustate,child){
+                  if(valustate.isLoadingForm){
+                    return Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            //Text("Please Wait"),
+                            CircularProgressIndicator(),
+                          ],
+                        ));
+                  }else{
+                    if (valustate.hasErrorForm) {
+                      return Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(' ${valustate.errorMessageForm}'),
+                            SizedBox(height: 20),
+                            ElevatedButton(
+                              onPressed: () {
+                                valustate.retryFetchfetchFormFields();
+                              },
+                              child: Text('Retry'),
+                            ),
+                          ],
                         ),
-                       Expanded(
-                           child: SingleChildScrollView(
-                           child: Container(
-                           margin: EdgeInsets.only(bottom: 16.0,left: 16,right: 16,top: 15),
-                           decoration: BoxDecoration(
-                               borderRadius: BorderRadius.all(Radius.circular(5)),
-                               color: Colors.white),
-                           child: Column(
-                             children: [
-                               SizedBox(height: 15,),
-                               SizedBox(
-                                 width: 90,
-                                 height: 90,
-                                 child: Center(
-                                   child: Stack(
-                                     children: <Widget>[
-                                       CircleAvatar(
-                                           radius: 120,
-                                           child:imageProfileUrl.isEmpty?CircleAvatar(
-                                             radius: 42,
-                                             backgroundImage: AssetImage('assets/profile_photo_demo.jpg'),
-                                             backgroundColor:Colors.grey,
-                                           ): ClipOval(
-                                             child: Image.network(
-                                               "",
-                                               width: 120,
-                                               height: 120,
-                                               fit: BoxFit.fill,
-                                               loadingBuilder:
-                                                   (BuildContext context,
-                                                   Widget child,
-                                                   ImageChunkEvent?
-                                                   loadingProgress) {
-                                                 if (loadingProgress == null)
-                                                   return child;
-                                                 return Center(
-                                                   child:
-                                                   CircularProgressIndicator(
-                                                     value: loadingProgress
-                                                         .expectedTotalBytes !=
-                                                         null
-                                                         ? loadingProgress
-                                                         .cumulativeBytesLoaded /
-                                                         loadingProgress
-                                                             .expectedTotalBytes!
-                                                         : null,
-                                                   ),
-                                                 );
+                      );
+                    }else{
+                      return Form(
+                          key: formProvider.formKey,
+                          child:Column(
+                            children: [
+                             Expanded(
+                                 child: SingleChildScrollView(
+                                 child: Container(
+                                 margin: EdgeInsets.only(bottom: 16.0,left: 16,right: 16,top: 15),
+                                 decoration: BoxDecoration(
+                                     borderRadius: BorderRadius.all(Radius.circular(5)),
+                                     color: Colors.white),
+                                 child: Column(
+                                   children: [
+                                     SizedBox(height: 15,),
+                                     // SizedBox(
+                                     //   width: 90,
+                                     //   height: 90,
+                                     //   child: Center(
+                                     //     child: Stack(
+                                     //       children: <Widget>[
+                                     //         CircleAvatar(
+                                     //             radius: 120,
+                                     //             child:valustate.imageURL == null || valustate.imageURL!.isEmpty?CircleAvatar(
+                                     //               radius: 42,
+                                     //               backgroundImage: AssetImage('assets/profile_photo_demo.jpg'),
+                                     //               backgroundColor:Colors.grey,
+                                     //             ): ClipOval(
+                                     //               child: Image.network(
+                                     //                 valustate.imageURL!,
+                                     //                 width: 120,
+                                     //                 height: 120,
+                                     //                 fit: BoxFit.fill,
+                                     //                 loadingBuilder:
+                                     //                     (BuildContext context,
+                                     //                     Widget child,
+                                     //                     ImageChunkEvent?
+                                     //                     loadingProgress) {
+                                     //                   if (loadingProgress == null)
+                                     //                     return child;
+                                     //                   return Center(
+                                     //                     child:
+                                     //                     CircularProgressIndicator(
+                                     //                       value: loadingProgress
+                                     //                           .expectedTotalBytes !=
+                                     //                           null
+                                     //                           ? loadingProgress
+                                     //                           .cumulativeBytesLoaded /
+                                     //                           loadingProgress
+                                     //                               .expectedTotalBytes!
+                                     //                           : null,
+                                     //                     ),
+                                     //                   );
+                                     //                 },
+                                     //               ),
+                                     //             )),
+                                     //         //Container//Container
+                                     //         Positioned(
+                                     //           top: 65,
+                                     //           left: 65,
+                                     //           child: GestureDetector(
+                                     //             onTap: () {
+                                     //               dialogProfile(context,valustate);
+                                     //             },
+                                     //             child:Material(
+                                     //               elevation: 4.0,  // Set the elevation (higher value = more shadow)
+                                     //               shape: CircleBorder(),  // Ensures the container remains circular
+                                     //               child: Container(
+                                     //                 height: 25,
+                                     //                 width: 25,
+                                     //                 decoration: BoxDecoration(
+                                     //                   shape: BoxShape.circle,
+                                     //                   color: Colors.white,
+                                     //                 ),
+                                     //                 child: Icon(
+                                     //                   Icons.edit,
+                                     //                   color: Colors.black54,
+                                     //                   size: 15,
+                                     //                 ),
+                                     //               ),
+                                     //             ),
+                                     //           ),
+                                     //         ),
+                                     //         //Container
+                                     //       ], //<Widget>[]
+                                     //     ), //Stack
+                                     //   ), //Center
+                                     // ),
+                                     SizedBox(height: 10,),
+                                     ...formProvider.formFields.map((field) {
+                                       Widget fieldWidget;
+                                       switch (field['type']) {
+                                         case 'text':
+                                           fieldWidget = field['isPassword'] == true
+                                               ? buildPasswordField(field, formProvider)
+                                               : buildTextField(field, formProvider);
+                                           break;
+                                         case 'dropdown':
+                                           fieldWidget = buildDropdown(field, formProvider);
+                                           break;
+                                         case 'radio':
+                                           fieldWidget = buildRadioButton(field, formProvider);
+                                           break;
+                                         case 'DOB':
+                                           fieldWidget = buildDateField(field, formProvider);
+                                           break;
+                                         default:
+                                           fieldWidget = SizedBox.shrink();
+                                       }
+                                       // Add a margin between each field
+                                       return Padding(
+                                         padding: EdgeInsets.only(bottom: 16.0,left: 16,right: 16), // Add margin below each field
+                                         child: fieldWidget,
+                                       );
+                                     }).toList(),
+                                     SizedBox(height: 20),
+                                     Consumer<EditProfileProvider>(
+                                       builder: (context, provider, child) {
+                                         return    Container(
+                                           width: double.infinity,
+                                           color: Colors.white,
+                                           child: Padding(
+                                             padding: const EdgeInsets.only(left: 8,right: 8),
+                                             child: ElevatedButton(
+                                               onPressed: () async {
+                                                 if (formProvider.formKey.currentState!.validate()) {
+                
+                                                 }
+                                                 String requestData="";
+                                                 for (var field in provider.formFields) {
+                                                   String label = field['label'];
+                                                   bool isMandatory = !(field['optional'] ?? true);
+                                                   String? fieldValue = provider.formData[label]?.toString();
+                                                   // Skip validation for "mobile" field
+                                                   if (label == "Mobile") {
+                                                     continue;
+                                                   }
+                                                   if (isMandatory && (provider.formData[label] == null || provider.formData[label].toString().isEmpty)) {
+                                                     ScaffoldMessenger.of(context).showSnackBar(
+                                                       SnackBar(content: Text('Please fill in the mandatory field: $label')),
+                                                     );
+                                                     return;
+                                                   }
+                                                   // If the field has a regex and the value doesn't match, show error
+                                                   // if (field['regex'] != null && fieldValue != null && !RegExp(field['regex']).hasMatch(fieldValue)) {
+                                                   //   ScaffoldMessenger.of(context).showSnackBar(
+                                                   //     SnackBar(content: Text('Invalid value for $label')),
+                                                   //   );
+                                                   //   return; // Stop further execution if the value is invalid
+                                                   // }
+                                                   String formattedData = provider.formFields.map((field) {
+                                                     String label = field['label'];
+                                                     //String value = provider.formData[label]?.toString() ?? "";
+                                                     String value;
+                
+                                                     // Regular processing for other labels
+                                                     value = provider.formData[label]?.toString() ?? "";
+                
+                                                     return "$label=$value";
+                                                   }).join("<@>");
+                                                   requestData=formattedData;
+                                                   // Log or show the formatted data for debugging
+                                                   print("Formatted Data: $formattedData");
+                
+                                                 }
+                                                 var value1=await provider.submitForm(requestData);
+                                                 if (value1 != null) {
+                                                   var status = value1["success"] ?? false;
+                                                   var msg = value1["message"] ?? AppUrl.warningMSG;
+                                                   if (status) {
+                                                     toastRedC(msg);
+                                                     Provider.of<ProfileProvider>(context, listen: false).getProfileDetail();
+                                                     Navigator.pop(context);
+                                                   } else {
+                                                     CustomAlert.showMessage(
+                                                         context, "", msg.toString(), AlertType.info);
+                                                   }
+                                                 } else {
+                                                   toastRedC(AppUrl.warningMSG);
+                                                 }
                                                },
-                                             ),
-                                           )),
-                                       //Container//Container
-                                       Positioned(
-                                         top: 65,
-                                         left: 65,
-                                         child: GestureDetector(
-                                           onTap: () {
-                                             dialogProfile(context);
-                                           },
-                                           child:Material(
-                                             elevation: 4.0,  // Set the elevation (higher value = more shadow)
-                                             shape: CircleBorder(),  // Ensures the container remains circular
-                                             child: Container(
-                                               height: 25,
-                                               width: 25,
-                                               decoration: BoxDecoration(
-                                                 shape: BoxShape.circle,
-                                                 color: Colors.white,
+                                               style: ElevatedButton.styleFrom(
+                                                 padding: EdgeInsets.symmetric(vertical: 1),
+                                                 backgroundColor: AppColor.app_btn_color,
+                                                 shape: RoundedRectangleBorder(
+                                                   borderRadius: BorderRadius.circular(8),
+                                                 ),
                                                ),
-                                               child: Icon(
-                                                 Icons.edit,
-                                                 color: Colors.black54,
-                                                 size: 15,
+                                               child:  provider.isLoadingPan? CircularProgressIndicator(
+                                                 color: AppColor.white_color,
+                                                 strokeAlign: 0,
+                                                 strokeWidth: 4,
+                                               )
+                                                   :Text(
+                                                 'Submit',
+                                                 style: TextStyle(fontSize: 16, color: Colors.white),
                                                ),
                                              ),
                                            ),
-                                         ),
-                                       ),
-                                       //Container
-                                     ], //<Widget>[]
-                                   ), //Stack
-                                 ), //Center
-                               ),
-                               SizedBox(height: 10,),
-                               ...formProvider.formFields.map((field) {
-                                 Widget fieldWidget;
-                                 switch (field['type']) {
-                                   case 'text':
-                                     fieldWidget = field['isPassword'] == true
-                                         ? buildPasswordField(field, formProvider)
-                                         : buildTextField(field, formProvider);
-                                     break;
-                                   case 'dropdown':
-                                     fieldWidget = buildDropdown(field, formProvider);
-                                     break;
-                                   case 'radio':
-                                     fieldWidget = buildRadioButton(field, formProvider);
-                                     break;
-                                   case 'DOB':
-                                     fieldWidget = buildDateField(field, formProvider);
-                                     break;
-                                   default:
-                                     fieldWidget = SizedBox.shrink();
-                                 }
-                                 // Add a margin between each field
-                                 return Padding(
-                                   padding: EdgeInsets.only(bottom: 16.0,left: 16,right: 16), // Add margin below each field
-                                   child: fieldWidget,
-                                 );
-                               }).toList(),
-                               SizedBox(height: 20),
-                               Consumer<EditProfileProvider>(
-                                 builder: (context, provider, child) {
-                                   return    Container(
-                                     width: double.infinity,
-                                     color: Colors.white,
-                                     child: Padding(
-                                       padding: const EdgeInsets.only(left: 8,right: 8),
-                                       child: ElevatedButton(
-                                         onPressed: () async {
-                                           if (formProvider.formKey.currentState!.validate()) {
-
-                                           }
-                                           String requestData="";
-                                           for (var field in provider.formFields) {
-                                             String label = field['label'];
-                                             bool isMandatory = !(field['optional'] ?? true);
-                                             String? fieldValue = provider.formData[label]?.toString();
-                                             // Skip validation for "mobile" field
-                                             if (label == "Mobile") {
-                                               continue;
-                                             }
-                                             if (isMandatory && (provider.formData[label] == null || provider.formData[label].toString().isEmpty)) {
-                                               ScaffoldMessenger.of(context).showSnackBar(
-                                                 SnackBar(content: Text('Please fill in the mandatory field: $label')),
-                                               );
-                                               return;
-                                             }
-                                             // If the field has a regex and the value doesn't match, show error
-                                             // if (field['regex'] != null && fieldValue != null && !RegExp(field['regex']).hasMatch(fieldValue)) {
-                                             //   ScaffoldMessenger.of(context).showSnackBar(
-                                             //     SnackBar(content: Text('Invalid value for $label')),
-                                             //   );
-                                             //   return; // Stop further execution if the value is invalid
-                                             // }
-                                             String formattedData = provider.formFields.map((field) {
-                                               String label = field['label'];
-                                               //String value = provider.formData[label]?.toString() ?? "";
-                                               String value;
-
-                                               // Regular processing for other labels
-                                               value = provider.formData[label]?.toString() ?? "";
-
-                                               return "$label=$value";
-                                             }).join("<@>");
-                                             requestData=formattedData;
-                                             // Log or show the formatted data for debugging
-                                             print("Formatted Data: $formattedData");
-
-                                           }
-                                           var value1=await provider.submitForm(requestData);
-                                           if (value1 != null) {
-                                             var status = value1["success"] ?? false;
-                                             var msg = value1["message"] ?? AppUrl.warningMSG;
-                                             if (status) {
-                                               toastRedC(msg);
-                                               Provider.of<ProfileProvider>(context, listen: false).getProfileDetail();
-                                               Navigator.pop(context);
-                                             } else {
-                                               CustomAlert.showMessage(
-                                                   context, "", msg.toString(), AlertType.info);
-                                             }
-                                           } else {
-                                             toastRedC(AppUrl.warningMSG);
-                                           }
-                                         },
-                                         style: ElevatedButton.styleFrom(
-                                           padding: EdgeInsets.symmetric(vertical: 1),
-                                           backgroundColor: AppColor.app_btn_color,
-                                           shape: RoundedRectangleBorder(
-                                             borderRadius: BorderRadius.circular(8),
-                                           ),
-                                         ),
-                                         child:  provider.isLoadingPan? CircularProgressIndicator(
-                                           color: AppColor.white_color,
-                                           strokeAlign: 0,
-                                           strokeWidth: 4,
-                                         )
-                                             :Text(
-                                           'Submit',
-                                           style: TextStyle(fontSize: 16, color: Colors.white),
-                                         ),
-                                       ),
+                                         ); // Default UI
+                                       },
                                      ),
-                                   ); // Default UI
-                                 },
+                                   ],
+                                 ),
                                ),
-                             ],
-                           ),
-                         ),
-                       ))
-                      ],
-                    )
-
-                );
-              }
-            }})
+                             ))
+                            ],
+                          )
+                
+                      );
+                    }
+                  }}),
+              ),
+            ],
+          )
       ),
     );
   }

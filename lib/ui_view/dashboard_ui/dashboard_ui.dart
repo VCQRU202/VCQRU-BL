@@ -10,6 +10,7 @@ import '../../providers_of_app/splash_screen_provider/splash_screen_provider.dar
 import '../../res/app_colors/app_colors.dart';
 import '../../res/components/circle_profile.dart';
 import '../../res/components/custom_text.dart';
+import '../../res/shared_preferences.dart';
 import '../../res/values/images_assets.dart';
 import '../../res/values/values.dart';
 import '../blogs/blogs_ui.dart';
@@ -29,6 +30,7 @@ import '../report/report_main_ui.dart';
 import '../scanner_ui/scanner_ui.dart';
 import '../tset_ui/test_ui.dart';
 import '../wallets/wallet_balance_with_points.dart';
+import '../wheel_spin/wheel_spin_widgets.dart';
 import 'banner_widget.dart';
 
 import 'package:badges/badges.dart' as badges;
@@ -71,10 +73,11 @@ class _Dashboard_vcqruState extends State<DashboardApp> {
   Future<void> _refresh() async {
     await Future.delayed(Duration(seconds: 2));
     // Simulating network request\
-    Provider.of<DashboardProvider>(context, listen: false).fetchWallet();
+    //Provider.of<DashboardProvider>(context, listen: false).fetchWallet();
     Provider.of<DashboardProvider>(context, listen: false).getKYCSTATUS();
     Provider.of<DashboardProvider>(context, listen: false).getProfile();
     Provider.of<BannerProvider>(context, listen: false).getBanner();
+    Provider.of<DashboardProvider>(context, listen: false).getDashboardIName();
   }
   @override
   Widget build(BuildContext context) {
@@ -165,8 +168,8 @@ class _Dashboard_vcqruState extends State<DashboardApp> {
                             if (valustate.isloading_profile) {
                               return Center(
                                   child: Container(
-                                      height: 40,
-                                      width: 40,
+                                      height: 20,
+                                      width: 20,
                                       margin: EdgeInsets.only(top: 10),
                                       child: CircularProgressIndicator()));
                             } else {
@@ -204,7 +207,10 @@ class _Dashboard_vcqruState extends State<DashboardApp> {
                                   ),
                                 );
                               } else {
-
+                                String? userName = valustate.profile?.consumerName;
+                                if (userName != null && userName.isNotEmpty) {
+                                  SharedPrefHelper().save("Name", userName);
+                                }
                                 return Container(
                                   margin: EdgeInsets.only(top: 20),
                                   child: Padding(
@@ -380,15 +386,15 @@ class _Dashboard_vcqruState extends State<DashboardApp> {
                         ),
                         child: Consumer<DashboardProvider>(
                             builder: (context, valustate, child) {
-                              if (valustate.isLoading_wallet) {
+                              if (valustate.isLoading) {
                                 return Center(
                                     child: Container(
-                                        height: 40,
-                                        width: 40,
+                                        height: 20,
+                                        width: 20,
                                         margin: EdgeInsets.only(top: 10),
                                         child: CircularProgressIndicator()));
                               } else {
-                                if (valustate.hasError_wallet) {
+                                if (valustate.hasError) {
                                   return Container(
                                     width: double.infinity,
                                     margin: EdgeInsets.only(top: 10, left: 10, right: 10),
@@ -409,10 +415,10 @@ class _Dashboard_vcqruState extends State<DashboardApp> {
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         crossAxisAlignment: CrossAxisAlignment.center,
                                         children: [
-                                          Text(' ${valustate.errorMessage_wallet}'),
+                                          Text(' ${valustate.errorMessage}'),
                                           ElevatedButton(
                                             onPressed: () {
-                                              valustate.retryFetchWallet();
+                                              valustate.retryDashboardIName();
                                             },
                                             child: Text('Retry'),
                                           ),
@@ -421,18 +427,8 @@ class _Dashboard_vcqruState extends State<DashboardApp> {
                                     ),
                                   );
                                 } else {
-                                  String total_point = valustate.dashbaord!.totalPoint ?? "0";
-                                  String transferred_point = valustate.dashbaord!.reedemPoint ?? "0";
-                                  var points;
-                                  if(total_point.isNotEmpty&&transferred_point.isNotEmpty){
-                                    var e = double.parse(total_point);
-                                    var f = double.parse(transferred_point);
-                                   var points1 = e - f;
-                                  //  points =points1.toString();
-                                    points =points1 % 1 == 0 ? points1.toInt().toString() : points1.toString();
-                                  }else{
-                                    points="0";
-                                  }
+                                  final dashboardData = valustate.dashdynaData?.data?.additionalData;
+
                                   return Padding(
                                     padding: const EdgeInsets.only(
                                         left: 8, right: 8, top: 15, bottom: 15),
@@ -445,9 +441,9 @@ class _Dashboard_vcqruState extends State<DashboardApp> {
                                           child:Column(
                                             crossAxisAlignment: CrossAxisAlignment.center,
                                             children: [
-                                              Text(total_point,style: TextStyle(fontSize: 20,
+                                              Text(dashboardData?.totalPoint??"NA",style: TextStyle(fontSize: 20,
                                                   fontWeight: FontWeight.bold,color: Colors.white)),
-                                              Text("Total Points",style: TextStyle(fontSize: 14,color: Colors.white),)
+                                              Text(dashboardData?.txtPoint??"NA",style: TextStyle(fontSize: 14,color: Colors.white),)
                                             ],
                                           ),
                                         ),
@@ -456,9 +452,9 @@ class _Dashboard_vcqruState extends State<DashboardApp> {
                                           child:Column(
                                             crossAxisAlignment: CrossAxisAlignment.center,
                                             children: [
-                                              Text(transferred_point,style: TextStyle(fontSize: 20,
+                                              Text(dashboardData?.reedemPoint??"NA",style: TextStyle(fontSize: 20,
                                                   fontWeight: FontWeight.bold,color: Colors.white)),
-                                              Text("Redeem Points",style: TextStyle(fontSize: 14,color: Colors.white),)
+                                              Text(dashboardData?.txtreedemPoint??"NA",style: TextStyle(fontSize: 14,color: Colors.white),)
                                             ],
                                           ),
                                         ),
@@ -467,9 +463,9 @@ class _Dashboard_vcqruState extends State<DashboardApp> {
                                           child:Column(
                                             crossAxisAlignment: CrossAxisAlignment.center,
                                             children: [
-                                              Text(points,style: TextStyle(fontSize: 20,
+                                              Text(dashboardData?.avlaiblepoint??"NA",style: TextStyle(fontSize: 20,
                                                   fontWeight: FontWeight.bold,color: Colors.white)),
-                                              Text("Balance Points",style: TextStyle(fontSize: 14,color: Colors.white),)
+                                              Text(dashboardData?.txtavlaiblepoint??"NA",style: TextStyle(fontSize: 14,color: Colors.white),)
                                             ],
                                           ),
                                         ),
@@ -484,16 +480,26 @@ class _Dashboard_vcqruState extends State<DashboardApp> {
                   ),
                 ),
                 Container(
-                    margin: EdgeInsets.only(left: 0,right: 0,top: 15),
+                    margin: EdgeInsets.only(left: 0,right: 0,top: 16),
                     child: BannerWidget()
                 ),
+                // GestureDetector(
+                //   onTap: (){
+                //     Navigator.push(context, MaterialPageRoute(builder: (context)=>FortuneWheelExample()));
+                //   },
+                //   child: Container(
+                //     margin: EdgeInsets.only(left: 0,right: 0,top: 16),
+                //     child: Image.asset('assets/slider.png'),
+                //   ),
+                // ),
+                DashboardGrid(),
                 Consumer<DashboardProvider>(
                     builder: (context, valustate, child) {
                       if (valustate.isloading_kycs) {
                         return Center(
                             child: Container(
-                                height: 40,
-                                width: 40,
+                                height: 20,
+                                width: 20,
                                 margin: EdgeInsets.only(top: 10),
                                 child: CircularProgressIndicator()));
                       } else {
@@ -532,10 +538,11 @@ class _Dashboard_vcqruState extends State<DashboardApp> {
                           );
                         } else {
                           return Visibility(
-                            visible:dashProvider.kycStatus.endsWith("Approved")?false:true,
-                            child: Container(
-                                margin:
-                                EdgeInsets.only(left: 10, right: 10, top: 10),
+                            visible:dashProvider.iskycRquir.endsWith("False")?false:true,
+                            child: Visibility(
+                              visible:dashProvider.kycStatus.endsWith("Approved")?false:true,
+                              child: Container(
+                                margin: EdgeInsets.only(left: 16, right: 16, top: 15),
                                 child: GestureDetector(
                                   onTap: () {
                                     // _presentBottomSheet(context);
@@ -558,15 +565,15 @@ class _Dashboard_vcqruState extends State<DashboardApp> {
                                                   width: 45,
                                                   height: 40,
                                                   margin: EdgeInsets.only(
-                                                      right: 15, bottom: 5),
+                                                      right: 1, bottom: 4),
                                                   child:dashProvider.kycStatus!.endsWith("Approved")?Image.asset(
                                                     "assets/verify.png",
                                                     width: 15,
                                                     height: 15,
                                                   ):(dashProvider.kycStatus!.endsWith("Pending")?Image.asset(
                                                     "assets/pending.png",
-                                                    width: 15,
-                                                    height: 15,
+                                                    width: 30,
+                                                    height: 30,
                                                   ):Image.asset(
                                                     "assets/reject.png",
                                                     width: 15,
@@ -576,7 +583,7 @@ class _Dashboard_vcqruState extends State<DashboardApp> {
                                                 ),
                                               ),
                                               SizedBox(
-                                                width: 1,
+                                                width: 8,
                                               ),
                                               Expanded(
                                                 flex: 9,
@@ -653,273 +660,31 @@ class _Dashboard_vcqruState extends State<DashboardApp> {
                                   ),
                                 ),
                               ),
+                            ),
                           );
                         }
                       }
                     }),
-                DashboardGrid(),
-SizedBox(height: 50,)
-//                 Container(
-//                   margin: EdgeInsets.all(10),
-//                   width: double.infinity,
-//                   child: Row(
-//                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-//                     crossAxisAlignment: CrossAxisAlignment.start,
-//                     children: [
-//                       Expanded(
-//                         flex: 3,
-//                         child: Container(
-//                           padding: EdgeInsets.only(top: 9,bottom: 9),
-//                           decoration: BoxDecoration(
-//                               borderRadius: BorderRadius.all(Radius.circular(8)),
-//                               color: Colors.white
-//
-//                           ),
-//                           child: GestureDetector(
-//                             onTap: (){
-//                               Navigator.push(context,
-//                                   MaterialPageRoute(builder: (context)=>GiftClaimUI()));
-//                             },
-//                             child: icon_contianer_middle(
-//                               image_name: ImagesAssets.dashboard_loyality_imgage,
-//                               colour: Color(0xFF52D5BA),
-//                               title: "Gift",
-//                             ),
-//                           ),
-//                         ),
-//                       ),
-//                       SizedBox(
-//                         width: 10,
-//                       ),
-//                       Expanded(
-//                         flex: 3,
-//                         child: Container(
-//                           padding: EdgeInsets.only(top: 9,bottom: 9),
-//                           decoration: BoxDecoration(
-//                               borderRadius: BorderRadius.all(Radius.circular(8)),
-//                               color: Colors.white
-//
-//                           ),
-//                           child:  GestureDetector(
-//                             onTap: (){
-//                              // toastRedC("Coming Soon");
-//                               print("------click----");
-//                               Navigator.push(context,
-//                                   MaterialPageRoute(builder: (context)=>ReferEarn()));
-//                             },
-//                             child: icon_contianer_middle(
-//                                 title: "Refer & Earn",
-//                                 image_name: ImagesAssets.refer_image,
-//                                 colour: Color(0xFF05AE25)
-//                             ),
-//                           ),
-//                         ),
-//                       ),
-//                       SizedBox(
-//                         width: 10,
-//                       ),
-//                       Expanded(
-//                         flex: 3,
-//                         child: Container(
-//                           decoration: BoxDecoration(
-//                               borderRadius: BorderRadius.all(Radius.circular(8)),
-//                               color: Colors.white
-//
-//                           ),
-//                           padding: EdgeInsets.only(top: 9,bottom: 9),
-//                           child: GestureDetector(
-//                             onTap: (){
-//                              // toastRedC("Coming Soon");
-//                               Navigator.push(context,
-//                                   MaterialPageRoute(builder: (context)=>WalletWithPoints()));
-//
-//                             },
-//                             child: icon_contianer_middle(
-//                                 title: "Wallet",
-//                                 image_name: ImagesAssets.dashboard_wallet_image,
-//                                 colour: Color(0xFF5207F7)
-//                             ),
-//                           ),
-//                         ),
-//                       ),
-//                     ],
-//                   ),),
-//                 Container(
-//                   margin: EdgeInsets.all(10),
-//                   width: double.infinity,
-//                   child: Row(
-//                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-//                     crossAxisAlignment: CrossAxisAlignment.start,
-//                     children: [
-//                       Expanded(
-//                         flex: 3,
-//                         child: Container(
-//                           padding: EdgeInsets.only(top: 9,bottom: 9),
-//                           decoration: BoxDecoration(
-//                               borderRadius: BorderRadius.all(Radius.circular(8)),
-//                             color: Colors.white
-//
-//                           ),
-//                           child: GestureDetector(
-//                             onTap: (){
-//                               Navigator.push(context, MaterialPageRoute(builder: (context)=>HistroyCodeCheck()));
-//                             },
-//                             child: icon_contianer_middle(
-//                               image_name: ImagesAssets.dashboard_history_image,
-//                               colour: Color(0xFFEB3678),
-//                               title: "History",
-//                             ),
-//                           ),
-//                         ),
-//                       ),
-//                       SizedBox(
-//                         width: 10,
-//                       ),
-//                       Expanded(
-//                         flex: 3,
-//                         child: Container(
-//                           padding: EdgeInsets.only(top: 9,bottom: 9),
-//                           decoration: BoxDecoration(
-//                               borderRadius: BorderRadius.all(Radius.circular(8)),
-//                               color: Colors.white
-//
-//                           ),
-//                           child:  GestureDetector(
-//                             onTap: (){
-//                                Navigator.push(context, MaterialPageRoute(builder: (context)=>BlogPage()));
-//                               //toastRedC("Coming Soon");
-//                             },
-//                             child: icon_contianer_middle(
-//                                 title: "Blog",
-//                                 image_name: ImagesAssets.blog_image,
-//                                 colour: Color(0xFFFB6B18)
-//                             ),
-//                           ),
-//                         ),
-//                       ),
-//                       SizedBox(
-//                         width: 10,
-//                       ),
-//                       Expanded(
-//                         flex: 3,
-//                         child: Container(
-//                           decoration: BoxDecoration(
-//                               borderRadius: BorderRadius.all(Radius.circular(8)),
-//                               color: Colors.white
-//
-//                           ),
-//                           padding: EdgeInsets.only(top: 9,bottom: 9),
-//                           child: GestureDetector(
-//                             onTap: (){
-//                              // toastRedC("Coming Soon");
-//                               Navigator.push(context, MaterialPageRoute(builder: (context)=>ProductCatListPage()));
-//
-//                             },
-//                             child: icon_contianer_middle(
-//                                 title: "Catalogue",
-//                                 image_name: ImagesAssets.catlog_image,
-//                                 colour: Color(0xFFED2B2A)),
-//                           ),
-//                         ),
-//                       ),
-//                     ],
-//                   ),),
-// //-----dyanmic icom image ,name
-//                 Container(
-//                   margin: EdgeInsets.only(left: 10,right: 10,bottom: 80),
-//                   child: Row(
-//                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                     children: [
-//                       Expanded(
-//                         flex: 3,
-//                         child: GestureDetector(
-//                           onTap: (){
-//                            // Navigator.push(context, MaterialPageRoute(builder: (context)=>HistroyCodeCheck()));
-//                             Navigator.push(context, MaterialPageRoute(builder: (context)=>HelpSupportUI()));
-//                           },
-//                           child: Container(
-//                             padding: EdgeInsets.only(top: 9,bottom: 9),
-//                             decoration: BoxDecoration(
-//                                 borderRadius: BorderRadius.all(Radius.circular(8)),
-//                                 color: Colors.white
-//
-//                             ),
-//                             child: icon_contianer_middle(
-//                                 title:"Help",
-//                                 image_name: ImagesAssets.help_image,
-//                                 colour: Color(0xFFFF1515)),
-//                           ),
-//                         ),
-//                       ),
-//                       SizedBox(
-//                         width: 10,
-//                       ),
-//                       Expanded(
-//                         flex: 3,
-//                         child: Container(
-//                           padding: EdgeInsets.only(top: 9,bottom: 9),
-//                           decoration: BoxDecoration(
-//                               borderRadius: BorderRadius.all(Radius.circular(8)),
-//                               color: Colors.white
-//
-//                           ),
-//                           child:  GestureDetector(
-//                             onTap: (){
-//                               // Navigator.push(context,
-//                               //     MaterialPageRoute(builder: (context)=>GiftClaimUI()));
-//
-//                                toastRedC("Coming Soon");
-//                             },
-//                             child: icon_contianer_middle(
-//                                 title: "Brochure",
-//                                 image_name: ImagesAssets.brocher_image,
-//                                 colour: Color(0xFFED2B2A)),
-//                           ),
-//                         ),
-//                       ),
-//                       SizedBox(
-//                         width: 10,
-//                       ),
-//                       Expanded(
-//                         flex: 3,
-//                         child: Container(
-//                           padding: EdgeInsets.only(top: 9,bottom: 9),
-//                           decoration: BoxDecoration(
-//                               borderRadius: BorderRadius.all(Radius.circular(8)),
-//                               color: Colors.white
-//
-//                           ),
-//                           child:  GestureDetector(
-//                             onTap: (){
-//                               Navigator.push(context,
-//                                   MaterialPageRoute(builder: (context)=>CodeDetail()));
-//                              // toastRedC("Coming Soon");
-//                             },
-//                             child: icon_contianer_middle(
-//                               title: "Code Details",
-//                               image_name: ImagesAssets.code_check_image,
-//                               colour: Color(0xFFFB6B18),
-//                             ),
-//                           ),
-//                         ),
-//                       ),
-//                     ],
-//                   ),
-//                 ),
-
+              SizedBox(height: 60,)
               ],
             ),
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: Colors.black,
-        label: Text("Scan",style: TextStyle(color: Colors.white),),
-        icon: Icon(Icons.qr_code_rounded,color: Colors.white,),
-        onPressed: (){
-          Navigator.push(context, MaterialPageRoute(builder: (context)=>QRViewExample()));
-          //Navigator.push(context, MaterialPageRoute(builder: (context)=>QRScanScreen()));
-        },
+      floatingActionButton: Container(
+        height: 35,
+        child: FloatingActionButton.extended(
+          backgroundColor: splashProvider.color_bg,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(4), // Set your desired corner radius
+          ),
+          label: Text("Scan",style: TextStyle(color: Colors.white,fontSize: 12),),
+          icon: Icon(Icons.qr_code_rounded,color: Colors.white,size: 16,),
+          onPressed: (){
+            Navigator.push(context, MaterialPageRoute(builder: (context)=>QRViewExample()));
+            //Navigator.push(context, MaterialPageRoute(builder: (context)=>QRScanScreen()));
+          },
+        ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );

@@ -30,7 +30,6 @@ class _BannerWidgetState extends State<BannerWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(bottom: 10),
       child: Consumer<BannerProvider>(builder: (context, valustate, child) {
         if (valustate.isLoading) {
           return Center(
@@ -88,7 +87,7 @@ class _BannerWidgetState extends State<BannerWidget> {
                         //     )
                         // ),
                         //ClipRRect for image border radius
-                        margin: EdgeInsets.symmetric(horizontal: 5.0),
+                        margin: EdgeInsets.symmetric(horizontal: 6.0),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(12),
                           child: Image.network(

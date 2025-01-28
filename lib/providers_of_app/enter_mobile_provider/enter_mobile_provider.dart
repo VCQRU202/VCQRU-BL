@@ -25,6 +25,14 @@ class EnterMobileProvider with ChangeNotifier{
   int get mobilnum => _mobilenum;
    bool get mobileCOmpleted => _isCompleted;
    bool get isCheckComplete => _isChecked;
+   bool _isKeyboardVisible = false;
+
+   bool get isKeyboardVisible => _isKeyboardVisible;
+
+   void setKeyboardVisibility(bool isVisible) {
+     _isKeyboardVisible = isVisible;
+     notifyListeners();
+   }
   void changeMobileLenght(value) {
     _mobilenum = value;
     if(_mobilenum==10){

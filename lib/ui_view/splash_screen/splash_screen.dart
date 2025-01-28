@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -43,7 +44,19 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     final splashProvider = Provider.of<SplashScreenProvider>(context, listen: false);
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(
+        statusBarColor: Colors.blue, // Set your desired status bar color
+        statusBarIconBrightness: Brightness.light, // Light icons for dark background
+        statusBarBrightness: Brightness.dark, // Adjust brightness for iOS
+      ),
+    );
     return Scaffold(
+      appBar: AppBar(
+        toolbarHeight: 0, // Set the height of the AppBar to 0 to hide it
+        backgroundColor: splashProvider.color_bg, // Make AppBar background transparent
+        elevation: 0, // Remove AppBar shadow
+      ),
       body: Consumer<SplashScreenProvider>(builder: (context,valustate,child){
       if(valustate.isloading_brand){
         return Center(
@@ -80,71 +93,73 @@ class _SplashScreenState extends State<SplashScreen> {
               children: [
                 Expanded(
                     flex: 5,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-
-                        Image.network(
-                          valustate.logoUrlF, // Replace with your image URL
-                          width: 130,
-                          height: 130,
-                          fit: BoxFit.contain, // Adjust fit as needed
-                          loadingBuilder: (context, child, loadingProgress) {
-                            if (loadingProgress == null) return child;
-                            return Center(
-                              child: CircularProgressIndicator(), // Show a loader while the image is loading
-                            );
-                          },
-                          errorBuilder: (context, error, stackTrace) {
-                            return Icon(
-                              Icons.error, // Fallback icon if the image fails to load
-                              size: 50,
-                              color: Colors.red,
-                            );
-                          },
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(left: 24,right: 24,top: 15,bottom: 10),
-                            child: Text(valustate.companyName,
-                              textAlign: TextAlign.center,
-                              style: GoogleFonts.roboto(
-                                fontSize: 24,
-                                fontWeight: FontWeight.w500,
-                              ),))
-                        ,Container(
-                          margin: EdgeInsets.only(left: 40, right: 40),
-                          padding: EdgeInsets.only(left: 10,right: 10),
-                          child: LoadingWidget(
-                            backgroundColor:valustate.color_bg,
-                            progressColor:valustate.color_bg,
-                            onCompleted: () {
-                              print('Loading completed');
-                             //  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>SliderScreen()));
-                              // Navigator.push(context, MaterialPageRoute(builder: (context)=>RegistrationFormPage(mobile: "9876554531",)));
-// Navigator.pushReplacement(context,
-//                                   MaterialPageRoute(builder: (context)=>KycMainScreen()));
-                              splashProvider.checkLoginStatus().then((value) async {
-                                if (value == true) {
-                                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>DashboardApp()));
-                                  // Navigator.pushReplacement(context,
-                                  //     MaterialPageRoute(builder: (context)=>KycMainScreen()));
-                                } else {
-                                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>SliderScreen()));
-                                 //  Navigator.pushReplacement(context,
-                                 //      MaterialPageRoute(builder: (context)=>RegistrationFormPage(mobile: "9876554531",)));
-
-                                  // Navigator.pushReplacement(
-                                  //     context,
-                                  //     MaterialPageRoute(
-                                  //         builder: (context) => LoginWithPassword()));
-                                }
-                              });
+                    child: SafeArea(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                      
+                          Image.network(
+                            valustate.logoUrlF, // Replace with your image URL
+                            width: 130,
+                            height: 130,
+                            fit: BoxFit.contain, // Adjust fit as needed
+                            loadingBuilder: (context, child, loadingProgress) {
+                              if (loadingProgress == null) return child;
+                              return Center(
+                                child: CircularProgressIndicator(), // Show a loader while the image is loading
+                              );
+                            },
+                            errorBuilder: (context, error, stackTrace) {
+                              return Icon(
+                                Icons.error, // Fallback icon if the image fails to load
+                                size: 50,
+                                color: Colors.red,
+                              );
                             },
                           ),
-                        ),
-                        SizedBox(height: 20,)
-                      ],
+                          Container(
+                            margin: EdgeInsets.only(left: 24,right: 24,top: 15,bottom: 20),
+                              child: Text(valustate.companyName,
+                                textAlign: TextAlign.center,
+                                style: GoogleFonts.roboto(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.w500,
+                                ),))
+                          ,Container(
+                            margin: EdgeInsets.only(left: 40, right: 40),
+                            padding: EdgeInsets.only(left: 10,right: 10),
+                            child: LoadingWidget(
+                              backgroundColor:valustate.color_bg,
+                              progressColor:valustate.color_bg,
+                              onCompleted: () {
+                                                    print('Loading completed');
+                                                   //  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>SliderScreen()));
+                                                    // Navigator.push(context, MaterialPageRoute(builder: (context)=>RegistrationFormPage(mobile: "9876554531",)));
+                      // Navigator.pushReplacement(context,
+                      //                                   MaterialPageRoute(builder: (context)=>KycMainScreen()));
+                                                    splashProvider.checkLoginStatus().then((value) async {
+                                                      if (value == true) {
+                                                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>DashboardApp()));
+                                                        // Navigator.pushReplacement(context,
+                                                        //     MaterialPageRoute(builder: (context)=>KycMainScreen()));
+                                                      } else {
+                                                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>SliderScreen()));
+                                                       //  Navigator.pushReplacement(context,
+                                                       //      MaterialPageRoute(builder: (context)=>RegistrationFormPage(mobile: "9876554531",)));
+
+                                                        // Navigator.pushReplacement(
+                                                        //     context,
+                                                        //     MaterialPageRoute(
+                                                        //         builder: (context) => LoginWithPassword()));
+                                                      }
+                                                    });
+                              },
+                            ),
+                          ),
+                          SizedBox(height: 20,)
+                        ],
+                      ),
                     )
                 ),
                 Expanded(

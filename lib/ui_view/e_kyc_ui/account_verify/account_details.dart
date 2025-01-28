@@ -93,7 +93,7 @@ class _AccountDetailsState extends State<AccountDetails> {
                               ),
                               SizedBox(height: 4),
                               Text(
-                                valustate.kycData?.data?.accountNo,
+                                valustate.kycData?.data?.accountNo??"",
                                 style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold,),
                               ),
                               Divider(),
@@ -109,7 +109,7 @@ class _AccountDetailsState extends State<AccountDetails> {
                               ),
                               SizedBox(height: 4),
                               Text(
-                                valustate.kycData?.data?.ifscCode??"",
+                                valustate.kycData?.data?.bank_name??"",
                                 style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold,),
                               ),
                               Divider(),

@@ -1,9 +1,16 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../data/repositorys/repositories_app.dart';
 import '../../models/profile/profile_detail_model.dart';
 import '../../res/api_url/api_url.dart';
+import '../../res/app_colors/Checksun_encry.dart';
 import '../../res/shared_preferences.dart';
+import 'dart:io';
 class ProfileProvider with ChangeNotifier{
 
   final _api = RepositoriesApp();
@@ -61,5 +68,6 @@ class ProfileProvider with ChangeNotifier{
     notifyListeners();
     await getProfileDetail();
   }
+
 
 }

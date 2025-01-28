@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:provider/provider.dart';
 import 'package:vcqru_bl/providers_of_app/banner_provider/banner_provider.dart';
 import 'package:vcqru_bl/providers_of_app/blogs_provider/blogs_provider.dart';
+import 'package:vcqru_bl/providers_of_app/brochure_provider/brochure_provider.dart';
 import 'package:vcqru_bl/providers_of_app/claim_history/claim_history_provider.dart';
+import 'package:vcqru_bl/providers_of_app/claim_providers/claim_main_provider.dart';
 import 'package:vcqru_bl/providers_of_app/code_check_history_provider/code_check_history_provider.dart';
+import 'package:vcqru_bl/providers_of_app/contact_us_provider/contact_us_provider.dart';
 import 'package:vcqru_bl/providers_of_app/dashboard_provider/dashboard_provider.dart';
 import 'package:vcqru_bl/providers_of_app/ekyc_providers/aadhar_verify_provider/aadhar_verify_provider.dart';
 import 'package:vcqru_bl/providers_of_app/ekyc_providers/account_verify_provider/account_verify_provider.dart';
@@ -15,6 +19,8 @@ import 'package:vcqru_bl/providers_of_app/ekyc_providers/kyc_main_page_provider.
 import 'package:vcqru_bl/providers_of_app/ekyc_providers/pancard_verify_provider/pancard_verify_provider.dart';
 import 'package:vcqru_bl/providers_of_app/ekyc_providers/upi_verify_provider/upi_verify_provider.dart';
 import 'package:vcqru_bl/providers_of_app/enter_mobile_provider/enter_mobile_provider.dart';
+import 'package:vcqru_bl/providers_of_app/games_providers/game1_snack_provider.dart';
+import 'package:vcqru_bl/providers_of_app/games_providers/runner_games_provider.dart';
 import 'package:vcqru_bl/providers_of_app/gift_claim_provider/gift_claim_provider.dart';
 import 'package:vcqru_bl/providers_of_app/help_support_provider/faq_q_ans_provider.dart';
 import 'package:vcqru_bl/providers_of_app/help_support_provider/help_support_provider.dart';
@@ -37,6 +43,7 @@ import 'package:vcqru_bl/ui_view/splash_screen/splash_screen.dart';
 void main() {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   runApp(const MyApp());
 }
 // 2dec sb branch 164
@@ -77,6 +84,11 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => ProductCatListProvider()),
         ChangeNotifierProvider(create: (_) => ReferralProvider()),
         ChangeNotifierProvider(create: (_) => RaisedTicketHistoryProvider()),
+        ChangeNotifierProvider(create: (_) => GameProvider()),
+        ChangeNotifierProvider(create: (_) => RunnerGameProvider()),
+        ChangeNotifierProvider(create: (_) => BochureProvider()),
+        ChangeNotifierProvider(create: (_) => CliamMainProvider()),
+        ChangeNotifierProvider(create: (_) => ContactDetailsProvider()),
       ],
       builder: (context, child) {
         return MaterialApp(

@@ -461,7 +461,7 @@ class OtpBottomSheet extends StatelessWidget {
                                       child: GridView.builder(
                                         // +===>> Set up grid layout with dynamic crossAxisCount
                                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                          crossAxisCount: crossAxisCount, // Number of columns set dynamically
+                                          crossAxisCount: crossAxisCount==0?1:crossAxisCount, // Number of columns set dynamically
                                           crossAxisSpacing: 0, // Spacing between columns
                                           mainAxisSpacing: 0, // Spacing between rows
                                           childAspectRatio: 1,

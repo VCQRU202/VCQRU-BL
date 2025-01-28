@@ -137,7 +137,7 @@ class _ProfileDetailState extends State<ProfileDetail> {
 
                             Row(
                               children: [
-                                Container(
+                                valustate.userProfile == null || valustate.userProfile!.isEmpty?Container(
                                   width: 48,
                                   height: 48,
                                   margin: EdgeInsets.only(left: 10),
@@ -151,26 +151,48 @@ class _ProfileDetailState extends State<ProfileDetail> {
                                       side: BorderSide(width: 2, color: Colors.white),
                                     ),
                                   ),
+                                ):Container(
+                                  width: 48,
+                                  height: 48,
+                                  margin: EdgeInsets.only(left: 10),
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      begin: Alignment(0.00, -1.00),
+                                      end: Alignment(0, 1),
+                                      colors: [Colors.black.withOpacity(0), Colors.black],
+                                    ),
+                                    shape: BoxShape.circle, // Use BoxShape.circle for circular shape
+                                    image: DecorationImage(
+                                      image: NetworkImage(
+                                        valustate.userProfile, // Replace with your image URL
+                                      ),
+                                      fit: BoxFit.cover, // Ensure the image covers the container
+                                    ),
+                                    border: Border.all(width: 2, color: Colors.white),
+                                  ),
                                 ),
                                 SizedBox(width: 10,),
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(valustate.profile?.consumerName.toString().split(' ')[0]??"",style: TextStyle(fontSize: 18,color: Colors.white),),
-                                    Row(
-                                      children: [
-                                        CustomText(
-                                          text: "KYC : ${_getKYCStatusText(int.tryParse(valustate.profile?.vrKblKYCStatus ?? "0") ?? 0)}",
-                                          color: _getKYCStatusColor(int.tryParse(valustate.profile?.vrKblKYCStatus ?? "0") ?? 0),
-                                          fontSize: 12,
-                                        ),
-                                        SizedBox(width: 4), // Spacing between text and icon
-                                        Icon(
-                                          _getKYCStatusIcon(int.tryParse(valustate.profile?.vrKblKYCStatus ?? "0") ?? 0),
-                                          color: _getKYCStatusColor1(int.tryParse(valustate.profile?.vrKblKYCStatus ?? "0") ?? 0),
-                                          size: 16,
-                                        ),
-                                      ],
+                                    Visibility(
+                                      visible: valustate.profile?.isKYCRequire?.endsWith("False") == true ? false : true,
+                                      child: Row(
+                                        children: [
+                                          CustomText(
+                                            text: "KYC : ${_getKYCStatusText(int.tryParse(valustate.profile?.vrKblKYCStatus ?? "0") ?? 0)}",
+                                            color: _getKYCStatusColor(int.tryParse(valustate.profile?.vrKblKYCStatus ?? "0") ?? 0),
+                                            fontSize: 12,
+                                          ),
+                                          SizedBox(width: 4), // Spacing between text and icon
+                                          Icon(
+                                            _getKYCStatusIcon(int.tryParse(valustate.profile?.vrKblKYCStatus ?? "0") ?? 0),
+                                            color: _getKYCStatusColor1(int.tryParse(valustate.profile?.vrKblKYCStatus ?? "0") ?? 0),
+                                            size: 16,
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ],
                                 ),

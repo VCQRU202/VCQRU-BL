@@ -75,7 +75,7 @@ class _WalletWithPointsState extends State<WalletWithPoints> {
               ),
               child: Consumer<DashboardProvider>(
                   builder: (context, valustate, child) {
-                    if (valustate.isloading_profile) {
+                    if (valustate.isLoading) {
                       return Center(
                           child: Container(
                               height: 40,
@@ -83,7 +83,7 @@ class _WalletWithPointsState extends State<WalletWithPoints> {
                               margin: EdgeInsets.only(top: 10),
                               child: CircularProgressIndicator()));
                     } else {
-                      if (valustate.hasError_profile) {
+                      if (valustate.hasError) {
                         return Container(
                           width: double.infinity,
                           margin:
@@ -94,7 +94,7 @@ class _WalletWithPointsState extends State<WalletWithPoints> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                Text('${valustate.errorMessage_profile}'),
+                                Text('${valustate.errorMessage}'),
                                 ElevatedButton(
                                   onPressed: () {
                                     valustate.retryProfile();
@@ -106,7 +106,7 @@ class _WalletWithPointsState extends State<WalletWithPoints> {
                           ),
                         );
                       } else {
-
+                        final walletList = valustate.dashdynaData?.data?.walletdataList??[];
                         return Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -135,75 +135,35 @@ class _WalletWithPointsState extends State<WalletWithPoints> {
                                 ),
                               ],
                             ),
-                            SizedBox(height: 10,),
-                            Container(
-                              margin: EdgeInsets.only(left: 14),
-                                child: Text("Point Balance",style: GoogleFonts.roboto(
-                                    color: Colors.white,
-                                  fontSize: 14
-                                ),)
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(top: 6, bottom: 20,left: 10,right: 10),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Color(0xFFFFFFFF).withOpacity(0.16),
-                              ),
-                              child: Consumer<DashboardProvider>(
-                                  builder: (context, valustate, child) {
-                                    if (valustate.isLoading_wallet) {
-                                      return Center(
-                                          child: Container(
-                                              height: 40,
-                                              width: 40,
-                                              margin: EdgeInsets.only(top: 10),
-                                              child: CircularProgressIndicator()));
-                                    } else {
-                                      if (valustate.hasError_wallet) {
-                                        return Container(
-                                          width: double.infinity,
+                            ListView.builder(
+                              itemCount: walletList.length,
+                              padding: EdgeInsets.zero,
+                              shrinkWrap: true, // Makes ListView take only the required height
+                              physics: NeverScrollableScrollPhysics(),
+                              itemBuilder: (context, index) {
+                                return Container(
+                                  margin: EdgeInsets.only(top: 10, bottom: 20,left: 10,right: 10),
 
-                                          // decoration: BoxDecoration(
-                                          //     gradient: LinearGradient(
-                                          //         colors: [
-                                          //           const Color(0xFF3366FF),
-                                          //           const Color(0xFF00CCFF),
-                                          //         ],
-                                          //         begin: const FractionalOffset(0.0, 0.0),
-                                          //         end: const FractionalOffset(1.0, 0.0),
-                                          //         stops: [0.0, 1.0],
-                                          //         tileMode: TileMode.clamp),
-                                          //     borderRadius:
-                                          //     BorderRadius.all(Radius.circular(10))),
-                                          child: Center(
-                                            child: Column(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              crossAxisAlignment: CrossAxisAlignment.center,
-                                              children: [
-                                                Text(' ${valustate.errorMessage_wallet}'),
-                                                ElevatedButton(
-                                                  onPressed: () {
-                                                    valustate.retryFetchWallet();
-                                                  },
-                                                  child: Text('Retry'),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        );
-                                      } else {
-                                        String total_point = valustate.dashbaord!.totalPoint ?? "0";
-                                        String transferred_point = valustate.dashbaord!.reedemPoint ?? "0";
-                                        var points;
-                                        if(total_point.isNotEmpty&&transferred_point.isNotEmpty){
-                                          var e = double.parse(total_point);
-                                          var f = double.parse(transferred_point);
-                                          // wallett = e - f;
-                                          points =total_point;
-                                        }else{
-                                          points="0";
-                                        }
-                                        return Padding(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        width: double.infinity,
+                                          margin: EdgeInsets.only(left: 10),
+                                          child: Text(
+                                            walletList[index].loyalitypointbalancetext.toString()??"",
+                                            textAlign: TextAlign.start,
+                                            style: GoogleFonts.roboto(
+                                              color: Colors.white,
+                                              fontSize: 14
+                                          ),)
+                                      ),
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(10),
+                                          color: Color(0xFFFFFFFF).withOpacity(0.16),
+                                        ),
+                                        child: Padding(
                                           padding: const EdgeInsets.only(
                                               left: 3, right: 3, top: 15, bottom: 15),
                                           child: Row(
@@ -215,9 +175,12 @@ class _WalletWithPointsState extends State<WalletWithPoints> {
                                                 child:Column(
                                                   crossAxisAlignment: CrossAxisAlignment.center,
                                                   children: [
-                                                    Text(total_point,style: TextStyle(fontSize: 20,
+                                                    Text(
+                                                        walletList[index].totalPoint.toString()??"",
+                                                        style: TextStyle(fontSize: 20,
                                                         fontWeight: FontWeight.bold,color: Colors.white)),
-                                                    Text("Total Points",style: TextStyle(fontSize: 14,color: Colors.white),)
+                                                    Text(walletList[index].txtPoint.toString()??"",
+                                                      style: TextStyle(fontSize: 14,color: Colors.white),)
                                                   ],
                                                 ),
                                               ),
@@ -226,9 +189,9 @@ class _WalletWithPointsState extends State<WalletWithPoints> {
                                                 child:Column(
                                                   crossAxisAlignment: CrossAxisAlignment.center,
                                                   children: [
-                                                    Text(transferred_point,style: TextStyle(fontSize: 20,
+                                                    Text(walletList[index].reedemPoint.toString()??"",style: TextStyle(fontSize: 20,
                                                         fontWeight: FontWeight.bold,color: Colors.white)),
-                                                    Text("Redeem Points",style: TextStyle(fontSize: 14,color: Colors.white),)
+                                                    Text(walletList[index].txtreedemPoint.toString()??"",style: TextStyle(fontSize: 14,color: Colors.white),)
                                                   ],
                                                 ),
                                               ),
@@ -237,139 +200,28 @@ class _WalletWithPointsState extends State<WalletWithPoints> {
                                                 child:Column(
                                                   crossAxisAlignment: CrossAxisAlignment.center,
                                                   children: [
-                                                    Text(points,style: TextStyle(fontSize: 20,
+                                                    Text(walletList[index].avlaiblepoint.toString()??"",style: TextStyle(fontSize: 20,
                                                         fontWeight: FontWeight.bold,color: Colors.white)),
-                                                    Text("Balance Points",style: TextStyle(fontSize: 14,color: Colors.white),)
+                                                    Text(walletList[index].txtavlaiblepoint.toString()??"",style: TextStyle(fontSize: 14,color: Colors.white),)
                                                   ],
                                                 ),
                                               ),
                                             ],
                                           ),
-                                        );
-                                      }
-                                    }
-                                  }),
-                            ),
-                            Container(
-                                margin: EdgeInsets.only(left: 14),
-                                child: Text("Cash Balance",style: GoogleFonts.roboto(
-                                    color: Colors.white,
-                                    fontSize: 14
-                                ),)
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(top: 6, bottom: 20,left: 10,right: 10),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Color(0xFFFFFFFF).withOpacity(0.16),
-                              ),
-                              child: Consumer<DashboardProvider>(
-                                  builder: (context, valustate, child) {
-                                    if (valustate.isLoading_wallet) {
-                                      return Center(
-                                          child: Container(
-                                              height: 40,
-                                              width: 40,
-                                              margin: EdgeInsets.only(top: 10),
-                                              child: CircularProgressIndicator()));
-                                    } else {
-                                      if (valustate.hasError_wallet) {
-                                        return Container(
-                                          width: double.infinity,
-
-                                          // decoration: BoxDecoration(
-                                          //     gradient: LinearGradient(
-                                          //         colors: [
-                                          //           const Color(0xFF3366FF),
-                                          //           const Color(0xFF00CCFF),
-                                          //         ],
-                                          //         begin: const FractionalOffset(0.0, 0.0),
-                                          //         end: const FractionalOffset(1.0, 0.0),
-                                          //         stops: [0.0, 1.0],
-                                          //         tileMode: TileMode.clamp),
-                                          //     borderRadius:
-                                          //     BorderRadius.all(Radius.circular(10))),
-                                          child: Center(
-                                            child: Column(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              crossAxisAlignment: CrossAxisAlignment.center,
-                                              children: [
-                                                Text(' ${valustate.errorMessage_wallet}'),
-                                                ElevatedButton(
-                                                  onPressed: () {
-                                                    valustate.retryFetchWallet();
-                                                  },
-                                                  child: Text('Retry'),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        );
-                                      } else {
-                                        String total_cash =  "0";
-                                        String transferred_cash =  "0";
-                                        var points;
-                                        if(total_cash.isNotEmpty&&transferred_cash.isNotEmpty){
-                                          var e = double.parse(total_cash);
-                                          var f = double.parse(transferred_cash);
-                                          // wallett = e - f;
-                                          points =total_cash;
-                                        }else{
-                                          points="0";
-                                        }
-                                        return Padding(
-                                          padding: const EdgeInsets.only(
-                                              left: 3, right: 3, top: 15, bottom: 15),
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            crossAxisAlignment: CrossAxisAlignment.center,
-                                            children: [
-                                              Expanded(
-                                                flex: 3,
-                                                child:Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                                  children: [
-                                                    Text(total_cash,style: TextStyle(fontSize: 20,
-                                                        fontWeight: FontWeight.bold,color: Colors.white)),
-                                                    Text("Total Cash",style: TextStyle(fontSize: 14,color: Colors.white),)
-                                                  ],
-                                                ),
-                                              ),
-                                              Expanded(
-                                                flex: 3,
-                                                child:Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                                  children: [
-                                                    Text(transferred_cash,style: TextStyle(fontSize: 20,
-                                                        fontWeight: FontWeight.bold,color: Colors.white)),
-                                                    Text("Redeem Cash",style: TextStyle(fontSize: 14,color: Colors.white),)
-                                                  ],
-                                                ),
-                                              ),
-                                              Expanded(
-                                                flex: 3,
-                                                child:Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                                  children: [
-                                                    Text(points,style: TextStyle(fontSize: 20,
-                                                        fontWeight: FontWeight.bold,color: Colors.white)),
-                                                    Text("Available Cash",style: TextStyle(fontSize: 14,color: Colors.white),)
-                                                  ],
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        );
-                                      }
-                                    }
-                                  }),
-                            ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            )
                           ],
                         );
                       }
                     }
                   }),
             ),
+            //---recent history------------
             Consumer<CodeCheckHistoryProvider>(
                 builder: (context, valustate, child) {
                   if (valustate.isLoading) {

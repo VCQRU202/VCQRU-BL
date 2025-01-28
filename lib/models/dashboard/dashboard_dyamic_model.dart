@@ -26,8 +26,8 @@ class Data {
   List<DashboardIcons>? dashboardIcons;
   List<SidebarIcons>? sidebarIcons;
   AdditionalData? additionalData;
-
-  Data({this.dashboardIcons, this.sidebarIcons, this.additionalData});
+  List<WalletdataList>? walletdataList;
+  Data({this.dashboardIcons, this.sidebarIcons, this.additionalData,this.walletdataList});
 
   Data.fromJson(Map<String, dynamic> json) {
     if (json['dashboardIcons'] != null) {
@@ -45,6 +45,12 @@ class Data {
     additionalData = json['additionalData'] != null
         ? new AdditionalData.fromJson(json['additionalData'])
         : null;
+    if (json['walletdataList'] != null) {
+      walletdataList = <WalletdataList>[];
+      json['walletdataList'].forEach((v) {
+        walletdataList!.add(new WalletdataList.fromJson(v));
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -58,6 +64,10 @@ class Data {
     }
     if (this.additionalData != null) {
       data['additionalData'] = this.additionalData!.toJson();
+    }
+    if (this.walletdataList != null) {
+      data['walletdataList'] =
+          this.walletdataList!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -120,17 +130,86 @@ class SidebarIcons {
   }
 }
 class AdditionalData {
-  bool? loyalitypoint;
+  String? totalPoint;
+  String? txtPoint;
+  String? reedemPoint;
+  String? txtreedemPoint;
+  String? avlaiblepoint;
+  String? txtavlaiblepoint;
+  String? loyalitypoint;
 
-  AdditionalData({this.loyalitypoint});
+  AdditionalData(
+      {this.totalPoint,
+        this.txtPoint,
+        this.reedemPoint,
+        this.txtreedemPoint,
+        this.avlaiblepoint,
+        this.txtavlaiblepoint,
+        this.loyalitypoint});
 
   AdditionalData.fromJson(Map<String, dynamic> json) {
+    totalPoint = json['totalPoint'];
+    txtPoint = json['txtPoint'];
+    reedemPoint = json['reedemPoint'];
+    txtreedemPoint = json['txtreedemPoint'];
+    avlaiblepoint = json['avlaiblepoint'];
+    txtavlaiblepoint = json['txtavlaiblepoint'];
     loyalitypoint = json['Loyalitypoint'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['totalPoint'] = this.totalPoint;
+    data['txtPoint'] = this.txtPoint;
+    data['reedemPoint'] = this.reedemPoint;
+    data['txtreedemPoint'] = this.txtreedemPoint;
+    data['avlaiblepoint'] = this.avlaiblepoint;
+    data['txtavlaiblepoint'] = this.txtavlaiblepoint;
     data['Loyalitypoint'] = this.loyalitypoint;
+    return data;
+  }
+}
+class WalletdataList {
+  String? totalPoint;
+  String? txtPoint;
+  String? reedemPoint;
+  String? txtreedemPoint;
+  String? avlaiblepoint;
+  String? txtavlaiblepoint;
+  String? loyalitypoint;
+  String? loyalitypointbalancetext;
+
+  WalletdataList(
+      {this.totalPoint,
+        this.txtPoint,
+        this.reedemPoint,
+        this.txtreedemPoint,
+        this.avlaiblepoint,
+        this.txtavlaiblepoint,
+        this.loyalitypoint,
+        this.loyalitypointbalancetext});
+
+  WalletdataList.fromJson(Map<String, dynamic> json) {
+    totalPoint = json['totalPoint'];
+    txtPoint = json['txtPoint'];
+    reedemPoint = json['reedemPoint'];
+    txtreedemPoint = json['txtreedemPoint'];
+    avlaiblepoint = json['avlaiblepoint'];
+    txtavlaiblepoint = json['txtavlaiblepoint'];
+    loyalitypoint = json['Loyalitypoint'];
+    loyalitypointbalancetext = json['Loyalitypointbalancetext'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['totalPoint'] = this.totalPoint;
+    data['txtPoint'] = this.txtPoint;
+    data['reedemPoint'] = this.reedemPoint;
+    data['txtreedemPoint'] = this.txtreedemPoint;
+    data['avlaiblepoint'] = this.avlaiblepoint;
+    data['txtavlaiblepoint'] = this.txtavlaiblepoint;
+    data['Loyalitypoint'] = this.loyalitypoint;
+    data['Loyalitypointbalancetext'] = this.loyalitypointbalancetext;
     return data;
   }
 }

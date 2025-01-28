@@ -1,22 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:provider/provider.dart';
 
+import '../../providers_of_app/splash_screen_provider/splash_screen_provider.dart';
 import 'cash_success.dart';
 
-class my_Gift extends StatefulWidget {
-  const my_Gift({super.key});
+class CashGiftList extends StatefulWidget {
+  const CashGiftList({super.key});
 
   @override
-  State<my_Gift> createState() => _my_GiftState();
+  State<CashGiftList> createState() => _my_GiftState();
 }
 
-class _my_GiftState extends State<my_Gift> {
+class _my_GiftState extends State<CashGiftList> {
   @override
   Widget build(BuildContext context) {
+    final splashProvider = Provider.of<SplashScreenProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
-        title: Text('My Gifts'),
+        title: const Text('My Gifts'),
+        centerTitle: true,
+        backgroundColor: splashProvider.color_bg,
+        foregroundColor: Colors.black,
+        elevation: 0,
       ),
       body: Container(
         height: double.infinity,
@@ -47,7 +54,7 @@ class _my_GiftState extends State<my_Gift> {
                             height: 44,
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
-                                color: Color(0xff00B700)),
+                                color: splashProvider.color_bg),
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Row(
@@ -56,7 +63,7 @@ class _my_GiftState extends State<my_Gift> {
                                 children: [
                                   Row(
                                     children: [
-                                     Image.asset('assets/goldencoin3.png'),
+                                     Image.asset('assets/coin.png'),
                                       Text(
                                         'Total Point Balance',
                                         style: TextStyle(
@@ -117,6 +124,7 @@ class ValueOfPoint extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final splashProvider = Provider.of<SplashScreenProvider>(context, listen: false);
     void bottomSheet() {
       showModalBottomSheet(
           context: context,
@@ -225,12 +233,12 @@ class ValueOfPoint extends StatelessWidget {
                 stops: [0.0, 0.3, 0.3, 0.6, 0.6, 1.0],
                 // Adjusted stops
                 colors: [
-                  Color(0xff009F4B),
-                  Color(0xFF009F4B),
-                  Color(0xFF00BA57),
-                  Color(0xFF00BA57),
-                  Color(0xFF00AB45),
-                  Color(0xFF00AB45), //Color(0xFFA000F5),
+                  splashProvider.color_bg,
+                  splashProvider.color_bg,
+                  splashProvider.color_bg.withOpacity(0.6),
+                  splashProvider.color_bg.withOpacity(0.6),
+                  splashProvider.color_bg,
+                  splashProvider.color_bg, //Color(0xFFA000F5),
                 ],
                 tileMode: TileMode.clamp,
               ),
@@ -338,144 +346,5 @@ class ValueOfPoint extends StatelessWidget {
       },
     );
   }
-}
 
-// class ValueOfPoint extends StatelessWidget {
-//   late Color color1;
-//   late Color color2;
-//   late Color color3;
-//   late Color color4;
-//   late Color color5;
-//   late Color color6;
-//
-//   String totalCodeCheckTitle;
-//   int totalCodeCheck;
-//
-//   ValueOfPoint(
-//       {required this.totalCodeCheckTitle,
-//       required this.totalCodeCheck,
-//       required this.color1,
-//       required this.color2,
-//       required this.color3,
-//       required this.color4,
-//       required this.color5,
-//       required this.color6});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Padding(
-//       padding: const EdgeInsets.all(8.0),
-//       child: Container(
-//         width: 290,
-//         decoration: BoxDecoration(
-//           borderRadius: BorderRadius.circular(10),
-//           gradient: LinearGradient(
-//             begin: Alignment.topLeft,
-//             end: Alignment(-0.6, -3.4),
-//             stops: [0.0, 0.3, 0.3, 0.6, 0.6, 1.0],
-//             // Adjusted stops
-//             colors: [
-//               color1, //Color(0xFF5B00E0), // Dark blue
-//               color2, //Color(0xFF5B00E0), // Dark blue
-//               color3, //Color(0xFF7D00E8), // Purple
-//               color4, //Color(0xFF7D00E8), // Purple
-//               color5, //Color(0xFFA000F5), // Light purple
-//               color6, //Color(0xFFA000F5),
-//             ],
-//             tileMode: TileMode.clamp,
-//           ),
-//         ),
-//         child: Column(
-//           mainAxisAlignment: MainAxisAlignment.start,
-//           crossAxisAlignment: CrossAxisAlignment.start,
-//           children: [
-//             Container(
-//               width: double.infinity,
-//               child: Column(
-//                 mainAxisAlignment: MainAxisAlignment.end,
-//                 crossAxisAlignment: CrossAxisAlignment.end,
-//                 children: [
-//                   Container(
-//                     height: 40,
-//                     width: 75,
-//                     decoration: BoxDecoration(
-//                       color: Colors.red,
-//                       borderRadius: BorderRadius.only(
-//                           bottomLeft: Radius.circular(10),
-//                           topRight: Radius.circular(10)),
-//                     ),
-//                     child: Row(
-//                       children: [
-//                         Padding(
-//                           padding: const EdgeInsets.all(8.0),
-//                           child: Row(
-//                             children: [
-//                               SvgPicture.asset(
-//                                 'assets/Vector.svg',
-//                                 width: 20,
-//                               ),
-//                               SizedBox(
-//                                 width: 5,
-//                               ),
-//                               Text(
-//                                 "100",
-//                                 style: TextStyle(
-//                                     color: Colors.white,
-//                                     fontWeight: FontWeight.bold),
-//                               ),
-//                             ],
-//                           ),
-//                         )
-//                       ],
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//             ),
-//             Padding(
-//               padding: const EdgeInsets.all(8.0),
-//               child: Row(
-//                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                 children: [
-//                   Column(
-//                     mainAxisAlignment: MainAxisAlignment.start,
-//                     crossAxisAlignment: CrossAxisAlignment.start,
-//                     children: [
-//                       Text(
-//                         totalCodeCheckTitle,
-//                         style: TextStyle(
-//                           color: Colors.white,
-//                         ),
-//                       ),
-//                       Text(
-//                         "${totalCodeCheck.toString()} INR",
-//                         style: TextStyle(
-//                             color: Colors.white,
-//                             fontWeight: FontWeight.bold,
-//                             fontSize: 30),
-//                       )
-//                     ],
-//                   ),
-//                   Container(
-//                       decoration: BoxDecoration(
-//                         border: Border.all(color: Colors.white),
-//                           borderRadius: BorderRadius.circular(10),
-//                           color: Colors.greenAccent.withOpacity(0.4)),
-//                       child: TextButton(
-//                           onPressed: () {},
-//                           child: Text(
-//                             "Claim",
-//                             style: TextStyle(
-//                                 color: Colors.white,
-//                                 fontWeight: FontWeight.bold,
-//                                 fontSize: 20),
-//                           )))
-//                 ],
-//               ),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
+}
